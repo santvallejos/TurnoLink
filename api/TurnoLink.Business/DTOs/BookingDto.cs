@@ -5,9 +5,10 @@ namespace TurnoLink.Business.DTOs;
 /// </summary>
 public class CreateBookingDto
 {
-    public Guid ClientId { get; set; }
     public Guid ServiceId { get; set; }
-    public Guid UserId { get; set; }
+    public string ClientName { get; set; } = string.Empty;
+    public string ClientEmail { get; set; } = string.Empty;
+    public string? ClientPhone { get; set; }
     public DateTime StartTime { get; set; }
     public string? Notes { get; set; }
 }

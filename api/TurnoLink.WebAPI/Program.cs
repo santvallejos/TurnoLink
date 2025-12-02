@@ -27,6 +27,8 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 // Configure Dependency Injection - Business Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 // Configure JWT Authentication
 var jwtSecretKey = builder.Configuration["Jwt:SecretKey"] 

@@ -1,82 +1,88 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TurnoLink.DataAccess.Entities;
-
-/// <summary>
-/// Representa un servicio ofrecido por un profesional
-/// </summary>
-[Table("services")]
-public class Service
+namespace TurnoLink.DataAccess.Entities
 {
     /// <summary>
-    /// Identificador único del servicio
+    /// Represents a service offered by a professional
     /// </summary>
-    [Key]
-    [Column("id")]
-    public Guid Id { get; set; }
+    [Table("services")]
+    public class Service
+    {
+        private decimal _price;
 
-    /// <summary>
-    /// ID del profesional que ofrece el servicio
-    /// </summary>
-    [Required]
-    [Column("user_id")]
-    public Guid UserId { get; set; }
+        /// <summary>
+        /// ID of the service
+        /// </summary>
+        [Key]
+        [Column("id")]
+        public Guid Id { get; set; }
 
-    /// <summary>
-    /// Nombre del servicio
-    /// </summary>
-    [Required]
-    [MaxLength(200)]
-    [Column("name")]
-    public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// ID of the professional offering the service
+        /// </summary>
+        [Required]
+        [Column("user_id")]
+        public Guid UserId { get; set; }
 
-    /// <summary>
-    /// Descripción del servicio
-    /// </summary>
-    [MaxLength(1000)]
-    [Column("description")]
-    public string? Description { get; set; }
+        /// <summary>
+        /// Name of the service
+        /// </summary>
+        [Required]
+        [MaxLength(200)]
+        [Column("name")]
+        public string Name { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Duración del servicio en minutos
-    /// </summary>
-    [Column("duration_minutes")]
-    public int DurationMinutes { get; set; }
+        /// <summary>
+        /// Description of the service
+        /// </summary>
+        [MaxLength(1000)]
+        [Column("description")]
+        public string? Description { get; set; }
 
-    /// <summary>
-    /// Precio del servicio
-    /// </summary>
-    [Column("price", TypeName = "decimal(18,2)")]
-    public decimal Price { get; set; }
+        /// <summary>
+        /// Duration of the service in minutes
+        /// </summary>
+        [Column("duration_minutes")]
+        public int DurationMinutes { get; set; }
 
-    /// <summary>
-    /// Indica si el servicio está activo
-    /// </summary>
-    [Column("is_active")]
-    public bool IsActive { get; set; } = true;
+        /// <summary>
+        /// Price of the service
+        /// </summary>
+        [Column("price", TypeName = "decimal(18,2)")]
+        public decimal Price 
+        { 
+            get => _price;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException(nameof(Price), "Price cannot be negative.");
+                _price = value;
+            }
+        }
 
-    /// <summary>
-    /// Fecha de creación del registro
-    /// </summary>
-    [Column("created_at")]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        /// <summary>
+        /// Indicates if the service is active
+        /// </summary>
+        [Column("is_active")]
+        public bool IsActive { get; set; } = true;
 
-    /// <summary>
-    /// Fecha de última actualización
-    /// </summary>
-    [Column("updated_at")]
-    public DateTime? UpdatedAt { get; set; }
+        /// <summary>
+        /// Record creation date
+        /// </summary>
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    // Navigation properties
-    /// <summary>
-    /// Profesional que ofrece este servicio
-    /// </summary>
-    [ForeignKey("UserId")]
-    public virtual User User { get; set; } = null!;
+        // Navigation properties
+        /// <summary>
+        /// Professional offering the service
+        /// </summary>
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; } = null!;
 
-    /// <summary>
-    /// Reservas de este servicio
-    /// </summary>
-    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+        /// <summary>
+        /// Bookings associated with the service
+        /// </summary>
+        public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    }
 }

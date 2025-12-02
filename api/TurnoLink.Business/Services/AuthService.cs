@@ -4,35 +4,36 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TurnoLink.Business.DTOs;
-using TurnoLink.Business.Services.Interfaces;
+using TurnoLink.Business.Interfaces;
+using TurnoLink.DataAccess.Data;
 using TurnoLink.DataAccess.Entities;
-using TurnoLink.DataAccess.Repositories.Interfaces;
+using TurnoLink.DataAccess.Interfaces;
 
-namespace TurnoLink.Business.Services;
-
-/// <summary>
-/// Servicio de autenticación con JWT
-/// </summary>
-public class AuthService : IAuthService
+namespace TurnoLink.Business.Services
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IConfiguration _configuration;
-
-    public AuthService(IUnitOfWork unitOfWork, IConfiguration configuration)
+    /// <summary>
+    /// Servicio de autenticación con JWT
+    /// </summary>
+    public class AuthService : IAuthService
     {
-        _unitOfWork = unitOfWork;
-        _configuration = configuration;
-    }
+        private readonly IUserRepository _userRepository;
+        private readonly TurnoLinkDbContext _context;
+        private readonly IConfiguration _configuration;
 
-    public async Task<ApiResponse<AuthResponseDto>> RegisterAsync(RegisterDto registerDto)
-    {
-        try
+        public AuthService(IUserRepository userRepository, TurnoLinkDbContext context, IConfiguration configuration)
+        {
+            _userRepository = userRepository;
+            _context = context;
+            _configuration = configuration;
+        }
+
+        public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
         {
             // Validar que el email no exista
-            var existingUser = await _unitOfWork.Users.GetByEmailAsync(registerDto.Email);
+            var existingUser = await _userRepository.GetByEmailAsync(registerDto.Email);
             if (existingUser != null)
             {
-                return ApiResponse<AuthResponseDto>.ErrorResult("El email ya está registrado");
+                throw new InvalidOperationException("El email ya está registrado");
             }
 
             // Hash de contraseña
@@ -50,14 +51,14 @@ public class AuthService : IAuthService
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _unitOfWork.Users.AddAsync(user);
-            await _unitOfWork.SaveChangesAsync();
+            await _userRepository.AddAsync(user);
+            await _context.SaveChangesAsync();
 
             // Generar token
             var token = GenerateJwtToken(user);
             var expiresAt = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes());
 
-            var response = new AuthResponseDto
+            return new AuthResponseDto
             {
                 Token = token,
                 Email = user.Email,
@@ -65,43 +66,34 @@ public class AuthService : IAuthService
                 UserId = user.Id,
                 ExpiresAt = expiresAt
             };
-
-            return ApiResponse<AuthResponseDto>.SuccessResult(response, "Usuario registrado exitosamente");
         }
-        catch (Exception ex)
-        {
-            return ApiResponse<AuthResponseDto>.ErrorResult($"Error al registrar usuario: {ex.Message}");
-        }
-    }
 
-    public async Task<ApiResponse<AuthResponseDto>> LoginAsync(LoginDto loginDto)
-    {
-        try
+        public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
             // Buscar usuario por email
-            var user = await _unitOfWork.Users.GetByEmailAsync(loginDto.Email);
+            var user = await _userRepository.GetByEmailAsync(loginDto.Email);
             if (user == null)
             {
-                return ApiResponse<AuthResponseDto>.ErrorResult("Credenciales inválidas");
+                throw new UnauthorizedAccessException("Credenciales inválidas");
             }
 
             // Verificar que el usuario esté activo
             if (!user.IsActive)
             {
-                return ApiResponse<AuthResponseDto>.ErrorResult("Usuario inactivo");
+                throw new UnauthorizedAccessException("Usuario inactivo");
             }
 
             // Verificar contraseña
             if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
             {
-                return ApiResponse<AuthResponseDto>.ErrorResult("Credenciales inválidas");
+                throw new UnauthorizedAccessException("Credenciales inválidas");
             }
 
             // Generar token
             var token = GenerateJwtToken(user);
             var expiresAt = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes());
 
-            var response = new AuthResponseDto
+            return new AuthResponseDto
             {
                 Token = token,
                 Email = user.Email,
@@ -109,90 +101,84 @@ public class AuthService : IAuthService
                 UserId = user.Id,
                 ExpiresAt = expiresAt
             };
-
-            return ApiResponse<AuthResponseDto>.SuccessResult(response, "Login exitoso");
         }
-        catch (Exception ex)
+
+        public Task<bool> ValidateTokenAsync(string token)
         {
-            return ApiResponse<AuthResponseDto>.ErrorResult($"Error al iniciar sesión: {ex.Message}");
-        }
-    }
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(GetSecretKey());
 
-    public Task<bool> ValidateTokenAsync(string token)
-    {
-        try
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = GetIssuer(),
+                    ValidateAudience = true,
+                    ValidAudience = GetAudience(),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                return Task.FromResult(true);
+            }
+            catch
+            {
+                return Task.FromResult(false);
+            }
+        }
+
+        private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(GetSecretKey());
 
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            var claims = new List<Claim>
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = true,
-                ValidIssuer = GetIssuer(),
-                ValidateAudience = true,
-                ValidAudience = GetAudience(),
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim("userId", user.Id.ToString())
+            };
 
-            return Task.FromResult(true);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes()),
+                Issuer = GetIssuer(),
+                Audience = GetAudience(),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
-        catch
+
+        private string GetSecretKey()
         {
-            return Task.FromResult(false);
+            return _configuration["Jwt:SecretKey"] 
+                ?? throw new InvalidOperationException("JWT SecretKey no configurada");
         }
-    }
 
-    private string GenerateJwtToken(User user)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(GetSecretKey());
-
-        var claims = new List<Claim>
+        private string GetIssuer()
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.FullName),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim("userId", user.Id.ToString())
-        };
+            return _configuration["Jwt:Issuer"] ?? "TurnoLink";
+        }
 
-        var tokenDescriptor = new SecurityTokenDescriptor
+        private string GetAudience()
         {
-            Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes()),
-            Issuer = GetIssuer(),
-            Audience = GetAudience(),
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
-        };
+            return _configuration["Jwt:Audience"] ?? "TurnoLinkUsers";
+        }
 
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-    }
-
-    private string GetSecretKey()
-    {
-        return _configuration["Jwt:SecretKey"] 
-            ?? throw new InvalidOperationException("JWT SecretKey no configurada");
-    }
-
-    private string GetIssuer()
-    {
-        return _configuration["Jwt:Issuer"] ?? "TurnoLink";
-    }
-
-    private string GetAudience()
-    {
-        return _configuration["Jwt:Audience"] ?? "TurnoLinkUsers";
-    }
-
-    private int GetTokenExpirationMinutes()
-    {
-        return int.TryParse(_configuration["Jwt:ExpirationMinutes"], out var minutes) 
-            ? minutes 
-            : 60;
+        private int GetTokenExpirationMinutes()
+        {
+            return int.TryParse(_configuration["Jwt:ExpirationMinutes"], out var minutes) 
+                ? minutes 
+                : 60;
+        }
     }
 }

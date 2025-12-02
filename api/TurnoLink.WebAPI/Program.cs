@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TurnoLink.Business.Interfaces;
 using TurnoLink.Business.Services;
-using TurnoLink.Business.Services.Interfaces;
 using TurnoLink.DataAccess.Data;
+using TurnoLink.DataAccess.Interfaces;
 using TurnoLink.DataAccess.Repositories;
-using TurnoLink.DataAccess.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,10 @@ builder.Services.AddDbContext<TurnoLinkDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Configure Dependency Injection - Repositories
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 // Configure Dependency Injection - Business Services
 builder.Services.AddScoped<IUserService, UserService>();

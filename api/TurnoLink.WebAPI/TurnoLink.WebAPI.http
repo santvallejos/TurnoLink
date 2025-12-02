@@ -1,0 +1,6 @@
+@TurnoLink.WebAPI_HostAddress = http://localhost:5009
+
+GET {{TurnoLink.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

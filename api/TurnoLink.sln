@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurnoLink.WebAPI", "TurnoLink.WebAPI\TurnoLink.WebAPI.csproj", "{070BA6FE-50B8-41EC-A378-73539E8C1CF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurnoLink.Business", "TurnoLink.Business\TurnoLink.Business.csproj", "{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurnoLink.DataAccess", "TurnoLink.DataAccess\TurnoLink.DataAccess.csproj", "{59142589-74F8-466D-AEE5-9003DCF31378}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Debug|x64.Build.0 = Debug|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Debug|x86.Build.0 = Debug|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Release|x64.ActiveCfg = Release|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Release|x64.Build.0 = Release|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Release|x86.ActiveCfg = Release|Any CPU
+		{070BA6FE-50B8-41EC-A378-73539E8C1CF5}.Release|x86.Build.0 = Release|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Debug|x64.Build.0 = Debug|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Debug|x86.Build.0 = Debug|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Release|x64.ActiveCfg = Release|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Release|x64.Build.0 = Release|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Release|x86.ActiveCfg = Release|Any CPU
+		{0BD47ECC-282A-4EDF-90E4-8BC0A70B57D1}.Release|x86.Build.0 = Release|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Debug|x64.Build.0 = Debug|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Debug|x86.Build.0 = Debug|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Release|x64.ActiveCfg = Release|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Release|x64.Build.0 = Release|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Release|x86.ActiveCfg = Release|Any CPU
+		{59142589-74F8-466D-AEE5-9003DCF31378}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

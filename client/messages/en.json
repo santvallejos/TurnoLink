@@ -1,0 +1,224 @@
+{
+  "common": {
+    "appName": "TurnoLink",
+    "getStarted": "Get Started Free",
+    "login": "Log In",
+    "register": "Sign Up",
+    "logout": "Log Out",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "search": "Search",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "currency": "€"
+  },
+  "landing": {
+    "hero": {
+      "title": "Manage your appointments professionally",
+      "subtitle": "Automate bookings, notifications, and client management. All in one intuitive platform designed for professionals.",
+      "cta": "Get Started Free",
+      "secondaryCta": "Log In",
+      "whatsappIntegration": "New: WhatsApp Integration",
+      "highlights": {
+        "noCredit": "No credit card",
+        "freeTrial": "14 days free",
+        "cancelAnytime": "Cancel anytime"
+      },
+      "calendar": {
+        "month": "December 2025",
+        "todayAppointments": "appointments today",
+        "newButton": "New"
+      },
+      "floatingCards": {
+        "reminderSent": "Reminder sent",
+        "activeClients": "Active clients"
+      }
+    },
+    "features": {
+      "title": "Everything you need to manage your business",
+      "subtitle": "Powerful tools designed to simplify your day-to-day",
+      "calendar": {
+        "title": "Smart Calendar",
+        "description": "Visualize and manage all your appointments in an intuitive calendar with real-time sync."
+      },
+      "notifications": {
+        "title": "Automatic Notifications",
+        "description": "Send automatic reminders via email and WhatsApp to reduce no-shows."
+      },
+      "clients": {
+        "title": "Client Management",
+        "description": "Keep a complete history of each client with their preferences and past appointments."
+      },
+      "analytics": {
+        "title": "Detailed Analytics",
+        "description": "Access metrics and reports to make better business decisions."
+      },
+      "mobile": {
+        "title": "Mobile App",
+        "description": "Manage your business from anywhere with our mobile app."
+      },
+      "security": {
+        "title": "Guaranteed Security",
+        "description": "Your data is protected with enterprise-level encryption."
+      }
+    },
+    "testimonials": {
+      "title": "What our users say",
+      "subtitle": "Thousands of professionals trust TurnoLink"
+    },
+    "stats": {
+      "appointments": "Appointments managed",
+      "users": "Active users",
+      "satisfaction": "Satisfaction"
+    },
+    "cta": {
+      "title": "Start managing your appointments today",
+      "subtitle": "Join thousands of professionals already optimizing their time with TurnoLink",
+      "button": "Create free account"
+    },
+    "footer": {
+      "description": "The appointment management platform for modern professionals.",
+      "product": "Product",
+      "features": "Features",
+      "pricing": "Pricing",
+      "integrations": "Integrations",
+      "company": "Company",
+      "about": "About us",
+      "blog": "Blog",
+      "careers": "Careers",
+      "legal": "Legal",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "cookies": "Cookies",
+      "rights": "All rights reserved."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to continue",
+      "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Log In",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up",
+      "orContinueWith": "Or continue with",
+      "google": "Continue with Google"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Start managing your appointments professionally",
+      "name": "Full name",
+      "namePlaceholder": "John Smith",
+      "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "••••••••",
+      "terms": "I accept the terms and conditions and privacy policy",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log in"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "nav": {
+      "dashboard": "Dashboard",
+      "appointments": "Appointments",
+      "clients": "Clients",
+      "services": "Services",
+      "settings": "Settings"
+    },
+    "stats": {
+      "todayAppointments": "Today's Appointments",
+      "weekAppointments": "This Week",
+      "totalClients": "Total Clients",
+      "monthRevenue": "Monthly Revenue"
+    },
+    "appointments": {
+      "title": "Upcoming Appointments",
+      "newAppointment": "+ New Appointment",
+      "client": "Client",
+      "service": "Service",
+      "date": "Date",
+      "time": "Time",
+      "status": "Status",
+      "noAppointments": "No appointments scheduled"
+    },
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Pending",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    }
+  },
+  "booking": {
+    "title": "Book Appointment",
+    "services": {
+      "haircut": "Haircut",
+      "coloring": "Coloring",
+      "manicure": "Manicure",
+      "treatment": "Treatment"
+    },
+    "steps": {
+      "service": "Service",
+      "datetime": "Date & Time",
+      "details": "Your Details"
+    },
+    "step1": {
+      "title": "Select a service",
+      "subtitle": "Choose the service you want to book",
+      "selectService": "Select",
+      "duration": "Duration",
+      "minutes": "min"
+    },
+    "step2": {
+      "title": "Select date and time",
+      "subtitle": "Choose when you would like your appointment",
+      "selectDate": "Select a date",
+      "selectTime": "Select a time",
+      "available": "Available",
+      "unavailable": "Unavailable"
+    },
+    "step3": {
+      "title": "Your details",
+      "subtitle": "Complete your information to confirm",
+      "name": "Full name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 555 000 0000",
+      "notes": "Additional notes",
+      "notesPlaceholder": "Anything we should know?",
+      "whatsapp": "Receive notifications via WhatsApp",
+      "confirmBooking": "Confirm Booking"
+    },
+    "summary": {
+      "title": "Summary",
+      "service": "Service",
+      "date": "Date",
+      "time": "Time",
+      "price": "Price",
+      "total": "Total"
+    },
+    "professional": {
+      "title": "Professional"
+    },
+    "confirmation": {
+      "title": "Booking Confirmed!",
+      "message": "Your appointment has been successfully booked. You will receive a confirmation email."
+    }
+  }
+}

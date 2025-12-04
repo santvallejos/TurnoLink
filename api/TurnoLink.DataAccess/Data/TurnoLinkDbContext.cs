@@ -19,8 +19,8 @@ namespace TurnoLink.DataAccess.Data
         public DbSet<Client> Clients { get; set; } = null!;
         public DbSet<Service> Services { get; set; } = null!;
         public DbSet<Booking> Bookings { get; set; } = null!;
-        /* public DbSet<Availability> Availabilities { get; set; } = null!;
-        public DbSet<Notification> Notifications { get; set; } = null!; */
+        public DbSet<Availability> Availabilities { get; set; } = null!;
+        /* public DbSet<Notification> Notifications { get; set; } = null!; */
 
         /// <summary>
         /// Configuration of the data model and relationships
@@ -38,11 +38,6 @@ namespace TurnoLink.DataAccess.Data
                     .WithOne(s => s.User)
                     .HasForeignKey(s => s.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
-
-                /* entity.HasMany(u => u.Availabilities)
-                    .WithOne(a => a.User)
-                    .HasForeignKey(a => a.UserId)
-                    .OnDelete(DeleteBehavior.Cascade); */
 
                 entity.HasMany(u => u.Bookings)
                     .WithOne(b => b.User)
@@ -103,15 +98,12 @@ namespace TurnoLink.DataAccess.Data
             });
 
             // Configuration of Availability
-            /* modelBuilder.Entity<Availability>(entity =>
+            modelBuilder.Entity<Availability>(entity =>
             {
-                entity.HasOne(a => a.User)
-                    .WithMany(u => u.Availabilities)
-                    .HasForeignKey(a => a.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasIndex(a => new { a.UserId, a.DayOfWeek });
-            }); */
+                entity.HasIndex(a => a.UserId);
+                entity.HasIndex(a => a.ServiceId);
+                entity.HasIndex(a => a.StartTime);
+            });
 
             // Configuration of Notification
             /* modelBuilder.Entity<Notification>(entity =>

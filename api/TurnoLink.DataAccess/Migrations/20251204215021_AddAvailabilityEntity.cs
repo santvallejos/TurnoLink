@@ -6,11 +6,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TurnoLink.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigrations : Migration
+    public partial class AddAvailabilityEntity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "availabilities",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    service_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    start_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    duration_minutes = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_availabilities", x => x.id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "clients",
                 columns: table => new
@@ -106,6 +121,21 @@ namespace TurnoLink.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_availabilities_service_id",
+                table: "availabilities",
+                column: "service_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_availabilities_start_time",
+                table: "availabilities",
+                column: "start_time");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_availabilities_user_id",
+                table: "availabilities",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_bookings_client_id",
                 table: "bookings",
                 column: "client_id");
@@ -151,6 +181,9 @@ namespace TurnoLink.DataAccess.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "availabilities");
+
             migrationBuilder.DropTable(
                 name: "bookings");
 

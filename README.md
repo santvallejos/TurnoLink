@@ -1,4 +1,4 @@
-# TurnoLink
+<img src="./docs/TurnoLink.png" alt="TurnoLink Logo" />
 
 Plataforma escalable de gestión de reservas que permite a profesionales ofrecer servicios de agendamiento a sus clientes.
 
@@ -10,7 +10,15 @@ TurnoLink/
 │   ├── TurnoLink.WebAPI/         # Web API Layer
 │   ├── TurnoLink.Business/       # Business Layer
 │   └── TurnoLink.DataAccess/     # Data Access Layer
-└── client/       # Frontend Next.js 15 (próximamente)
+└── client/       # Frontend Next.js 16
+│   ├── app/
+│   ├── components/
+│   ├── hooks/
+│   ├── i18n/
+│   ├── lib/
+│   ├── messagges/
+│   └── public/
+└── docs/
 ```
 
 ## 🚀 Inicio Rápido
@@ -18,8 +26,8 @@ TurnoLink/
 ### Requisitos Previos
 
 - .NET 9 SDK
-- PostgreSQL 9.x o superior
-- Node.js 20+ (para frontend, cuando esté disponible)
+- PostgreSQL 18
+- Node.js 22
 
 ### Configuración Backend
 

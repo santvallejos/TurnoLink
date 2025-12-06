@@ -7,59 +7,43 @@ using TurnoLink.DataAccess.Interfaces;
 namespace TurnoLink.Business.Services
 {
     /// <summary>
-    /// Servicio de gestión de usuarios
-    /// Implementa la lógica de negocio para operaciones con usuarios
+    /// Service of users
+    /// Implements the business logic for user operations
     /// </summary>
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly TurnoLinkDbContext _context;
 
+        /// <summary>
+        /// Constructor of UserService
+        /// </summary>
+        /// <param name="userRepository">userRepository</param>
+        /// <param name="context">context</param>
         public UserService(IUserRepository userRepository, TurnoLinkDbContext context)
         {
             _userRepository = userRepository;
             _context = context;
         }
 
-        public async Task<UserDto> CreateUserAsync(CreateUserDto createUserDto)
-        {
-            // Validar que el email no exista
-            var existingUser = await _userRepository.GetByEmailAsync(createUserDto.Email);
-            if (existingUser != null)
-            {
-                throw new InvalidOperationException("El email ya está registrado");
-            }
-
-            // Hash de contraseña
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password);
-
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                FullName = createUserDto.FullName,
-                Email = createUserDto.Email,
-                PasswordHash = passwordHash,
-                PhoneNumber = createUserDto.PhoneNumber,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await _userRepository.AddAsync(user);
-            await _context.SaveChangesAsync();
-
-            return MapToDto(user);
-        }
-
         public async Task<UserDto?> GetUserByIdAsync(Guid id)
         {
             var user = await _userRepository.GetByIdAsync(id);
-            return user == null ? null : MapToDto(user);
+
+            if (user == null)
+                throw new InvalidOperationException("User not found");
+
+            return MapToDto(user);
         }
 
         public async Task<UserDto?> GetUserByEmailAsync(string email)
         {
             var user = await _userRepository.GetByEmailAsync(email);
-            return user == null ? null : MapToDto(user);
+
+            if (user == null)
+                throw new InvalidOperationException("User not found");
+
+            return MapToDto(user);
         }
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
@@ -78,9 +62,7 @@ namespace TurnoLink.Business.Services
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
-            {
-                throw new InvalidOperationException("Usuario no encontrado");
-            }
+                throw new InvalidOperationException("User not found");
 
             if (!string.IsNullOrWhiteSpace(updateUserDto.FullName))
                 user.FullName = updateUserDto.FullName;
@@ -103,9 +85,7 @@ namespace TurnoLink.Business.Services
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
-            {
-                throw new InvalidOperationException("Usuario no encontrado");
-            }
+                throw new InvalidOperationException("User not found");
 
             _userRepository.Remove(user);
             await _context.SaveChangesAsync();

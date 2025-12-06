@@ -33,7 +33,7 @@ namespace TurnoLink.WebAPI.Controllers
         {
             var availability = await _availabilityService.GetByIdAsync(id);
             if (availability == null)
-                return NotFound(new { message = "Disponibilidad no encontrada" });
+                return NotFound(new { message = "Availability not found" });
 
             return Ok(availability);
         }
@@ -96,7 +96,7 @@ namespace TurnoLink.WebAPI.Controllers
             [FromQuery] DateTime endDate)
         {
             if (endDate < startDate)
-                return BadRequest(new { message = "La fecha final debe ser posterior a la fecha inicial" });
+                return BadRequest(new { message = "End date must be after start date" });
 
             var availabilities = await _availabilityService.GetAvailableSlotsByDateRangeAsync(userId, startDate, endDate);
             return Ok(availabilities);

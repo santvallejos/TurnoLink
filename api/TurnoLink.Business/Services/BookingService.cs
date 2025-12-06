@@ -8,7 +8,7 @@ using TurnoLink.DataAccess.Interfaces;
 namespace TurnoLink.Business.Services
 {
     /// <summary>
-    /// Servicio de gestión de reservas/turnos
+    /// Service to manage bookings.
     /// </summary>
     public class BookingService : IBookingService
     {
@@ -17,6 +17,13 @@ namespace TurnoLink.Business.Services
         private readonly IServiceRepository _serviceRepository;
         private readonly TurnoLinkDbContext _context;
 
+        /// <summary>
+        /// Constructor for BookingService.
+        /// </summary>
+        /// <param name="bookingRepository">Booking repository</param>
+        /// <param name="clientRepository">Client repository</param>
+        /// <param name="serviceRepository">Service repository</param>
+        /// <param name="context">Database context</param>
         public BookingService(
             IBookingRepository bookingRepository,
             IClientRepository clientRepository,
@@ -28,66 +35,14 @@ namespace TurnoLink.Business.Services
             _serviceRepository = serviceRepository;
             _context = context;
         }
-
-        public async Task<BookingDto> CreateBookingAsync(CreateBookingDto createBookingDto)
-        {
-            // Validar que el servicio existe y está activo
-            var service = await _serviceRepository.GetByIdAsync(createBookingDto.ServiceId);
-            if (service == null || !service.IsActive)
-            {
-                throw new InvalidOperationException("Servicio no encontrado o no disponible");
-            }
-
-            // Buscar o crear cliente
-            var client = await _clientRepository.GetByEmailAsync(createBookingDto.ClientEmail);
-            if (client == null)
-            {
-                client = new Client
-                {
-                    Id = Guid.NewGuid(),
-                    FullName = createBookingDto.ClientName,
-                    Email = createBookingDto.ClientEmail,
-                    PhoneNumber = createBookingDto.ClientPhone,
-                    CreatedAt = DateTime.UtcNow
-                };
-                await _clientRepository.AddAsync(client);
-            }
-
-            // Calcular hora de fin basada en duración del servicio
-            var endTime = createBookingDto.StartTime.AddMinutes(service.DurationMinutes);
-
-            // Verificar disponibilidad
-            var isAvailable = await CheckAvailabilityAsync(service.UserId, createBookingDto.StartTime, service.DurationMinutes);
-            if (!isAvailable)
-            {
-                throw new InvalidOperationException("El horario seleccionado no está disponible");
-            }
-
-            var booking = new Booking
-            {
-                Id = Guid.NewGuid(),
-                ClientId = client.Id,
-                ServiceId = service.Id,
-                UserId = service.UserId,
-                StartTime = createBookingDto.StartTime,
-                EndTime = endTime,
-                Status = BookingStatus.Pending,
-                Notes = createBookingDto.Notes,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await _bookingRepository.AddAsync(booking);
-            await _context.SaveChangesAsync();
-
-            // Recargar con relaciones
-            var createdBooking = await _bookingRepository.GetByIdAsync(booking.Id);
-            return MapToDto(createdBooking!);
-        }
-
         public async Task<BookingDto?> GetBookingByIdAsync(Guid id)
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
-            return booking == null ? null : MapToDto(booking);
+
+            if (booking == null)
+                throw new InvalidOperationException("Booking not found");
+
+            return MapToDto(booking);
         }
 
         public async Task<IEnumerable<BookingDto>> GetBookingsByClientIdAsync(Guid clientId)
@@ -108,20 +63,67 @@ namespace TurnoLink.Business.Services
             return bookings.Select(MapToDto);
         }
 
+        public async Task<BookingDto> CreateBookingAsync(CreateBookingDto createBookingDto)
+        {
+            // Validate that the service exists and is active
+            var service = await _serviceRepository.GetByIdAsync(createBookingDto.ServiceId);
+            if (service == null || !service.IsActive)
+                throw new InvalidOperationException("Service not found or not available");
+
+            // Find or create client
+            var client = await _clientRepository.GetByEmailAsync(createBookingDto.ClientEmail);
+            if (client == null)
+            {
+                client = new Client
+                {
+                    Id = Guid.NewGuid(),
+                    FullName = createBookingDto.ClientName,
+                    Email = createBookingDto.ClientEmail,
+                    PhoneNumber = createBookingDto.ClientPhone,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _clientRepository.AddAsync(client);
+            }
+
+            // Calculate end time based on service duration
+            var endTime = createBookingDto.StartTime.AddMinutes(service.DurationMinutes);
+
+            // Check availability
+            var isAvailable = await CheckAvailabilityAsync(service.UserId, createBookingDto.StartTime, service.DurationMinutes);
+            if (!isAvailable)
+                throw new InvalidOperationException("The selected time slot is not available");
+
+            var booking = new Booking
+            {
+                Id = Guid.NewGuid(),
+                ClientId = client.Id,
+                ServiceId = service.Id,
+                UserId = service.UserId,
+                StartTime = createBookingDto.StartTime,
+                EndTime = endTime,
+                Status = BookingStatus.Pending,
+                Notes = createBookingDto.Notes,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _bookingRepository.AddAsync(booking);
+            await _context.SaveChangesAsync();
+
+            // Reload with relationships
+            var createdBooking = await _bookingRepository.GetByIdAsync(booking.Id);
+            return MapToDto(createdBooking!);
+        }
+
         public async Task<BookingDto> UpdateBookingAsync(Guid id, UpdateBookingDto updateBookingDto)
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
             if (booking == null)
-            {
-                throw new InvalidOperationException("Reserva no encontrada");
-            }
+                throw new InvalidOperationException("Booking not found");
 
             if (!string.IsNullOrWhiteSpace(updateBookingDto.Status))
             {
                 if (Enum.TryParse<BookingStatus>(updateBookingDto.Status, true, out var status))
-                {
                     booking.Status = status;
-                }
             }
 
             if (!string.IsNullOrWhiteSpace(updateBookingDto.Notes))
@@ -138,9 +140,7 @@ namespace TurnoLink.Business.Services
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
             if (booking == null)
-            {
-                throw new InvalidOperationException("Reserva no encontrada");
-            }
+                throw new InvalidOperationException("Booking not found");
 
             booking.Status = BookingStatus.Canceled;
             _bookingRepository.Update(booking);

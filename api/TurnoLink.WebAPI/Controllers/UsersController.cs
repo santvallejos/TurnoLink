@@ -6,12 +6,12 @@ using TurnoLink.Business.Interfaces;
 namespace TurnoLink.WebAPI.Controllers
 {
     /// <summary>
-    /// Controlador para gestión de usuarios profesionales
+    /// Controller for managing users
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    [Authorize] // Requiere autenticación para todos los endpoints
+    [Authorize] // Requires authentication for all endpoints
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -24,101 +24,75 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Obtiene todos los usuarios
+        /// Get all users
         /// </summary>
-        /// <returns>Lista de usuarios</returns>
+        /// <returns>List of users</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
         {
-            _logger.LogInformation("Obteniendo todos los usuarios");
+            _logger.LogInformation("Getting all users");
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
 
         /// <summary>
-        /// Obtiene usuarios activos
+        /// Get active users
         /// </summary>
-        /// <returns>Lista de usuarios activos</returns>
+        /// <returns>List of active users</returns>
         [HttpGet("active")]
         [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetActiveUsers()
         {
-            _logger.LogInformation("Obteniendo usuarios activos");
+            _logger.LogInformation("Getting active users");
             var users = await _userService.GetActiveUsersAsync();
             return Ok(users);
         }
 
         /// <summary>
-        /// Obtiene un usuario por su ID
+        /// Get a user by ID
         /// </summary>
-        /// <param name="id">ID del usuario</param>
-        /// <returns>Usuario encontrado</returns>
+        /// <param name="id">User ID</param>
+        /// <returns>Found user</returns>
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserDto>> GetUserById(Guid id)
         {
-            _logger.LogInformation("Obteniendo usuario con ID: {UserId}", id);
+            _logger.LogInformation("Getting user with ID: {UserId}", id);
             var user = await _userService.GetUserByIdAsync(id);
             
             if (user == null)
-            {
-                return NotFound(new { message = "Usuario no encontrado" });
-            }
+                return NotFound(new { message = "User not found" });
 
             return Ok(user);
         }
 
         /// <summary>
-        /// Obtiene un usuario por su email
+        /// Get a user by their email
         /// </summary>
-        /// <param name="email">Email del usuario</param>
-        /// <returns>Usuario encontrado</returns>
+        /// <param name="email">User email</param>
+        /// <returns>Found user</returns>
         [HttpGet("email/{email}")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserDto>> GetUserByEmail(string email)
         {
-            _logger.LogInformation("Obteniendo usuario con email: {Email}", email);
+            _logger.LogInformation("Getting user with email: {Email}", email);
             var user = await _userService.GetUserByEmailAsync(email);
             
             if (user == null)
-            {
-                return NotFound(new { message = "Usuario no encontrado" });
-            }
+                return NotFound(new { message = "User not found" });
 
             return Ok(user);
         }
 
         /// <summary>
-        /// Crea un nuevo usuario
+        /// Update an existing user
         /// </summary>
-        /// <param name="createUserDto">Datos del nuevo usuario</param>
-        /// <returns>Usuario creado</returns>
-        [HttpPost]
-        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserDto>> CreateUser([FromBody] CreateUserDto createUserDto)
-        {
-            try
-            {
-                _logger.LogInformation("Creando nuevo usuario con email: {Email}", createUserDto.Email);
-                var user = await _userService.CreateUserAsync(createUserDto);
-                return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        /// <summary>
-        /// Actualiza un usuario existente
-        /// </summary>
-        /// <param name="id">ID del usuario a actualizar</param>
-        /// <param name="updateUserDto">Datos actualizados</param>
-        /// <returns>Usuario actualizado</returns>
+        /// <param name="id">ID of the user to update</param>
+        /// <param name="updateUserDto">Updated data</param>
+        /// <returns>Updated user</returns>
         [HttpPut("{id:guid}")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -126,7 +100,7 @@ namespace TurnoLink.WebAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("Actualizando usuario con ID: {UserId}", id);
+                _logger.LogInformation("Updating user with ID: {UserId}", id);
                 var user = await _userService.UpdateUserAsync(id, updateUserDto);
                 return Ok(user);
             }
@@ -137,10 +111,10 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Elimina un usuario
+        /// Delete a user
         /// </summary>
-        /// <param name="id">ID del usuario a eliminar</param>
-        /// <returns>Resultado de la operación</returns>
+        /// <param name="id">ID of the user to delete</param>
+        /// <returns>Result of the operation</returns>
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -148,7 +122,7 @@ namespace TurnoLink.WebAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("Eliminando usuario con ID: {UserId}", id);
+                _logger.LogInformation("Deleting user with ID: {UserId}", id);
                 await _userService.DeleteUserAsync(id);
                 return NoContent();
             }

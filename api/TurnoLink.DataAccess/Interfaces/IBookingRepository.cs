@@ -3,58 +3,69 @@ using TurnoLink.DataAccess.Entities;
 namespace TurnoLink.DataAccess.Interfaces
 {
     /// <summary>
-    /// Interfaz para repositorio de reservas
+    /// Interface of the booking repository
     /// </summary>
     public interface IBookingRepository
     {
         /// <summary>
-        /// Obtiene todas las reservas
+        /// Gets all bookings
         /// </summary>
         Task<IEnumerable<Booking>> GetAllAsync();
 
         /// <summary>
-        /// Obtiene una reserva por su ID
+        /// Gets a booking by its ID
         /// </summary>
+        /// <param name="id">Booking ID</param>
         Task<Booking?> GetByIdAsync(Guid id);
 
         /// <summary>
-        /// Obtiene reservas por ID de cliente
+        /// Gets bookings by client ID
         /// </summary>
+        /// <param name="clientId">Client ID</param>
         Task<IEnumerable<Booking>> GetBookingsByClientIdAsync(Guid clientId);
 
         /// <summary>
-        /// Obtiene reservas por ID de usuario
+        /// Gets bookings by user ID
         /// </summary>
+        /// <param name="userId">User ID</param>
         Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(Guid userId);
 
         /// <summary>
-        /// Obtiene reservas por rango de fechas
+        /// Gets bookings by date range
         /// </summary>
+        /// <param name="startDate">Start date</param>
+        /// <param name="endDate">End date</param>
         Task<IEnumerable<Booking>> GetBookingsByDateRangeAsync(DateTime startDate, DateTime endDate);
 
         /// <summary>
-        /// Obtiene reservas por usuario y fecha
+        /// Gets bookings by user and date
         /// </summary>
+        /// <param name="userId">User ID</param>
+        /// <param name="date">Date</param>
         Task<IEnumerable<Booking>> GetBookingsByUserAndDateAsync(Guid userId, DateTime date);
 
         /// <summary>
-        /// Agrega una nueva reserva
+        /// Adds a new booking
         /// </summary>
+        /// <param name="entity">Booking entity</param>
         Task<Booking> AddAsync(Booking entity);
 
         /// <summary>
-        /// Actualiza una reserva existente
+        /// Updates an existing booking
         /// </summary>
+        /// <param name="entity">Booking entity</param>
         void Update(Booking entity);
 
         /// <summary>
-        /// Elimina una reserva
+        /// Deletes a booking
         /// </summary>
+        /// <param name="entity">Booking entity</param>
         void Remove(Booking entity);
 
         /// <summary>
-        /// Verifica si existe una reserva
+        /// Checks if a booking exists
         /// </summary>
+        /// <param name="predicate">Condition to check</param>
         Task<bool> ExistsAsync(Func<Booking, bool> predicate);
     }
 }

@@ -10,57 +10,55 @@ namespace TurnoLink.DataAccess.Repositories
     /// </summary>
     public class UserRepository : IUserRepository
     {
-        private readonly TurnoLinkDbContext _context;
-        private readonly DbSet<User> _dbSet;
+        private readonly TurnoLinkDbContext _db;
 
         public UserRepository(TurnoLinkDbContext context)
         {
-            _context = context;
-            _dbSet = context.Set<User>();
+            _db = context;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _db.Users.ToListAsync();
         }
 
         public async Task<User?> GetByIdAsync(Guid id)
         {
-            return await _dbSet.FindAsync(id);
+            return await _db.Users.FindAsync(id);
         }
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _dbSet
+            return await _db.Users
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
         }
 
         public async Task<IEnumerable<User>> GetActiveUsersAsync()
         {
-            return await _dbSet
+            return await _db.Users
                 .Where(u => u.IsActive)
                 .ToListAsync();
         }
 
         public async Task<User> AddAsync(User entity)
         {
-            await _dbSet.AddAsync(entity);
+            await _db.Users.AddAsync(entity);
             return entity;
         }
 
         public void Update(User entity)
         {
-            _dbSet.Update(entity);
+            _db.Users.Update(entity);
         }
 
         public void Remove(User entity)
         {
-            _dbSet.Remove(entity);
+            _db.Users.Remove(entity);
         }
 
         public async Task<bool> ExistsAsync(Func<User, bool> predicate)
         {
-            return await Task.Run(() => _dbSet.Any(predicate));
+            return await Task.Run(() => _db.Users.Any(predicate));
         }
     }
 }

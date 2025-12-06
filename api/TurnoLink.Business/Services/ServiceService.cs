@@ -7,7 +7,7 @@ using TurnoLink.DataAccess.Interfaces;
 namespace TurnoLink.Business.Services
 {
     /// <summary>
-    /// Servicio de gestión de servicios ofrecidos por profesionales
+    /// Service to manage services.
     /// </summary>
     public class ServiceService : IServiceService
     {
@@ -15,6 +15,12 @@ namespace TurnoLink.Business.Services
         private readonly IUserRepository _userRepository;
         private readonly TurnoLinkDbContext _context;
 
+        /// <summary>
+        /// Constructor for ServiceService.
+        /// </summary>
+        /// <param name="serviceRepository"></param>
+        /// <param name="userRepository"></param>
+        /// <param name="context"></param>
         public ServiceService(IServiceRepository serviceRepository, IUserRepository userRepository, TurnoLinkDbContext context)
         {
             _serviceRepository = serviceRepository;
@@ -25,29 +31,39 @@ namespace TurnoLink.Business.Services
         public async Task<IEnumerable<ServiceDto>> GetServicesByUserIdAsync(Guid userId)
         {
             var services = await _serviceRepository.GetServicesByUserIdAsync(userId);
+
+            if (services == null)
+                throw new InvalidOperationException("User not found");
+
             return services.Select(MapToDto);
         }
 
         public async Task<IEnumerable<ServiceDto>> GetActiveServicesByUserIdAsync(Guid userId)
         {
             var services = await _serviceRepository.GetActiveServicesByUserIdAsync(userId);
+
+            if (services == null)
+                throw new InvalidOperationException("User not found");
+
             return services.Select(MapToDto);
         }
 
         public async Task<ServiceDto?> GetServiceByIdAsync(Guid id)
         {
             var service = await _serviceRepository.GetByIdAsync(id);
-            return service == null ? null : MapToDto(service);
+
+            if (service == null)
+                throw new InvalidOperationException("Service not found");
+
+            return MapToDto(service);
         }
 
         public async Task<ServiceDto> CreateServiceAsync(Guid userId, CreateServiceDto createServiceDto)
         {
-            // Verificar que el usuario existe
+            // Verify that the user exists
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
-            {
-                throw new InvalidOperationException("Usuario no encontrado");
-            }
+                throw new InvalidOperationException("User not found");
 
             var service = new Service
             {
@@ -71,15 +87,11 @@ namespace TurnoLink.Business.Services
         {
             var service = await _serviceRepository.GetByIdAsync(serviceId);
             if (service == null)
-            {
-                throw new InvalidOperationException("Servicio no encontrado");
-            }
+                throw new InvalidOperationException("Service not found");
 
-            // Verificar que el servicio pertenece al usuario
+            // Check that the service belongs to the user
             if (service.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("No tienes permiso para modificar este servicio");
-            }
+                throw new UnauthorizedAccessException("You do not have permission to modify this service");
 
             if (!string.IsNullOrWhiteSpace(updateServiceDto.Name))
                 service.Name = updateServiceDto.Name;
@@ -106,15 +118,11 @@ namespace TurnoLink.Business.Services
         {
             var service = await _serviceRepository.GetByIdAsync(serviceId);
             if (service == null)
-            {
-                throw new InvalidOperationException("Servicio no encontrado");
-            }
+                throw new InvalidOperationException("Service not found");
 
-            // Verificar que el servicio pertenece al usuario
+            // Check that the service belongs to the user
             if (service.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("No tienes permiso para eliminar este servicio");
-            }
+                throw new UnauthorizedAccessException("You do not have permission to delete this service");
 
             _serviceRepository.Remove(service);
             await _context.SaveChangesAsync();

@@ -3,42 +3,52 @@ using TurnoLink.Business.DTOs;
 namespace TurnoLink.Business.Interfaces
 {
     /// <summary>
-    /// Interfaz para el servicio de gestión de servicios ofrecidos por profesionales
+    /// Interface for service-related operations.
     /// </summary>
     public interface IServiceService
     {
         /// <summary>
-        /// Obtiene todos los servicios de un profesional
+        /// Gets all services of a professional
         /// </summary>
+        /// <param name="userId">Professional's user ID</param>
         Task<IEnumerable<ServiceDto>> GetServicesByUserIdAsync(Guid userId);
 
         /// <summary>
-        /// Obtiene servicios activos de un profesional
+        /// Gets active services of a professional
         /// </summary>
+        /// <param name="userId">Professional's user ID</param>
         Task<IEnumerable<ServiceDto>> GetActiveServicesByUserIdAsync(Guid userId);
 
         /// <summary>
-        /// Obtiene un servicio por su ID
+        /// Gets a service by its ID
         /// </summary>
+        /// <param name="id">Service ID</param>
         Task<ServiceDto?> GetServiceByIdAsync(Guid id);
 
         /// <summary>
-        /// Crea un nuevo servicio
+        /// Creates a new service
         /// </summary>
+        /// <param name="userId">Professional's user ID</param>
+        /// <param name="createServiceDto">DTO containing service creation data</param>
         Task<ServiceDto> CreateServiceAsync(Guid userId, CreateServiceDto createServiceDto);
 
         /// <summary>
-        /// Actualiza un servicio existente
+        /// Updates an existing service
         /// </summary>
+        /// <param name="userId">Professional's user ID</param>
+        /// <param name="serviceId">Service ID</param>
+        /// <param name="updateServiceDto">DTO containing service update data</param>
         Task<ServiceDto> UpdateServiceAsync(Guid userId, Guid serviceId, UpdateServiceDto updateServiceDto);
 
         /// <summary>
-        /// Elimina un servicio
+        /// Deletes a service
         /// </summary>
+        /// <param name="userId">Professional's user ID</param>
+        /// <param name="serviceId">Service ID</param>
         Task<bool> DeleteServiceAsync(Guid userId, Guid serviceId);
 
         /// <summary>
-        /// Obtiene todos los servicios activos (público - para clientes)
+        /// Gets all active services (public - for clients)
         /// </summary>
         Task<IEnumerable<ServiceDto>> GetAllActiveServicesAsync();
     }

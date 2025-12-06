@@ -7,12 +7,12 @@ using TurnoLink.Business.Interfaces;
 namespace TurnoLink.WebAPI.Controllers
 {
     /// <summary>
-    /// Controlador para gestión de reservas por profesionales (requiere autenticación)
+    /// Controller for managing bookings by professionals (requires authentication)
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    [Authorize] // Requiere autenticación
+    [Authorize] // Requires authentication
     public class BookingsController : ControllerBase
     {
         private readonly IBookingService _bookingService;
@@ -25,21 +25,21 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Obtiene todas las reservas del profesional autenticado
+        /// Get all bookings for the authenticated professional
         /// </summary>
         [HttpGet("my-bookings")]
         [ProducesResponseType(typeof(IEnumerable<BookingDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetMyBookings()
         {
             var userId = GetAuthenticatedUserId();
-            _logger.LogInformation("Obteniendo reservas del profesional: {UserId}", userId);
+            _logger.LogInformation("Getting bookings for professional: {UserId}", userId);
             
             var bookings = await _bookingService.GetBookingsByUserIdAsync(userId);
             return Ok(bookings);
         }
 
         /// <summary>
-        /// Obtiene reservas por rango de fechas
+        /// Get bookings by date range
         /// </summary>
         [HttpGet("my-bookings/range")]
         [ProducesResponseType(typeof(IEnumerable<BookingDto>), StatusCodes.Status200OK)]
@@ -48,7 +48,7 @@ namespace TurnoLink.WebAPI.Controllers
             [FromQuery] DateTime endDate)
         {
             var userId = GetAuthenticatedUserId();
-            _logger.LogInformation("Obteniendo reservas del profesional {UserId} entre {StartDate} y {EndDate}", 
+            _logger.LogInformation("Getting bookings for professional {UserId} between {StartDate} and {EndDate}", 
                 userId, startDate, endDate);
             
             var allBookings = await _bookingService.GetBookingsByUserIdAsync(userId);
@@ -59,34 +59,29 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Obtiene detalles de una reserva específica
+        /// Gets details of a specific booking by ID
         /// </summary>
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(BookingDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BookingDto>> GetBookingById(Guid id)
         {
-            _logger.LogInformation("Obteniendo reserva: {BookingId}", id);
+            _logger.LogInformation("Getting booking: {BookingId}", id);
             
             var booking = await _bookingService.GetBookingByIdAsync(id);
             if (booking == null)
-            {
-                return NotFound(new { message = "Reserva no encontrada" });
-            }
+                return NotFound(new { message = "Booking not found" });
 
-            // Verificar que la reserva pertenece al profesional autenticado
+            // Verify that the booking belongs to the authenticated professional
             var userId = GetAuthenticatedUserId();
             if (booking.UserId != userId)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden, 
-                    new { message = "No tienes permiso para ver esta reserva" });
-            }
+                return StatusCode(StatusCodes.Status403Forbidden, new { message = "You do not have permission to view this booking" });
 
             return Ok(booking);
         }
 
         /// <summary>
-        /// Actualiza el estado de una reserva
+        /// Updates the status of a booking
         /// </summary>
         [HttpPatch("{id:guid}")]
         [ProducesResponseType(typeof(BookingDto), StatusCodes.Status200OK)]
@@ -96,21 +91,16 @@ namespace TurnoLink.WebAPI.Controllers
         {
             try
             {
-                // Primero verificar que la reserva existe y pertenece al profesional
+                // First verify that the booking exists and belongs to the professional
                 var existingBooking = await _bookingService.GetBookingByIdAsync(id);
                 if (existingBooking == null)
-                {
-                    return NotFound(new { message = "Reserva no encontrada" });
-                }
+                    return NotFound(new { message = "Booking not found" });
 
                 var userId = GetAuthenticatedUserId();
                 if (existingBooking.UserId != userId)
-                {
-                    return StatusCode(StatusCodes.Status403Forbidden, 
-                        new { message = "No tienes permiso para modificar esta reserva" });
-                }
+                    return StatusCode(StatusCodes.Status403Forbidden, new { message = "You do not have permission to modify this booking" });
 
-                _logger.LogInformation("Actualizando reserva: {BookingId} por profesional: {UserId}", id, userId);
+                _logger.LogInformation("Updating booking: {BookingId} by professional: {UserId}", id, userId);
                 
                 var booking = await _bookingService.UpdateBookingAsync(id, updateBookingDto);
                 return Ok(booking);
@@ -122,7 +112,7 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Cancela una reserva
+        /// Cancels a booking
         /// </summary>
         [HttpPost("{id:guid}/cancel")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -132,21 +122,16 @@ namespace TurnoLink.WebAPI.Controllers
         {
             try
             {
-                // Verificar que la reserva existe y pertenece al profesional
+                // Verify that the booking exists and belongs to the professional
                 var existingBooking = await _bookingService.GetBookingByIdAsync(id);
                 if (existingBooking == null)
-                {
-                    return NotFound(new { message = "Reserva no encontrada" });
-                }
+                    return NotFound(new { message = "Booking not found" });
 
                 var userId = GetAuthenticatedUserId();
                 if (existingBooking.UserId != userId)
-                {
-                    return StatusCode(StatusCodes.Status403Forbidden, 
-                        new { message = "No tienes permiso para cancelar esta reserva" });
-                }
+                    return StatusCode(StatusCodes.Status403Forbidden, new { message = "You do not have permission to cancel this booking" });
 
-                _logger.LogInformation("Cancelando reserva: {BookingId} por profesional: {UserId}", id, userId);
+                _logger.LogInformation("Canceling booking: {BookingId} by professional: {UserId}", id, userId);
                 
                 await _bookingService.CancelBookingAsync(id);
                 return NoContent();
@@ -163,9 +148,7 @@ namespace TurnoLink.WebAPI.Controllers
                 ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-            {
-                throw new UnauthorizedAccessException("Usuario no autenticado");
-            }
+                throw new UnauthorizedAccessException("User not authenticated");
 
             return userId;
         }

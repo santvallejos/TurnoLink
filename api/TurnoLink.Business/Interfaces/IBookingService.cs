@@ -3,48 +3,60 @@ using TurnoLink.Business.DTOs;
 namespace TurnoLink.Business.Interfaces
 {
     /// <summary>
-    /// Interfaz para el servicio de gestión de reservas
+    /// Interface for booking-related operations.
     /// </summary>
     public interface IBookingService
     {
         /// <summary>
-        /// Crea una nueva reserva (público - para clientes)
+        /// Gets a booking by its ID
         /// </summary>
-        Task<BookingDto> CreateBookingAsync(CreateBookingDto createBookingDto);
-
-        /// <summary>
-        /// Obtiene una reserva por su ID
-        /// </summary>
+        /// <param name="id">Booking ID</param>
         Task<BookingDto?> GetBookingByIdAsync(Guid id);
 
         /// <summary>
-        /// Obtiene reservas por ID de cliente
+        /// Gets bookings by client ID
         /// </summary>
+        /// <param name="clientId">Client's user ID</param>
         Task<IEnumerable<BookingDto>> GetBookingsByClientIdAsync(Guid clientId);
 
         /// <summary>
-        /// Obtiene reservas por ID de usuario/profesional
+        /// Gets all bookings by user/professional ID
         /// </summary>
+        /// <param name="userId">User/Professional's user ID</param>
         Task<IEnumerable<BookingDto>> GetBookingsByUserIdAsync(Guid userId);
 
         /// <summary>
-        /// Obtiene reservas por rango de fechas
+        /// Gets bookings within a date range
         /// </summary>
+        /// <param name="startDate">Start date of the range</param>
+        /// <param name="endDate">End date of the range</param>
         Task<IEnumerable<BookingDto>> GetBookingsByDateRangeAsync(DateTime startDate, DateTime endDate);
 
         /// <summary>
-        /// Actualiza una reserva existente
+        /// Creates a new booking (public - for clients)
         /// </summary>
+        /// <param name="createBookingDto">DTO containing booking creation data</param>
+        Task<BookingDto> CreateBookingAsync(CreateBookingDto createBookingDto);
+
+        /// <summary>
+        /// Updates an existing booking
+        /// </summary>
+        /// <param name="id">Booking ID</param>
+        /// <param name="updateBookingDto">DTO containing booking update data</param>
         Task<BookingDto> UpdateBookingAsync(Guid id, UpdateBookingDto updateBookingDto);
 
         /// <summary>
-        /// Cancela una reserva
+        /// Cancels a booking
         /// </summary>
+        /// <param name="id">Booking ID</param>
         Task<bool> CancelBookingAsync(Guid id);
 
         /// <summary>
-        /// Verifica disponibilidad para un servicio en fecha/hora específica
+        /// Checks availability for a service at a specific date/time
         /// </summary>
+        /// <param name="userId">User/Professional's user ID</param>
+        /// <param name="startTime">Start time of the service</param>
+        /// <param name="durationMinutes">Duration of the service in minutes</param>
         Task<bool> CheckAvailabilityAsync(Guid userId, DateTime startTime, int durationMinutes);
     }
 }

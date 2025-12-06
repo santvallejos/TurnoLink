@@ -6,7 +6,7 @@ using TurnoLink.Business.Interfaces;
 namespace TurnoLink.WebAPI.Controllers
 {
     /// <summary>
-    /// Controlador para autenticación y registro de usuarios
+    /// Controller for handling authentication-related endpoints
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -23,10 +23,10 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Registra un nuevo usuario en el sistema
+        /// Register a new user and generate a JWT token
         /// </summary>
-        /// <param name="registerDto">Datos de registro</param>
-        /// <returns>Token de autenticación y datos del usuario</returns>
+        /// <param name="registerDto">Registration data</param>
+        /// <returns>Authentication token and user data</returns>
         [HttpPost("register")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
@@ -35,23 +35,23 @@ namespace TurnoLink.WebAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("Intentando registrar usuario con email: {Email}", registerDto.Email);
+                _logger.LogInformation("Attempting to register user with email: {Email}", registerDto.Email);
                 var response = await _authService.RegisterAsync(registerDto);
-                _logger.LogInformation("Usuario registrado exitosamente: {Email}", registerDto.Email);
+                _logger.LogInformation("User registered successfully: {Email}", registerDto.Email);
                 return Ok(response);
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning("Error en registro: {Message}", ex.Message);
+                _logger.LogWarning("Registration error: {Message}", ex.Message);
                 return BadRequest(new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Autentica un usuario y genera un token JWT
+        /// Authenticates a user and generates a JWT token
         /// </summary>
-        /// <param name="loginDto">Credenciales de login</param>
-        /// <returns>Token de autenticación y datos del usuario</returns>
+        /// <param name="loginDto">Login credentials</param>
+        /// <returns>Authentication token and user data</returns>
         [HttpPost("login")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
@@ -60,23 +60,23 @@ namespace TurnoLink.WebAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("Intento de login para: {Email}", loginDto.Email);
+                _logger.LogInformation("Attempting login for: {Email}", loginDto.Email);
                 var response = await _authService.LoginAsync(loginDto);
-                _logger.LogInformation("Login exitoso para: {Email}", loginDto.Email);
+                _logger.LogInformation("Successful login for: {Email}", loginDto.Email);
                 return Ok(response);
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogWarning("Login fallido para: {Email}", loginDto.Email);
+                _logger.LogWarning("Failed login for: {Email}", loginDto.Email);
                 return Unauthorized(new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Endpoint de prueba para verificar autenticación
-        /// Requiere token JWT válido
+        /// Test endpoint to verify authentication
+        /// Requires a valid JWT token
         /// </summary>
-        /// <returns>Información del usuario autenticado</returns>
+        /// <returns>Authenticated user information</returns>
         [HttpGet("me")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -92,7 +92,7 @@ namespace TurnoLink.WebAPI.Controllers
                 userId,
                 email,
                 name,
-                message = "Usuario autenticado correctamente"
+                message = "User is authenticated"
             });
         }
     }

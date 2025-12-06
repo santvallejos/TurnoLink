@@ -6,13 +6,13 @@ using TurnoLink.Business.Interfaces;
 namespace TurnoLink.WebAPI.Controllers
 {
     /// <summary>
-    /// Controlador público para clientes (sin autenticación requerida)
-    /// Permite ver servicios y crear reservas
+    /// Public controller for clients (no authentication required)
+    /// Allows viewing services and creating bookings
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    [AllowAnonymous] // Público - no requiere autenticación
+    [AllowAnonymous] // Public - no authentication required
     public class PublicController : ControllerBase
     {
         private readonly IServiceService _serviceService;
@@ -30,50 +30,48 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Obtiene todos los servicios activos disponibles
+        /// Gets all available active services
         /// </summary>
         [HttpGet("services")]
         [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ServiceDto>>> GetAllActiveServices()
         {
-            _logger.LogInformation("Cliente consultando servicios disponibles");
+            _logger.LogInformation("Client requesting available services");
             var services = await _serviceService.GetAllActiveServicesAsync();
             return Ok(services);
         }
 
         /// <summary>
-        /// Obtiene servicios activos de un profesional específico
+        /// Gets active services of a specific professional
         /// </summary>
         [HttpGet("services/professional/{userId:guid}")]
         [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ServiceDto>>> GetServicesByProfessional(Guid userId)
         {
-            _logger.LogInformation("Cliente consultando servicios del profesional: {UserId}", userId);
+            _logger.LogInformation("Client requesting services of professional: {UserId}", userId);
             var services = await _serviceService.GetActiveServicesByUserIdAsync(userId);
             return Ok(services);
         }
 
         /// <summary>
-        /// Obtiene detalles de un servicio específico
+        /// Gets details of a specific service
         /// </summary>
         [HttpGet("services/{id:guid}")]
         [ProducesResponseType(typeof(ServiceDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ServiceDto>> GetServiceById(Guid id)
         {
-            _logger.LogInformation("Cliente consultando servicio: {ServiceId}", id);
+            _logger.LogInformation("Client requesting service: {ServiceId}", id);
             
             var service = await _serviceService.GetServiceByIdAsync(id);
             if (service == null)
-            {
-                return NotFound(new { message = "Servicio no encontrado" });
-            }
+                return NotFound(new { message = "Service not found" });
 
             return Ok(service);
         }
 
         /// <summary>
-        /// Crea una nueva reserva (cliente proporciona sus datos)
+        /// Creates a new booking (client provides their details)
         /// </summary>
         [HttpPost("bookings")]
         [ProducesResponseType(typeof(BookingDto), StatusCodes.Status201Created)]
@@ -82,45 +80,43 @@ namespace TurnoLink.WebAPI.Controllers
         {
             try
             {
-                _logger.LogInformation("Cliente creando reserva para servicio: {ServiceId}", createBookingDto.ServiceId);
+                _logger.LogInformation("Client creating booking for service: {ServiceId}", createBookingDto.ServiceId);
                 
                 var booking = await _bookingService.CreateBookingAsync(createBookingDto);
                 return CreatedAtAction(nameof(GetBookingById), new { id = booking.Id }, booking);
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning("Error al crear reserva: {Message}", ex.Message);
+                _logger.LogWarning("Error creating booking: {Message}", ex.Message);
                 return BadRequest(new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Obtiene detalles de una reserva por ID
+        /// Gets details of a booking by ID
         /// </summary>
         [HttpGet("bookings/{id:guid}")]
         [ProducesResponseType(typeof(BookingDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BookingDto>> GetBookingById(Guid id)
         {
-            _logger.LogInformation("Consultando reserva: {BookingId}", id);
+            _logger.LogInformation("Client requesting booking: {BookingId}", id);
             
             var booking = await _bookingService.GetBookingByIdAsync(id);
             if (booking == null)
-            {
-                return NotFound(new { message = "Reserva no encontrada" });
-            }
+                return NotFound(new { message = "Booking not found" });
 
             return Ok(booking);
         }
 
         /// <summary>
-        /// Verifica disponibilidad para un horario específico
+        /// Checks availability for a specific time slot
         /// </summary>
         [HttpPost("bookings/check-availability")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         public async Task<ActionResult<object>> CheckAvailability([FromBody] CheckAvailabilityDto checkAvailabilityDto)
         {
-            _logger.LogInformation("Verificando disponibilidad");
+            _logger.LogInformation("Checking availability");
             
             var isAvailable = await _bookingService.CheckAvailabilityAsync(
                 checkAvailabilityDto.UserId,
@@ -132,7 +128,7 @@ namespace TurnoLink.WebAPI.Controllers
     }
 
     /// <summary>
-    /// DTO para verificar disponibilidad
+    /// DTO for checking availability
     /// </summary>
     public class CheckAvailabilityDto
     {

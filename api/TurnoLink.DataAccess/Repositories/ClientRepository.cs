@@ -10,56 +10,54 @@ namespace TurnoLink.DataAccess.Repositories
     /// </summary>
     public class ClientRepository : IClientRepository
     {
-        private readonly TurnoLinkDbContext _context;
-        private readonly DbSet<Client> _dbSet;
+        private readonly TurnoLinkDbContext _db;
 
         public ClientRepository(TurnoLinkDbContext context)
         {
-            _context = context;
-            _dbSet = context.Set<Client>();
+            _db = context;
         }
 
         public async Task<IEnumerable<Client>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _db.Clients.ToListAsync();
         }
 
         public async Task<Client?> GetByIdAsync(Guid id)
         {
-            return await _dbSet.FindAsync(id);
+            return await _db.Clients.FindAsync(id);
         }
 
         public async Task<Client?> GetByEmailAsync(string email)
         {
-            return await _dbSet
+            return await _db.Clients
                 .FirstOrDefaultAsync(c => c.Email.ToLower() == email.ToLower());
         }
 
         public async Task<Client?> GetByPhoneAsync(string phoneNumber)
         {
-            return await _dbSet
+            return await _db.Clients
                 .FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
         }
 
         public async Task<Client> AddAsync(Client entity)
         {
-            await _dbSet.AddAsync(entity);
+            await _db.Clients.AddAsync(entity);
             return entity;
         }
 
         public void Update(Client entity)
         {
-            _dbSet.Update(entity);
+            _db.Clients.Update(entity);
         }
 
         public void Remove(Client entity)
         {
-            _dbSet.Remove(entity);
+            _db.Clients.Remove(entity);
         }
 
         public async Task<bool> ExistsAsync(Func<Client, bool> predicate)
         {
-            return await Task.Run(() => _dbSet.Any(predicate));
+            return await Task.Run(() => _db.Clients.Any(predicate));
         }
     }
 }

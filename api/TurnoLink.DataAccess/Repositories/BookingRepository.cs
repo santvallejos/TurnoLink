@@ -10,18 +10,16 @@ namespace TurnoLink.DataAccess.Repositories
     /// </summary>
     public class BookingRepository : IBookingRepository
     {
-        private readonly TurnoLinkDbContext _context;
-        private readonly DbSet<Booking> _dbSet;
+        private readonly TurnoLinkDbContext _db;
 
         public BookingRepository(TurnoLinkDbContext context)
         {
-            _context = context;
-            _dbSet = context.Set<Booking>();
+            _db = context;
         }
 
         public async Task<IEnumerable<Booking>> GetAllAsync()
         {
-            return await _dbSet
+            return await _db.Bookings
                 .Include(b => b.Client)
                 .Include(b => b.Service)
                 .Include(b => b.User)
@@ -30,7 +28,7 @@ namespace TurnoLink.DataAccess.Repositories
 
         public async Task<Booking?> GetByIdAsync(Guid id)
         {
-            return await _dbSet
+            return await _db.Bookings
                 .Include(b => b.Client)
                 .Include(b => b.Service)
                 .Include(b => b.User)
@@ -39,7 +37,7 @@ namespace TurnoLink.DataAccess.Repositories
 
         public async Task<IEnumerable<Booking>> GetBookingsByClientIdAsync(Guid clientId)
         {
-            return await _dbSet
+            return await _db.Bookings
                 .Include(b => b.Service)
                 .Include(b => b.User)
                 .Where(b => b.ClientId == clientId)
@@ -49,7 +47,7 @@ namespace TurnoLink.DataAccess.Repositories
 
         public async Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(Guid userId)
         {
-            return await _dbSet
+            return await _db.Bookings
                 .Include(b => b.Client)
                 .Include(b => b.Service)
                 .Where(b => b.UserId == userId)
@@ -59,7 +57,7 @@ namespace TurnoLink.DataAccess.Repositories
 
         public async Task<IEnumerable<Booking>> GetBookingsByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            return await _dbSet
+            return await _db.Bookings
                 .Include(b => b.Client)
                 .Include(b => b.Service)
                 .Include(b => b.User)
@@ -73,7 +71,7 @@ namespace TurnoLink.DataAccess.Repositories
             var startOfDay = date.Date;
             var endOfDay = startOfDay.AddDays(1);
 
-            return await _dbSet
+            return await _db.Bookings
                 .Include(b => b.Client)
                 .Include(b => b.Service)
                 .Where(b => b.UserId == userId 
@@ -85,23 +83,23 @@ namespace TurnoLink.DataAccess.Repositories
 
         public async Task<Booking> AddAsync(Booking entity)
         {
-            await _dbSet.AddAsync(entity);
+            await _db.Bookings.AddAsync(entity);
             return entity;
         }
 
         public void Update(Booking entity)
         {
-            _dbSet.Update(entity);
+            _db.Bookings.Update(entity);
         }
 
         public void Remove(Booking entity)
         {
-            _dbSet.Remove(entity);
+            _db.Bookings.Remove(entity);
         }
 
         public async Task<bool> ExistsAsync(Func<Booking, bool> predicate)
         {
-            return await Task.Run(() => _dbSet.Any(predicate));
+            return await Task.Run(() => _db.Bookings.Any(predicate));
         }
     }
 }

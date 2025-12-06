@@ -7,12 +7,12 @@ using TurnoLink.Business.Interfaces;
 namespace TurnoLink.WebAPI.Controllers
 {
     /// <summary>
-    /// Controlador para gestión de servicios por profesionales (requiere autenticación)
+    /// Controller for managing services by professionals (requires authentication)
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
-    [Authorize] // Requiere autenticación para todos los endpoints
+    [Authorize] // Requires authentication for all endpoints
     public class ServicesController : ControllerBase
     {
         private readonly IServiceService _serviceService;
@@ -25,54 +25,52 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Obtiene todos los servicios del profesional autenticado
+        /// Gets all services of the authenticated professional
         /// </summary>
         [HttpGet("my-services")]
         [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ServiceDto>>> GetMyServices()
         {
             var userId = GetAuthenticatedUserId();
-            _logger.LogInformation("Obteniendo servicios del usuario: {UserId}", userId);
+            _logger.LogInformation("Getting services for user: {UserId}", userId);
             
             var services = await _serviceService.GetServicesByUserIdAsync(userId);
             return Ok(services);
         }
 
         /// <summary>
-        /// Obtiene servicios activos del profesional autenticado
+        /// Gets active services of the authenticated professional
         /// </summary>
         [HttpGet("my-services/active")]
         [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ServiceDto>>> GetMyActiveServices()
         {
             var userId = GetAuthenticatedUserId();
-            _logger.LogInformation("Obteniendo servicios activos del usuario: {UserId}", userId);
+            _logger.LogInformation("Getting active services for user: {UserId}", userId);
             
             var services = await _serviceService.GetActiveServicesByUserIdAsync(userId);
             return Ok(services);
         }
 
         /// <summary>
-        /// Obtiene un servicio específico por ID
+        /// Gets a specific service by ID
         /// </summary>
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(ServiceDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ServiceDto>> GetServiceById(Guid id)
         {
-            _logger.LogInformation("Obteniendo servicio: {ServiceId}", id);
+            _logger.LogInformation("Getting service with ID: {ServiceId}", id);
             
             var service = await _serviceService.GetServiceByIdAsync(id);
             if (service == null)
-            {
-                return NotFound(new { message = "Servicio no encontrado" });
-            }
+                return NotFound(new { message = "Service not found" });
 
             return Ok(service);
         }
 
         /// <summary>
-        /// Crea un nuevo servicio
+        /// Creates a new service
         /// </summary>
         [HttpPost]
         [ProducesResponseType(typeof(ServiceDto), StatusCodes.Status201Created)]
@@ -82,7 +80,7 @@ namespace TurnoLink.WebAPI.Controllers
             try
             {
                 var userId = GetAuthenticatedUserId();
-                _logger.LogInformation("Creando servicio para usuario: {UserId}", userId);
+                _logger.LogInformation("Creating service for user: {UserId}", userId);
                 
                 var service = await _serviceService.CreateServiceAsync(userId, createServiceDto);
                 return CreatedAtAction(nameof(GetServiceById), new { id = service.Id }, service);
@@ -94,7 +92,7 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Actualiza un servicio existente
+        /// Updates an existing service
         /// </summary>
         [HttpPut("{id:guid}")]
         [ProducesResponseType(typeof(ServiceDto), StatusCodes.Status200OK)]
@@ -105,7 +103,7 @@ namespace TurnoLink.WebAPI.Controllers
             try
             {
                 var userId = GetAuthenticatedUserId();
-                _logger.LogInformation("Actualizando servicio: {ServiceId} por usuario: {UserId}", id, userId);
+                _logger.LogInformation("Updating service: {ServiceId} by user: {UserId}", id, userId);
                 
                 var service = await _serviceService.UpdateServiceAsync(userId, id, updateServiceDto);
                 return Ok(service);
@@ -121,7 +119,7 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Elimina un servicio
+        /// Deletes a service
         /// </summary>
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -132,7 +130,7 @@ namespace TurnoLink.WebAPI.Controllers
             try
             {
                 var userId = GetAuthenticatedUserId();
-                _logger.LogInformation("Eliminando servicio: {ServiceId} por usuario: {UserId}", id, userId);
+                _logger.LogInformation("Deleting service: {ServiceId} by user: {UserId}", id, userId);
                 
                 await _serviceService.DeleteServiceAsync(userId, id);
                 return NoContent();
@@ -153,9 +151,7 @@ namespace TurnoLink.WebAPI.Controllers
                 ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-            {
-                throw new UnauthorizedAccessException("Usuario no autenticado");
-            }
+                throw new UnauthorizedAccessException("User not authenticated");
 
             return userId;
         }

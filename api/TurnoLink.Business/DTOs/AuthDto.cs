@@ -1,33 +1,29 @@
-namespace TurnoLink.Business.DTOs;
+using System.ComponentModel.DataAnnotations;
 
-/// <summary>
-/// DTO para login de usuario
-/// </summary>
-public class LoginDto
+namespace TurnoLink.Business.DTOs
 {
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-}
+    public class LoginDto
+    {
+        [Required (ErrorMessage = "Email is required")]
+        public string Email { get; set; } = string.Empty;
+        [Required (ErrorMessage = "Password is required")]
+        public string Password { get; set; } = string.Empty;
+    }
 
-/// <summary>
-/// DTO para registro de usuario
-/// </summary>
-public class RegisterDto
-{
-    public string FullName { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string? PhoneNumber { get; set; }
-}
+    public class RegisterDto
+    {
+        [Required (ErrorMessage = "Full name is required")]
+        public string FullName { get; set; } = string.Empty;
+        [Required (ErrorMessage = "Email is required")]
+        public string Email { get; set; } = string.Empty;
+        [Required (ErrorMessage = "Password is required")]
+        public string Password { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
+    }
 
-/// <summary>
-/// DTO de respuesta de autenticación
-/// </summary>
-public class AuthResponseDto
-{
-    public string Token { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string FullName { get; set; } = string.Empty;
-    public Guid UserId { get; set; }
-    public DateTime ExpiresAt { get; set; }
+    public class AuthResponseDto
+    {
+        public string Token { get; set; } = string.Empty;
+        public DateTime ExpiresAt { get; set; }
+    }
 }

@@ -12,7 +12,7 @@ using TurnoLink.DataAccess.Interfaces;
 namespace TurnoLink.Business.Services
 {
     /// <summary>
-    /// Servicio de autenticación con JWT
+    /// Service of authentication handling user registration, login, and token validation.
     /// </summary>
     public class AuthService : IAuthService
     {
@@ -20,6 +20,12 @@ namespace TurnoLink.Business.Services
         private readonly TurnoLinkDbContext _context;
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// Constructor for AuthService.
+        /// </summary>
+        /// <param name="userRepository"></param>
+        /// <param name="context"></param>
+        /// <param name="configuration"></param>
         public AuthService(IUserRepository userRepository, TurnoLinkDbContext context, IConfiguration configuration)
         {
             _userRepository = userRepository;
@@ -29,17 +35,15 @@ namespace TurnoLink.Business.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
         {
-            // Validar que el email no exista
+            // Check if email is already registered
             var existingUser = await _userRepository.GetByEmailAsync(registerDto.Email);
             if (existingUser != null)
-            {
-                throw new InvalidOperationException("El email ya está registrado");
-            }
+                throw new InvalidOperationException("Email is already registered");
 
-            // Hash de contraseña
+            // Password hashing
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
 
-            // Crear usuario
+            // Create user
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -54,51 +58,39 @@ namespace TurnoLink.Business.Services
             await _userRepository.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            // Generar token
+            // Generate token
             var token = GenerateJwtToken(user);
             var expiresAt = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes());
 
             return new AuthResponseDto
             {
                 Token = token,
-                Email = user.Email,
-                FullName = user.FullName,
-                UserId = user.Id,
-                ExpiresAt = expiresAt
+                ExpiresAt = expiresAt,
             };
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto loginDto)
         {
-            // Buscar usuario por email
+            // Find user by email
             var user = await _userRepository.GetByEmailAsync(loginDto.Email);
             if (user == null)
-            {
-                throw new UnauthorizedAccessException("Credenciales inválidas");
-            }
+                throw new UnauthorizedAccessException("Invalid credentials");
 
-            // Verificar que el usuario esté activo
+            // Check if user is active
             if (!user.IsActive)
-            {
-                throw new UnauthorizedAccessException("Usuario inactivo");
-            }
+                throw new UnauthorizedAccessException("User is inactive");
 
-            // Verificar contraseña
+            // Verify password
             if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
-            {
-                throw new UnauthorizedAccessException("Credenciales inválidas");
-            }
+                throw new UnauthorizedAccessException("Invalid credentials");
 
-            // Generar token
+            // Generate token
             var token = GenerateJwtToken(user);
             var expiresAt = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes());
 
             return new AuthResponseDto
             {
                 Token = token,
-                Email = user.Email,
-                FullName = user.FullName,
-                UserId = user.Id,
                 ExpiresAt = expiresAt
             };
         }
@@ -115,9 +107,9 @@ namespace TurnoLink.Business.Services
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
-                    ValidIssuer = GetIssuer(),
+                    ValidIssuer = _configuration["Jwt:Issuer"],
                     ValidateAudience = true,
-                    ValidAudience = GetAudience(),
+                    ValidAudience = _configuration["Jwt:Audience"],
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
@@ -147,8 +139,8 @@ namespace TurnoLink.Business.Services
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(GetTokenExpirationMinutes()),
-                Issuer = GetIssuer(),
-                Audience = GetAudience(),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
@@ -162,16 +154,6 @@ namespace TurnoLink.Business.Services
         {
             return _configuration["Jwt:SecretKey"] 
                 ?? throw new InvalidOperationException("JWT SecretKey no configurada");
-        }
-
-        private string GetIssuer()
-        {
-            return _configuration["Jwt:Issuer"] ?? "TurnoLink";
-        }
-
-        private string GetAudience()
-        {
-            return _configuration["Jwt:Audience"] ?? "TurnoLinkUsers";
         }
 
         private int GetTokenExpirationMinutes()

@@ -16,6 +16,13 @@ namespace TurnoLink.Business.Services
         private readonly IUserRepository _userRepository;
         private readonly IBookingRepository _bookingRepository;
 
+        /// <summary>
+        /// Constructor for AvailabilityService.
+        /// </summary>
+        /// <param name="availabilityRepository">Availability repository</param>
+        /// <param name="serviceRepository">Service repository</param>
+        /// <param name="userRepository">User repository</param>
+        /// <param name="bookingRepository">Booking repository</param>
         public AvailabilityService(
             IAvailabilityRepository availabilityRepository,
             IServiceRepository serviceRepository,
@@ -35,7 +42,7 @@ namespace TurnoLink.Business.Services
         {
             var availability = await _availabilityRepository.GetByIdAsync(id);
             if (availability == null)
-                return null;
+                throw new ArgumentException("Availability not found");
 
             var service = await _serviceRepository.GetByIdAsync(availability.ServiceId);
 

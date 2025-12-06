@@ -3,23 +3,26 @@ using TurnoLink.Business.DTOs;
 namespace TurnoLink.Business.Interfaces
 {
     /// <summary>
-    /// Interfaz para el servicio de autenticación
+    /// Interface for authentication-related operations.
     /// </summary>
     public interface IAuthService
     {
         /// <summary>
-        /// Registra un nuevo usuario en el sistema
+        /// Registers a new user in the system
         /// </summary>
+        /// <param name="registerDto">DTO containing registration data</param>
         Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto);
 
         /// <summary>
-        /// Autentica un usuario y genera un token JWT
+        /// Authenticates a user and generates a JWT token
         /// </summary>
+        /// <param name="loginDto">DTO containing login data</param>
         Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
 
         /// <summary>
-        /// Valida un token JWT
+        /// Validates a JWT token
         /// </summary>
+        /// <param name="token">JWT token</param>
         Task<bool> ValidateTokenAsync(string token);
     }
 }

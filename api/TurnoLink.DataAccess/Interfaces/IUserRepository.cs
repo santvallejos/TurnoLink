@@ -3,48 +3,54 @@ using TurnoLink.DataAccess.Entities;
 namespace TurnoLink.DataAccess.Interfaces
 {
     /// <summary>
-    /// Interfaz específica para repositorio de usuarios
+    /// Interface of the user repository
     /// </summary>
     public interface IUserRepository
     {
         /// <summary>
-        /// Obtiene todas las entidades
+        /// Gets all user entities
         /// </summary>
         Task<IEnumerable<User>> GetAllAsync();
 
         /// <summary>
-        /// Obtiene un usuario por su ID
+        /// Gets a user by their ID
         /// </summary>
+        /// <param name="id">User ID</param>
         Task<User?> GetByIdAsync(Guid id);
 
         /// <summary>
-        /// Obtiene un usuario por su email
+        /// Gets a user by their email
         /// </summary>
+        /// <param name="email">User email</param>
         Task<User?> GetByEmailAsync(string email);
 
         /// <summary>
-        /// Obtiene usuarios activos
+        /// Gets active users
         /// </summary>
         Task<IEnumerable<User>> GetActiveUsersAsync();
 
         /// <summary>
-        /// Agrega un nuevo usuario
+        /// Adds a new user
         /// </summary>
+        /// <param name="entity">User entity</param>
         Task<User> AddAsync(User entity);
 
         /// <summary>
-        /// Actualiza un usuario existente
+        /// Updates an existing user
         /// </summary>
+        /// <param name="entity">User entity</param>
         void Update(User entity);
 
         /// <summary>
-        /// Elimina un usuario
+        /// Deletes a user
         /// </summary>
+        /// <param name="entity">User entity</param>
         void Remove(User entity);
 
         /// <summary>
-        /// Verifica si existe un usuario que cumpla una condición
+        /// Checks if a user exists that meets a condition
         /// </summary>
+        /// <param name="predicate">Condition to check</param>
         Task<bool> ExistsAsync(Func<User, bool> predicate);
     }
 }

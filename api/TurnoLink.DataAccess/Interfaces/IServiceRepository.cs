@@ -3,48 +3,55 @@ using TurnoLink.DataAccess.Entities;
 namespace TurnoLink.DataAccess.Interfaces
 {
     /// <summary>
-    /// Interfaz para repositorio de servicios
+    /// Interface of the service repository
     /// </summary>
     public interface IServiceRepository
     {
         /// <summary>
-        /// Obtiene todos los servicios
+        /// Gets all services
         /// </summary>
         Task<IEnumerable<Service>> GetAllAsync();
 
         /// <summary>
-        /// Obtiene un servicio por su ID
+        /// Gets a service by its ID
         /// </summary>
+        /// <param name="id">Service ID</param>
         Task<Service?> GetByIdAsync(Guid id);
 
         /// <summary>
-        /// Obtiene servicios activos por ID de usuario
+        /// Gets active services by user ID
         /// </summary>
+        /// <param name="userId">User ID</param>
         Task<IEnumerable<Service>> GetActiveServicesByUserIdAsync(Guid userId);
 
         /// <summary>
-        /// Obtiene todos los servicios por ID de usuario
+        /// Gets all services by user ID
         /// </summary>
+        /// <param name="userId">User ID</param>
         Task<IEnumerable<Service>> GetServicesByUserIdAsync(Guid userId);
 
         /// <summary>
-        /// Agrega un nuevo servicio
+        /// Adds a new service
         /// </summary>
+        /// <param name="entity">Service entity</param>
         Task<Service> AddAsync(Service entity);
 
         /// <summary>
-        /// Actualiza un servicio existente
+        /// Updates an existing service
         /// </summary>
+        /// <param name="entity">Service entity</param>
         void Update(Service entity);
 
         /// <summary>
-        /// Elimina un servicio
+        /// Deletes a service
         /// </summary>
+        /// <param name="entity">Service entity</param>
         void Remove(Service entity);
 
         /// <summary>
-        /// Verifica si existe un servicio
+        /// Checks if a service exists
         /// </summary>
+        /// <param name="predicate">Condition to check</param>
         Task<bool> ExistsAsync(Func<Service, bool> predicate);
     }
 }

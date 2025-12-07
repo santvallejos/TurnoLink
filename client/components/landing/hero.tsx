@@ -2,8 +2,8 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Clock, Users, ArrowRight, CheckCircle2 } from "lucide-react"
-import { useTranslations, useLocale } from 'next-intl'
+import { ArrowRight, CheckCircle2, Clock, Users } from "lucide-react"
+import { useLocale, useTranslations } from 'next-intl'
 
 export function Hero() {
   const t = useTranslations()
@@ -29,8 +29,8 @@ export function Hero() {
           <div className="text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-accent-foreground text-sm font-medium mb-6">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-foreground opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-foreground"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-foreground opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-foreground" />
               </span>
               {t('landing.hero.whatsappIntegration')}
             </div>
@@ -45,13 +45,13 @@ export function Hero() {
 
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link href={`/${locale}/register`}>
-                <Button size="lg" className="w-full sm:w-auto gap-2 text-base">
+                <Button className="w-full sm:w-auto gap-2 text-base" size="lg">
                   {t("landing.hero.cta")}
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
               <Link href={`/${locale}/login`}>
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-base bg-transparent">
+                <Button className="w-full sm:w-auto text-base bg-transparent" size="lg" variant="outline">
                   {t("landing.hero.secondaryCta")}
                 </Button>
               </Link>
@@ -88,32 +88,32 @@ export function Hero() {
               {/* Calendar appointments */}
               <div className="p-6 space-y-3">
                 <AppointmentCard
-                  time="09:00"
                   client="María García"
+                  locale={locale}
                   service={t('booking.services.haircut')}
                   status="confirmed"
-                  locale={locale}
+                  time="09:00"
                 />
                 <AppointmentCard
-                  time="10:30"
                   client="Carlos López"
+                  locale={locale}
                   service={t('booking.services.coloring')}
                   status="confirmed"
-                  locale={locale}
+                  time="10:30"
                 />
                 <AppointmentCard
-                  time="14:00"
                   client="Ana Martínez"
+                  locale={locale}
                   service={t('booking.services.manicure')}
                   status="pending"
-                  locale={locale}
+                  time="14:00"
                 />
                 <AppointmentCard
-                  time="16:00"
                   client="Pedro Sánchez"
+                  locale={locale}
                   service={t('booking.services.treatment')}
                   status="confirmed"
-                  locale={locale}
+                  time="16:00"
                 />
               </div>
             </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Globe } from "lucide-react"
@@ -25,17 +25,17 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button className="gap-2" size="sm" variant="ghost">
           <Globe className="h-4 w-4" />
           <span className="uppercase">{currentLocale}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => switchLocale("es")} className={currentLocale === "es" ? "bg-accent" : ""}>
+        <DropdownMenuItem className={currentLocale === "es" ? "bg-accent" : ""} onClick={() => switchLocale("es")}>
           <span className="mr-2">🇪🇸</span>
           Español
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => switchLocale("en")} className={currentLocale === "en" ? "bg-accent" : ""}>
+        <DropdownMenuItem className={currentLocale === "en" ? "bg-accent" : ""} onClick={() => switchLocale("en")}>
           <span className="mr-2">🇬🇧</span>
           English
         </DropdownMenuItem>

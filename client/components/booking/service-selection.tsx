@@ -4,10 +4,10 @@ import type React from "react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Scissors, Palette, Sparkles, Heart, Flower2, Check } from "lucide-react"
-import { services, type Service } from "@/lib/mock-data"
+import { Check, Flower2, Heart, Palette, Scissors, Sparkles } from "lucide-react"
+import { type Service, services } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { formatCurrency } from '@/lib/i18n'
 
 interface ServiceSelectionProps {
@@ -90,7 +90,7 @@ export function ServiceSelection({ selectedService, onSelectService, onNext }: S
       </div>
 
       <div className="flex justify-end">
-        <Button onClick={onNext} disabled={!selectedService} size="lg">
+        <Button disabled={!selectedService} size="lg" onClick={onNext}>
           {t("common.next")}
         </Button>
       </div>

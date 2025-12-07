@@ -40,8 +40,8 @@ export function BookingForm() {
         {currentStep === 1 && (
           <ServiceSelection
             selectedService={selectedService}
-            onSelectService={setSelectedService}
             onNext={() => setCurrentStep(2)}
+            onSelectService={setSelectedService}
           />
         )}
 
@@ -49,18 +49,18 @@ export function BookingForm() {
           <DateTimeSelection
             selectedDate={selectedDate}
             selectedTime={selectedTime}
+            onBack={() => setCurrentStep(1)}
+            onNext={() => setCurrentStep(3)}
             onSelectDate={setSelectedDate}
             onSelectTime={setSelectedTime}
-            onNext={() => setCurrentStep(3)}
-            onBack={() => setCurrentStep(1)}
           />
         )}
 
         {currentStep === 3 && (
           <DetailsForm
-            onSubmit={handleSubmit}
-            onBack={() => setCurrentStep(2)}
             isSubmitting={isSubmitting}
+            onBack={() => setCurrentStep(2)}
+            onSubmit={handleSubmit}
           />
         )}
       </div>
@@ -68,8 +68,8 @@ export function BookingForm() {
       {/* Sidebar summary */}
       <div className="hidden lg:block">
         <BookingSummary
-          selectedService={selectedService}
           selectedDate={selectedDate}
+          selectedService={selectedService}
           selectedTime={selectedTime}
         />
       </div>

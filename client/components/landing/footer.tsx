@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Calendar } from "lucide-react"
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 export function Footer() {
   const t = useTranslations()
@@ -32,7 +32,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href={`/${locale}`} className="flex items-center gap-2">
+            <Link className="flex items-center gap-2" href={`/${locale}`}>
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-primary-foreground" />
               </div>
@@ -50,8 +50,8 @@ export function Footer() {
               {footerLinks.product.map((link, index) => (
                 <li key={index}>
                   <Link
-                    href={link.href}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    href={link.href}
                   >
                     {link.label}
                   </Link>
@@ -67,8 +67,8 @@ export function Footer() {
               {footerLinks.company.map((link, index) => (
                 <li key={index}>
                   <Link
-                    href={link.href}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    href={link.href}
                   >
                     {link.label}
                   </Link>
@@ -84,8 +84,8 @@ export function Footer() {
               {footerLinks.legal.map((link, index) => (
                 <li key={index}>
                   <Link
-                    href={link.href}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    href={link.href}
                   >
                     {link.label}
                   </Link>

@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Montserrat, Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google"
+import { Cormorant_Garamond, IBM_Plex_Mono, Montserrat } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -49,9 +49,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html suppressHydrationWarning lang={locale}>
       <body className={`${montserrat.variable} ${cormorant.variable} ${ibmPlexMono.variable} font-sans antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+        <ThemeProvider disableTransitionOnChange enableSystem attribute="class" defaultTheme="light">
           <NextIntlClientProvider messages={messages}>
             {children}
           </NextIntlClientProvider>

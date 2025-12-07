@@ -3,8 +3,8 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle2, ArrowRight } from "lucide-react"
-import { useTranslations, useLocale } from 'next-intl'
+import { ArrowRight, CheckCircle2 } from "lucide-react"
+import { useLocale, useTranslations } from 'next-intl'
 
 export function BookingConfirmation() {
   const t = useTranslations()
@@ -21,7 +21,7 @@ export function BookingConfirmation() {
           <p className="text-muted-foreground mb-6">{t("booking.confirmation.message")}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href={`/${locale}`}>
-              <Button variant="outline" className="w-full sm:w-auto bg-transparent">
+              <Button className="w-full sm:w-auto bg-transparent" variant="outline">
                 {locale === "es" ? "Volver al inicio" : "Back to home"}
               </Button>
             </Link>

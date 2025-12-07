@@ -21,8 +21,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, LayoutDashboard, Users, Scissors, Settings, LogOut, ChevronUp } from "lucide-react"
-import { useTranslations, useLocale } from 'next-intl'
+import { Calendar, ChevronUp, LayoutDashboard, LogOut, Scissors, Settings, Users } from "lucide-react"
+import { useLocale, useTranslations } from 'next-intl'
 
 export function AppSidebar() {
   const t = useTranslations()
@@ -60,7 +60,7 @@ export function AppSidebar() {
   return (
     <Sidebar variant="inset">
       <SidebarHeader className="border-b border-sidebar-border">
-        <Link href={`/${locale}/dashboard`} className="flex items-center gap-2 px-2 py-1">
+        <Link className="flex items-center gap-2 px-2 py-1" href={`/${locale}/dashboard`}>
           <div className="w-8 h-8 rounded-lg bg-sidebar-primary flex items-center justify-center">
             <Calendar className="w-5 h-5 text-sidebar-primary-foreground" />
           </div>
@@ -94,7 +94,7 @@ export function AppSidebar() {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton className="w-full">
                   <Avatar className="w-6 h-6">
-                    <AvatarImage src="/beauty-salon-logo-elegant.jpg" alt="User" />
+                    <AvatarImage alt="User" src="/beauty-salon-logo-elegant.jpg" />
                     <AvatarFallback>MG</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 text-left">
@@ -104,7 +104,7 @@ export function AppSidebar() {
                   <ChevronUp className="w-4 h-4" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" align="start" className="w-56">
+              <DropdownMenuContent align="start" className="w-56" side="top">
                 <DropdownMenuItem>
                   <Settings className="w-4 h-4 mr-2" />
                   {t("dashboard.nav.settings")}

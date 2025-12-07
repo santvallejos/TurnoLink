@@ -39,7 +39,7 @@ export function WeeklyCalendar() {
     <div className="rounded-lg border border-border bg-card overflow-hidden">
       {/* Header with days */}
       <div className="grid grid-cols-8 border-b border-border">
-        <div className="p-3 text-xs font-medium text-muted-foreground"></div>
+        <div className="p-3 text-xs font-medium text-muted-foreground" />
         {weekDays.map((date, index) => {
           const isToday = date.toDateString() === today.toDateString()
           return (

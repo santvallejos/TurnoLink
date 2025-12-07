@@ -4,14 +4,14 @@ import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star } from "lucide-react"
 import { testimonials } from "@/lib/mock-data"
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 export function Testimonials() {
   const t = useTranslations()
   const locale = useLocale()
 
   return (
-    <section id="testimonials" className="py-20 lg:py-32">
+    <section className="py-20 lg:py-32" id="testimonials">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground text-balance">
@@ -34,6 +34,9 @@ export function Testimonials() {
                 </p>
                 <div className="flex items-center gap-3">
                   <Image
+                    alt={testimonial.name}
+                    className="rounded-full object-cover"
+                    height={48}
                     src={
                       index === 0
                         ? "/professional-woman-portrait.png"
@@ -41,10 +44,7 @@ export function Testimonials() {
                           ? "/man-doctor-portrait.png"
                           : "/business-woman-portrait.png"
                     }
-                    alt={testimonial.name}
                     width={48}
-                    height={48}
-                    className="rounded-full object-cover"
                   />
                   <div>
                     <p className="font-semibold text-foreground">{testimonial.name}</p>

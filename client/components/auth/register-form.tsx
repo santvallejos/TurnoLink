@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar, Eye, EyeOff, Loader2 } from "lucide-react"
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 export function RegisterForm() {
   const t = useTranslations()
@@ -30,7 +30,7 @@ export function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!acceptTerms) return
+    if (!acceptTerms) {return}
     setIsLoading(true)
     // Simulate registration
     await new Promise((resolve) => setTimeout(resolve, 1500))
@@ -48,7 +48,7 @@ export function RegisterForm() {
 
       <div className="w-full max-w-md">
         {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center justify-center gap-2 mb-8">
+        <Link className="flex items-center justify-center gap-2 mb-8" href={`/${locale}`}>
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
             <Calendar className="w-6 h-6 text-primary-foreground" />
           </div>
@@ -61,30 +61,30 @@ export function RegisterForm() {
             <CardDescription>{t("auth.register.subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-2">
                 <Label htmlFor="name">{t("auth.register.name")}</Label>
                 <Input
-                  id="name"
-                  type="text"
-                  placeholder={t("auth.register.namePlaceholder")}
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                   disabled={isLoading}
+                  id="name"
+                  placeholder={t("auth.register.namePlaceholder")}
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email">{t("auth.register.email")}</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder={t("auth.register.emailPlaceholder")}
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                   disabled={isLoading}
+                  id="email"
+                  placeholder={t("auth.register.emailPlaceholder")}
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
               </div>
 
@@ -92,20 +92,20 @@ export function RegisterForm() {
                 <Label htmlFor="password">{t("auth.register.password")}</Label>
                 <div className="relative">
                   <Input
+                    required
+                    className="pr-10"
+                    disabled={isLoading}
                     id="password"
-                    type={showPassword ? "text" : "password"}
                     placeholder={t("auth.register.passwordPlaceholder")}
+                    type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    required
-                    disabled={isLoading}
-                    className="pr-10"
                   />
                   <button
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -116,20 +116,20 @@ export function RegisterForm() {
                 <Label htmlFor="confirmPassword">{t("auth.register.confirmPassword")}</Label>
                 <div className="relative">
                   <Input
+                    required
+                    className="pr-10"
+                    disabled={isLoading}
                     id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
                     placeholder={t("auth.register.confirmPasswordPlaceholder")}
+                    type={showConfirmPassword ? "text" : "password"}
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    required
-                    disabled={isLoading}
-                    className="pr-10"
                   />
                   <button
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                   >
                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -138,17 +138,17 @@ export function RegisterForm() {
 
               <div className="flex items-start gap-2">
                 <Checkbox
-                  id="terms"
                   checked={acceptTerms}
-                  onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
                   disabled={isLoading}
+                  id="terms"
+                  onCheckedChange={(checked) => setAcceptTerms(checked as boolean)}
                 />
-                <Label htmlFor="terms" className="text-sm text-muted-foreground leading-snug cursor-pointer">
+                <Label className="text-sm text-muted-foreground leading-snug cursor-pointer" htmlFor="terms">
                   {t("auth.register.terms")}
                 </Label>
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading || !acceptTerms}>
+              <Button className="w-full" disabled={isLoading || !acceptTerms} type="submit">
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -162,7 +162,7 @@ export function RegisterForm() {
 
             <p className="mt-6 text-center text-sm text-muted-foreground">
               {t("auth.register.hasAccount")}{" "}
-              <Link href={`/${locale}/login`} className="text-primary font-medium hover:underline">
+              <Link className="text-primary font-medium hover:underline" href={`/${locale}/login`}>
                 {t("auth.register.loginLink")}
               </Link>
             </p>

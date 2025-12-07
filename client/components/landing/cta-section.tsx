@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 export function CTASection() {
   const t = useTranslations()
@@ -16,7 +16,7 @@ export function CTASection() {
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">{t("landing.cta.subtitle")}</p>
         <div className="mt-10">
           <Link href={`/${locale}/register`}>
-            <Button size="lg" className="gap-2 text-base">
+            <Button className="gap-2 text-base" size="lg">
               {t("landing.cta.button")}
               <ArrowRight className="w-4 h-4" />
             </Button>

@@ -4,9 +4,9 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent } from "@/components/ui/card"
-import { timeSlots, occupiedSlots } from "@/lib/mock-data"
+import { occupiedSlots, timeSlots } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 interface DateTimeSelectionProps {
   selectedDate: Date | undefined
@@ -30,7 +30,7 @@ export function DateTimeSelection({
   const [month, setMonth] = useState<Date>(new Date())
 
   const getOccupiedSlots = (date: Date | undefined) => {
-    if (!date) return []
+    if (!date) {return []}
     const dateKey = date.toISOString().split("T")[0]
     return occupiedSlots[dateKey] || []
   }
@@ -53,14 +53,14 @@ export function DateTimeSelection({
           <CardContent className="p-4">
             <p className="text-sm font-medium text-foreground mb-3">{t("booking.step2.selectDate")}</p>
             <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={onSelectDate}
-              month={month}
-              onMonthChange={setMonth}
-              disabled={disabledDays}
               className="rounded-md"
+              disabled={disabledDays}
               locale={locale === "es" ? undefined : undefined}
+              mode="single"
+              month={month}
+              selected={selectedDate}
+              onMonthChange={setMonth}
+              onSelect={onSelectDate}
             />
           </CardContent>
         </Card>
@@ -78,15 +78,15 @@ export function DateTimeSelection({
                   return (
                     <Button
                       key={time}
-                      variant={isSelected ? "default" : "outline"}
-                      size="sm"
-                      disabled={isOccupied}
-                      onClick={() => onSelectTime(time)}
                       className={cn(
                         "transition-all",
                         isOccupied && "opacity-50 cursor-not-allowed line-through",
                         isSelected && "ring-2 ring-primary ring-offset-2",
                       )}
+                      disabled={isOccupied}
+                      size="sm"
+                      variant={isSelected ? "default" : "outline"}
+                      onClick={() => onSelectTime(time)}
                     >
                       {time}
                     </Button>
@@ -114,10 +114,10 @@ export function DateTimeSelection({
       </div>
 
       <div className="flex justify-between">
-        <Button variant="outline" onClick={onBack} size="lg">
+        <Button size="lg" variant="outline" onClick={onBack}>
           {t("common.back")}
         </Button>
-        <Button onClick={onNext} disabled={!selectedDate || !selectedTime} size="lg">
+        <Button disabled={!selectedDate || !selectedTime} size="lg" onClick={onNext}>
           {t("common.next")}
         </Button>
       </div>

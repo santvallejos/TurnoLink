@@ -2,9 +2,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
-import { Star, Clock, CalendarDays } from "lucide-react"
-import { professional, type Service } from "@/lib/mock-data"
-import { useTranslations, useLocale } from 'next-intl'
+import { CalendarDays, Clock, Star } from "lucide-react"
+import { type Service, professional } from "@/lib/mock-data"
+import { useLocale, useTranslations } from 'next-intl'
 import { formatCurrency, formatDate } from '@/lib/i18n'
 
 interface BookingSummaryProps {
@@ -26,7 +26,7 @@ export function BookingSummary({ selectedService, selectedDate, selectedTime }: 
         {/* Professional info */}
         <div className="flex items-center gap-3">
           <Avatar className="w-12 h-12">
-            <AvatarImage src="/beauty-salon-logo-elegant.jpg" alt={professional.name} />
+            <AvatarImage alt={professional.name} src="/beauty-salon-logo-elegant.jpg" />
             <AvatarFallback>MG</AvatarFallback>
           </Avatar>
           <div>

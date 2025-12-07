@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { MoreHorizontal } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { appointments, services } from "@/lib/mock-data"
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { formatShortDate } from '@/lib/i18n'
 
 export function AppointmentsTable() {
@@ -16,7 +16,7 @@ export function AppointmentsTable() {
 
   const getServiceName = (serviceId: string) => {
     const service = services.find((s) => s.id === serviceId)
-    if (!service) return ""
+    if (!service) {return ""}
     return locale === "es" ? service.name : service.nameEn
   }
 
@@ -51,7 +51,7 @@ export function AppointmentsTable() {
             <TableHead>{t("dashboard.appointments.date")}</TableHead>
             <TableHead>{t("dashboard.appointments.time")}</TableHead>
             <TableHead>{t("dashboard.appointments.status")}</TableHead>
-            <TableHead className="w-[50px]"></TableHead>
+            <TableHead className="w-[50px]" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -78,7 +78,7 @@ export function AppointmentsTable() {
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button className="h-8 w-8" size="icon" variant="ghost">
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>

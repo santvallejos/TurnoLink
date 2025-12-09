@@ -4,6 +4,7 @@ using TurnoLink.DataAccess.Data;
 using TurnoLink.DataAccess.Entities;
 using TurnoLink.DataAccess.Enums;
 using TurnoLink.DataAccess.Interfaces;
+using TurnoLink.Business.Services;
 
 namespace TurnoLink.Business.Services
 {
@@ -15,6 +16,7 @@ namespace TurnoLink.Business.Services
         private readonly IBookingRepository _bookingRepository;
         private readonly IClientRepository _clientRepository;
         private readonly IServiceRepository _serviceRepository;
+        private readonly IiCalDotnet _serviceIcalDotnet;
         private readonly TurnoLinkDbContext _context;
 
         /// <summary>
@@ -28,11 +30,13 @@ namespace TurnoLink.Business.Services
             IBookingRepository bookingRepository,
             IClientRepository clientRepository,
             IServiceRepository serviceRepository,
+            IiCalDotnet serviceIcalDotnet,
             TurnoLinkDbContext context)
         {
             _bookingRepository = bookingRepository;
             _clientRepository = clientRepository;
             _serviceRepository = serviceRepository;
+            _serviceIcalDotnet = serviceIcalDotnet;
             _context = context;
         }
         public async Task<BookingDto?> GetBookingByIdAsync(Guid id)
@@ -111,6 +115,9 @@ namespace TurnoLink.Business.Services
 
             // Reload with relationships
             var createdBooking = await _bookingRepository.GetByIdAsync(booking.Id);
+            if (createdBooking == null)
+                throw new InvalidOperationException("Error creating booking");
+            await _serviceIcalDotnet.CreateFileIcsBookingAsync(MapToDto(createdBooking));
             return MapToDto(createdBooking!);
         }
 

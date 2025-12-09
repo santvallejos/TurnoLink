@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TurnoLink.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAvailabilityEntity : Migration
+    public partial class NewMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -12,8 +12,8 @@ using TurnoLink.DataAccess.Data;
 namespace TurnoLink.DataAccess.Migrations
 {
     [DbContext(typeof(TurnoLinkDbContext))]
-    [Migration("20251204215021_AddAvailabilityEntity")]
-    partial class AddAvailabilityEntity
+    [Migration("20251209144654_NewMigrations")]
+    partial class NewMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

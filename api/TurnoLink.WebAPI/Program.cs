@@ -8,6 +8,7 @@ using TurnoLink.Business.Services;
 using TurnoLink.DataAccess.Data;
 using TurnoLink.DataAccess.Interfaces;
 using TurnoLink.DataAccess.Repositories;
+using Resend;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,15 @@ builder.Services.AddControllers();
 // Configure PostgreSQL Database
 builder.Services.AddDbContext<TurnoLinkDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configure Resend Email Service
+builder.Services.AddOptions();
+builder.Services.AddHttpClient<ResendClient>();
+builder.Services.Configure<ResendClientOptions>( o =>
+{
+    o.ApiToken = builder.Configuration["Resend:ApiKey"];
+} );
+builder.Services.AddTransient<IResend, ResendClient>();
 
 // Configure Dependency Injection - Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -29,6 +39,7 @@ builder.Services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<ResendService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
 builder.Services.AddScoped<IiCalDotnet, IcalDotnetService>();

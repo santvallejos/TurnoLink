@@ -18,6 +18,7 @@ namespace TurnoLink.Business.Services
         private readonly IServiceRepository _serviceRepository;
         private readonly IiCalDotnet _serviceIcalDotnet;
         private readonly TurnoLinkDbContext _context;
+        private readonly ResendService _resendService;
 
         /// <summary>
         /// Constructor for BookingService.
@@ -31,12 +32,14 @@ namespace TurnoLink.Business.Services
             IClientRepository clientRepository,
             IServiceRepository serviceRepository,
             IiCalDotnet serviceIcalDotnet,
+            ResendService resendService,
             TurnoLinkDbContext context)
         {
             _bookingRepository = bookingRepository;
             _clientRepository = clientRepository;
             _serviceRepository = serviceRepository;
             _serviceIcalDotnet = serviceIcalDotnet;
+            _resendService = resendService;
             _context = context;
         }
         public async Task<BookingDto?> GetBookingByIdAsync(Guid id)
@@ -117,7 +120,8 @@ namespace TurnoLink.Business.Services
             var createdBooking = await _bookingRepository.GetByIdAsync(booking.Id);
             if (createdBooking == null)
                 throw new InvalidOperationException("Error creating booking");
-            await _serviceIcalDotnet.CreateFileIcsBookingAsync(MapToDto(createdBooking));
+            //await _serviceIcalDotnet.CreateFileIcsBookingAsync(MapToDto(createdBooking));
+            await _resendService.SendEmailAsync(MapToDto(createdBooking!), await _serviceIcalDotnet.CreateFileIcsBookingAsync(MapToDto(createdBooking!))); // You need to generate the ICS string here
             return MapToDto(createdBooking!);
         }
 

@@ -16,6 +16,6 @@ namespace TurnoLink.Business.Interfaces
         /// Creates a new .ics file for a booking
         /// </summary>
         /// <param name="id">Booking</param>
-        Task<bool> CreateFileIcsBookingAsync(BookingDto booking);
+        Task<string> CreateFileIcsBookingAsync(BookingDto booking);
     }
 }

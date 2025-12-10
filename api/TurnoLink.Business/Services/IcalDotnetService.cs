@@ -14,7 +14,7 @@ namespace TurnoLink.Business.Services
 {
     public class IcalDotnetService : IiCalDotnet
     {
-        public async Task<bool> CreateFileIcsBookingAsync(BookingDto booking)
+        public async Task<string> CreateFileIcsBookingAsync(BookingDto booking)
         {
             try
             {
@@ -65,20 +65,11 @@ namespace TurnoLink.Business.Services
 
                 // Serializar el calendario
                 var serializer = new CalendarSerializer();
-                var calendarString = serializer.SerializeToString(calendar);
-
-                // Crear nombre de archivo único
-                var fileName = $"booking_{booking.ClientName}.ics";
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), fileName);
-
-                // Guardar el archivo
-                await File.WriteAllTextAsync(filePath, calendarString, Encoding.UTF8);
-
-                return true;
+                return serializer.SerializeToString(calendar);
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
         }
     }

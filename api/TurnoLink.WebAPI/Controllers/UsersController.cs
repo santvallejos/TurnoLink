@@ -37,19 +37,6 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Get active users
-        /// </summary>
-        /// <returns>List of active users</returns>
-        [HttpGet("active")]
-        [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetActiveUsers()
-        {
-            _logger.LogInformation("Getting active users");
-            var users = await _userService.GetActiveUsersAsync();
-            return Ok(users);
-        }
-
-        /// <summary>
         /// Get a user by ID
         /// </summary>
         /// <param name="id">User ID</param>

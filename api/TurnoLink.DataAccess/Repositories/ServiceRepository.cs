@@ -17,11 +17,6 @@ namespace TurnoLink.DataAccess.Repositories
             _db = context;
         }
 
-        public async Task<IEnumerable<Service>> GetAllAsync()
-        {
-            return await _db.Services.ToListAsync();
-        }
-
         public async Task<Service?> GetByIdAsync(Guid id)
         {
             return await _db.Services
@@ -29,10 +24,10 @@ namespace TurnoLink.DataAccess.Repositories
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<IEnumerable<Service>> GetActiveServicesByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<Service>> GetServicesBySlug(string slug)
         {
             return await _db.Services
-                .Where(s => s.UserId == userId && s.IsActive)
+                .Where(s => s.User.Slug == slug)
                 .ToListAsync();
         }
 

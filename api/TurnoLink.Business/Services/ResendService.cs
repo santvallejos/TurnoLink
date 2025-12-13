@@ -29,7 +29,7 @@ namespace TurnoLink.Business.Services
             var message = new EmailMessage
             {
                 From = $"Acme <onboarding@resend.dev>",
-                To = new[] { booking.ClientEmail }, // 
+                To = new[] { booking.ClientEmail ?? string.Empty },
                 Subject = "✅ Confirmación de Turno - TurnoLink",
                 HtmlBody = htmlContent,
                 Attachments = [

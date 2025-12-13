@@ -50,13 +50,5 @@ namespace TurnoLink.Business.Interfaces
         /// </summary>
         /// <param name="id">Booking ID</param>
         Task<bool> CancelBookingAsync(Guid id);
-
-        /// <summary>
-        /// Checks availability for a service at a specific date/time
-        /// </summary>
-        /// <param name="userId">User/Professional's user ID</param>
-        /// <param name="startTime">Start time of the service</param>
-        /// <param name="durationMinutes">Duration of the service in minutes</param>
-        Task<bool> CheckAvailabilityAsync(Guid userId, DateTime startTime, int durationMinutes);
     }
 }

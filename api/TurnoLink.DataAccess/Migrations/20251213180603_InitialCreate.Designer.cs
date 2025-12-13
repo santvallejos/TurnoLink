@@ -12,8 +12,8 @@ using TurnoLink.DataAccess.Data;
 namespace TurnoLink.DataAccess.Migrations
 {
     [DbContext(typeof(TurnoLinkDbContext))]
-    [Migration("20251209144654_NewMigrations")]
-    partial class NewMigrations
+    [Migration("20251213180603_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,9 +32,13 @@ namespace TurnoLink.DataAccess.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<int>("DurationMinutes")
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("end_time");
+
+                    b.Property<int>("Repeat")
                         .HasColumnType("integer")
-                        .HasColumnName("duration_minutes");
+                        .HasColumnName("repeat");
 
                     b.Property<Guid>("ServiceId")
                         .HasColumnType("uuid")
@@ -65,6 +69,10 @@ namespace TurnoLink.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<Guid>("AvailabilityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("availability_id");
 
                     b.Property<Guid>("ClientId")
                         .HasColumnType("uuid")
@@ -102,6 +110,8 @@ namespace TurnoLink.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AvailabilityId");
+
                     b.HasIndex("ClientId");
 
                     b.HasIndex("ServiceId");
@@ -132,16 +142,22 @@ namespace TurnoLink.DataAccess.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("email");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
-                        .HasColumnName("full_name");
+                        .HasColumnName("name");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone_number");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("surname");
 
                     b.HasKey("Id");
 
@@ -213,15 +229,15 @@ namespace TurnoLink.DataAccess.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("email");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("full_name");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -230,13 +246,22 @@ namespace TurnoLink.DataAccess.Migrations
                         .HasColumnName("password_hash");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("phone_number");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("slug");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("surname");
 
                     b.HasKey("Id");
 
@@ -246,8 +271,33 @@ namespace TurnoLink.DataAccess.Migrations
                     b.ToTable("users");
                 });
 
+            modelBuilder.Entity("TurnoLink.DataAccess.Entities.Availability", b =>
+                {
+                    b.HasOne("TurnoLink.DataAccess.Entities.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TurnoLink.DataAccess.Entities.User", "User")
+                        .WithMany("Availabilities")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Service");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TurnoLink.DataAccess.Entities.Booking", b =>
                 {
+                    b.HasOne("TurnoLink.DataAccess.Entities.Availability", "Availability")
+                        .WithMany()
+                        .HasForeignKey("AvailabilityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("TurnoLink.DataAccess.Entities.Client", "Client")
                         .WithMany("Bookings")
                         .HasForeignKey("ClientId")
@@ -265,6 +315,8 @@ namespace TurnoLink.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Availability");
 
                     b.Navigation("Client");
 
@@ -296,6 +348,8 @@ namespace TurnoLink.DataAccess.Migrations
 
             modelBuilder.Entity("TurnoLink.DataAccess.Entities.User", b =>
                 {
+                    b.Navigation("Availabilities");
+
                     b.Navigation("Bookings");
 
                     b.Navigation("Services");

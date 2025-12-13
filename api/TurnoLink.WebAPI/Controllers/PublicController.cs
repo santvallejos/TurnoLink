@@ -30,30 +30,6 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets all available active services
-        /// </summary>
-        [HttpGet("services")]
-        [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetAllActiveServices()
-        {
-            _logger.LogInformation("Client requesting available services");
-            var services = await _serviceService.GetAllActiveServicesAsync();
-            return Ok(services);
-        }
-
-        /// <summary>
-        /// Gets active services of a specific professional
-        /// </summary>
-        [HttpGet("services/professional/{userId:guid}")]
-        [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetServicesByProfessional(Guid userId)
-        {
-            _logger.LogInformation("Client requesting services of professional: {UserId}", userId);
-            var services = await _serviceService.GetActiveServicesByUserIdAsync(userId);
-            return Ok(services);
-        }
-
-        /// <summary>
         /// Gets details of a specific service
         /// </summary>
         [HttpGet("services/{id:guid}")]
@@ -71,6 +47,20 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Gets all services for User ID
+        /// </summary>
+        [HttpGet("{slug}")]
+        [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetServicesBySlugUser(string slug)
+        {
+            var services = await _serviceService.GetServicesBySlugAsync(slug);
+            if (services == null)
+                return NotFound(new { message = $"{slug}" });
+
+            return Ok(services);
+        }
+
+        /// <summary>
         /// Creates a new booking (client provides their details)
         /// </summary>
         [HttpPost("bookings")]
@@ -83,7 +73,7 @@ namespace TurnoLink.WebAPI.Controllers
                 _logger.LogInformation("Client creating booking for service: {ServiceId}", createBookingDto.ServiceId);
                 
                 var booking = await _bookingService.CreateBookingAsync(createBookingDto);
-                return CreatedAtAction(nameof(GetBookingById), new { id = booking.Id }, booking);
+                return booking;
             }
             catch (InvalidOperationException ex)
             {
@@ -107,23 +97,6 @@ namespace TurnoLink.WebAPI.Controllers
                 return NotFound(new { message = "Booking not found" });
 
             return Ok(booking);
-        }
-
-        /// <summary>
-        /// Checks availability for a specific time slot
-        /// </summary>
-        [HttpPost("bookings/check-availability")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public async Task<ActionResult<object>> CheckAvailability([FromBody] CheckAvailabilityDto checkAvailabilityDto)
-        {
-            _logger.LogInformation("Checking availability");
-            
-            var isAvailable = await _bookingService.CheckAvailabilityAsync(
-                checkAvailabilityDto.UserId,
-                checkAvailabilityDto.StartTime,
-                checkAvailabilityDto.DurationMinutes);
-
-            return Ok(new { available = isAvailable });
         }
     }
 

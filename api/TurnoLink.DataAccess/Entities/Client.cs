@@ -17,12 +17,20 @@ namespace TurnoLink.DataAccess.Entities
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Full Name of the client
+        /// Name of the client
         /// </summary>
         [Required]
         [MaxLength(200)]
-        [Column("full_name")]
-        public string FullName { get; set; } = string.Empty;
+        [Column("name")]
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Surname of the client
+        /// </summary>
+        [Required]
+        [MaxLength(200)]
+        [Column("surname")]
+        public string Surname { get; set; } = string.Empty;
 
         /// <summary>
         /// Email of the client

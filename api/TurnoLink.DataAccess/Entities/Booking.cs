@@ -32,6 +32,13 @@ namespace TurnoLink.DataAccess.Entities
         public Guid ServiceId { get; set; }
 
         /// <summary>
+        /// ID of the availability slot for the booking
+        /// </summary>
+        [Required]
+        [Column("availability_id")]
+        public Guid AvailabilityId { get; set; }
+
+        /// <summary>
         /// ID of the professional (user) who will provide the service
         /// </summary>
         [Required]
@@ -93,8 +100,9 @@ namespace TurnoLink.DataAccess.Entities
         public virtual User User { get; set; } = null!;
 
         /// <summary>
-        /// Notificaciones asociadas a esta reserva
+        /// Availability slot for the booking
         /// </summary>
-        //public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+        [ForeignKey("AvailabilityId")]
+        public virtual Availability Availability { get; set; } = null!;
     }
 }

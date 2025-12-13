@@ -1,8 +1,11 @@
+using System.Threading.Tasks;
 using TurnoLink.Business.DTOs;
 using TurnoLink.Business.Interfaces;
+using TurnoLink.DataAccess.Data;
 using TurnoLink.DataAccess.Entities;
 using TurnoLink.DataAccess.Enums;
 using TurnoLink.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace TurnoLink.Business.Services
 {
@@ -15,6 +18,7 @@ namespace TurnoLink.Business.Services
         private readonly IServiceRepository _serviceRepository;
         private readonly IUserRepository _userRepository;
         private readonly IBookingRepository _bookingRepository;
+        private readonly TurnoLinkDbContext _context;
 
         /// <summary>
         /// Constructor for AvailabilityService.
@@ -23,12 +27,15 @@ namespace TurnoLink.Business.Services
         /// <param name="serviceRepository">Service repository</param>
         /// <param name="userRepository">User repository</param>
         /// <param name="bookingRepository">Booking repository</param>
+        /// <param name="context">Database context</param>
         public AvailabilityService(
             IAvailabilityRepository availabilityRepository,
             IServiceRepository serviceRepository,
             IUserRepository userRepository,
-            IBookingRepository bookingRepository)
+            IBookingRepository bookingRepository,
+            TurnoLinkDbContext context)
         {
+            _context = context;
             _availabilityRepository = availabilityRepository;
             _serviceRepository = serviceRepository;
             _userRepository = userRepository;
@@ -102,138 +109,153 @@ namespace TurnoLink.Business.Services
             return result;
         }
 
-        /// <summary>
-        /// Creates a new availability slot
-        /// </summary>
-        public async Task<AvailabilityDto> CreateAvailabilityAsync(Guid userId, CreateAvailabilityDto createDto)
+        public async Task<IEnumerable<AvailabilityDto>> CreateAvailabilityAsync(Guid UserId, CreateAvailabilityDto createAvailability)
         {
-            // Validar que el usuario existe
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(UserId);
             if (user == null)
-                throw new ArgumentException("Usuario no encontrado");
+                throw new ArgumentException("User not found");
 
-            // Validar que el servicio existe y pertenece al usuario
-            var service = await _serviceRepository.GetByIdAsync(createDto.ServiceId);
-            if (service == null)
-                throw new ArgumentException("Servicio no encontrado");
+            var service = await _serviceRepository.GetByIdAsync(createAvailability.ServiceId);
+            if (service == null || service.UserId != UserId)
+                throw new ArgumentException("Service not found or does not belong to user");
 
-            if (service.UserId != userId)
-                throw new UnauthorizedAccessException("No tiene permiso para crear disponibilidad para este servicio");
+            if (createAvailability.StartTime < DateTime.UtcNow)
+                throw new ArgumentException("Start time cannot be in the past");
 
-            // Validar que la fecha es futura
-            if (createDto.StartTime <= DateTime.UtcNow)
-                throw new ArgumentException("La fecha de inicio debe ser futura");
-
-            // Validar que no hay solapamiento
-            var isAvailable = await IsSlotAvailableAsync(userId, createDto.StartTime, createDto.DurationMinutes);
-            if (!isAvailable)
-                throw new InvalidOperationException("El slot de tiempo se solapa con otra disponibilidad o reserva existente");
-
-            var availability = new Availability
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                ServiceId = createDto.ServiceId,
-                StartTime = createDto.StartTime,
-                DurationMinutes = createDto.DurationMinutes
-            };
+                List<AvailabilityDto> createdAvailabilities;
 
-            var created = await _availabilityRepository.AddAsync(availability);
-            return MapToDto(created, service.Name);
+                if (createAvailability.Repeat == RepeatAvailability.None)
+                {
+                    var availability = new Availability
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = UserId,
+                        ServiceId = createAvailability.ServiceId,
+                        StartTime = createAvailability.StartTime,
+                        EndTime = createAvailability.StartTime.AddMinutes(service.DurationMinutes),
+                        Repeat = createAvailability.Repeat,
+                    };
+                    await _availabilityRepository.AddAsync(availability);
+                    await _context.SaveChangesAsync();
+
+                    createdAvailabilities = new List<AvailabilityDto> { MapToDto(availability, service.Name) };
+                }
+                else
+                {
+                    if (createAvailability.EndTime == null)
+                        throw new ArgumentException("End time is required for recurring availabilities");
+
+                    var endTime = createAvailability.EndTime.Value;
+                    
+                    if (endTime <= createAvailability.StartTime)
+                        throw new ArgumentException("End time must be after start time");
+
+                    var maxEndDate = createAvailability.StartTime.AddMonths(6);
+                    if (endTime > maxEndDate)
+                        throw new ArgumentException("Cannot create recurring availabilities beyond 6 months");
+
+                    var current = createAvailability.StartTime;
+                    createdAvailabilities = new List<AvailabilityDto>();
+                    const int batchSize = 100;
+                    int count = 0;
+
+                    while (current <= endTime)
+                    {
+                        var newAvailability = new Availability
+                        {
+                            Id = Guid.NewGuid(),
+                            UserId = UserId,
+                            ServiceId = createAvailability.ServiceId,
+                            StartTime = current,
+                            EndTime = current.AddMinutes(service.DurationMinutes),
+                            Repeat = createAvailability.Repeat,
+                        };
+                        await _availabilityRepository.AddAsync(newAvailability);
+                        createdAvailabilities.Add(MapToDto(newAvailability, service.Name));
+
+                        count++;
+                        if (count % batchSize == 0)
+                        {
+                            await _context.SaveChangesAsync();
+                        }
+
+                        current = createAvailability.Repeat switch
+                        {
+                            RepeatAvailability.Daily => current.AddDays(1),
+                            RepeatAvailability.Weekly => current.AddDays(7),
+                            RepeatAvailability.Monthly => current.AddMonths(1),
+                            _ => throw new ArgumentException("Invalid repeat option"),
+                        };
+
+                        if (count > 1000)
+                            throw new InvalidOperationException("Too many availabilities would be created. Please adjust your date range.");
+                    }
+
+                    if (count % batchSize != 0)
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                await transaction.CommitAsync();
+                return createdAvailabilities;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
-        /// <summary>
-        /// Updates an existing availability
-        /// </summary>
         public async Task<AvailabilityDto> UpdateAvailabilityAsync(Guid id, Guid userId, UpdateAvailabilityDto updateDto)
         {
             var availability = await _availabilityRepository.GetByIdAsync(id);
             if (availability == null)
-                throw new ArgumentException("Disponibilidad no encontrada");
+                throw new ArgumentException("Availability not found");
 
             if (availability.UserId != userId)
-                throw new UnauthorizedAccessException("No tiene permiso para modificar esta disponibilidad");
-
-            // Validar si hay cambios en tiempo
-            if (updateDto.StartTime.HasValue || updateDto.DurationMinutes.HasValue)
+                throw new UnauthorizedAccessException("You don't have permission to update this availability");
+            
+            if (updateDto.StartTime != null)
             {
-                var newStartTime = updateDto.StartTime ?? availability.StartTime;
-                var newDuration = updateDto.DurationMinutes ?? availability.DurationMinutes;
+                if (updateDto.StartTime < DateTime.UtcNow)
+                    throw new ArgumentException("Start time cannot be in the past");
 
-                // Validar que la fecha sigue siendo futura
-                if (newStartTime <= DateTime.UtcNow)
-                    throw new ArgumentException("La fecha de inicio debe ser futura");
-
-                // Validar que no hay solapamiento (excluyendo esta misma disponibilidad)
-                var isAvailable = await IsSlotAvailableAsync(userId, newStartTime, newDuration, id);
-                if (!isAvailable)
-                    throw new InvalidOperationException("El slot de tiempo se solapa con otra disponibilidad o reserva existente");
-
-                availability.StartTime = newStartTime;
-                availability.DurationMinutes = newDuration;
+                availability.StartTime = updateDto.StartTime.Value;
+                var service = await _serviceRepository.GetByIdAsync(availability.ServiceId);
+                if (service != null)
+                {
+                    availability.EndTime = availability.StartTime.AddMinutes(service.DurationMinutes);
+                }
             }
 
             _availabilityRepository.Update(availability);
-
-            var service = await _serviceRepository.GetByIdAsync(availability.ServiceId);
-            return MapToDto(availability, service?.Name ?? "");
+            await _context.SaveChangesAsync();
+            var updatedService = await _serviceRepository.GetByIdAsync(availability.ServiceId);
+            return MapToDto(availability, updatedService?.Name ?? "");
         }
 
-        /// <summary>
-        /// Deletes an availability slot
-        /// </summary>
-        public async Task DeleteAvailabilityAsync(Guid id, Guid userId)
+        public async Task DeleteAvailabilityAsync(Guid availabilityId, Guid userId)
         {
-            var availability = await _availabilityRepository.GetByIdAsync(id);
+            var availability = await _availabilityRepository.GetByIdAsync(availabilityId);
+            
             if (availability == null)
-                throw new ArgumentException("Disponibilidad no encontrada");
+                throw new ArgumentException("Availability not found");
 
             if (availability.UserId != userId)
-                throw new UnauthorizedAccessException("No tiene permiso para eliminar esta disponibilidad");
+                throw new UnauthorizedAccessException("You don't have permission to delete this availability");
 
-            // Validar que no hay reservas asociadas a este slot
-            var bookings = await _bookingRepository.GetBookingsByUserIdAsync(userId);
-            var hasBookings = bookings.Any(b => 
-                b.StartTime >= availability.StartTime && 
-                b.StartTime < availability.StartTime.AddMinutes(availability.DurationMinutes));
+            var hasBookings = await _context.Set<Booking>()
+                .AnyAsync(b => b.AvailabilityId == availabilityId && b.Status != BookingStatus.Canceled);
 
             if (hasBookings)
-                throw new InvalidOperationException("No se puede eliminar una disponibilidad que tiene reservas asociadas");
+                throw new InvalidOperationException("Cannot delete availability with active bookings");
 
             _availabilityRepository.Remove(availability);
-        }
-
-        /// <summary>
-        /// Checks if a time slot is available (no overlap with other availabilities or bookings)
-        /// </summary>
-        public async Task<bool> IsSlotAvailableAsync(
-            Guid userId, 
-            DateTime startTime, 
-            int durationMinutes, 
-            Guid? excludeAvailabilityId = null)
-        {
-            var endTime = startTime.AddMinutes(durationMinutes);
-
-            // Verificar solapamiento con otras disponibilidades
-            var availabilities = await _availabilityRepository.GetAvailabilitiesByUserIdAsync(userId);
-            var overlappingAvailabilities = availabilities
-                .Where(a => excludeAvailabilityId == null || a.Id != excludeAvailabilityId)
-                .Where(a =>
-                {
-                    var aEndTime = a.StartTime.AddMinutes(a.DurationMinutes);
-                    return (startTime < aEndTime && endTime > a.StartTime);
-                });
-
-            if (overlappingAvailabilities.Any())
-                return false;
-
-            // Verificar solapamiento con reservas existentes
-            var bookings = await _bookingRepository.GetBookingsByUserIdAsync(userId);
-            var overlappingBookings = bookings
-                .Where(b => b.Status != BookingStatus.Canceled)
-                .Where(b => (startTime < b.EndTime && endTime > b.StartTime));
-
-            return !overlappingBookings.Any();
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -244,11 +266,9 @@ namespace TurnoLink.Business.Services
             return new AvailabilityDto
             {
                 Id = availability.Id,
-                UserId = availability.UserId,
                 ServiceId = availability.ServiceId,
                 StartTime = availability.StartTime,
-                EndTime = availability.StartTime.AddMinutes(availability.DurationMinutes),
-                DurationMinutes = availability.DurationMinutes,
+                EndTime = availability.EndTime ?? availability.StartTime,
                 ServiceName = serviceName
             };
         }

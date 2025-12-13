@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TurnoLink.DataAccess.Enums;
 
 namespace TurnoLink.DataAccess.Entities
 {
@@ -23,9 +24,9 @@ namespace TurnoLink.DataAccess.Entities
         [Column("user_id")]
         public Guid UserId { get; set; }
 
-        /// <sumary>
+        /// <summary>
         /// ID of the service associated with this availability
-        /// </sumary>
+        /// </summary>
         [Required]
         [Column("service_id")]
         public Guid ServiceId { get; set; }
@@ -38,9 +39,29 @@ namespace TurnoLink.DataAccess.Entities
         public DateTime StartTime { get; set; }
 
         /// <summary>
-        /// Duration of the availability in minutes
+        /// Date and time when the availability ends
         /// </summary>
-        [Column("duration_minutes")]
-        public int DurationMinutes { get; set; }
+        [Column("end_time")]
+        public DateTime? EndTime { get; set; }
+
+        /// <summary>
+        /// Repeat availability
+        /// </summary>
+        [Required]
+        [Column("repeat")]
+        public RepeatAvailability Repeat { get; set; } = RepeatAvailability.None;
+
+        /// Navegation properties
+        /// <summary>
+        /// Service being booked
+        /// </summary>
+        [ForeignKey("ServiceId")]
+        public virtual Service Service { get; set; } = null!;
+
+        /// <summary>
+        /// Professional (user) providing the service
+        /// </summary>
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; } = null!;
     }
 }

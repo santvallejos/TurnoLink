@@ -26,6 +26,12 @@ namespace TurnoLink.Business.Services
             _context = context;
         }
 
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            return users.Select(MapToDto);
+        }
+
         public async Task<UserDto?> GetUserByIdAsync(Guid id)
         {
             var user = await _userRepository.GetByIdAsync(id);
@@ -46,34 +52,23 @@ namespace TurnoLink.Business.Services
             return MapToDto(user);
         }
 
-        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
-        {
-            var users = await _userRepository.GetAllAsync();
-            return users.Select(MapToDto);
-        }
-
-        public async Task<IEnumerable<UserDto>> GetActiveUsersAsync()
-        {
-            var users = await _userRepository.GetActiveUsersAsync();
-            return users.Select(MapToDto);
-        }
-
         public async Task<UserDto> UpdateUserAsync(Guid id, UpdateUserDto updateUserDto)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
                 throw new InvalidOperationException("User not found");
 
-            if (!string.IsNullOrWhiteSpace(updateUserDto.FullName))
-                user.FullName = updateUserDto.FullName;
+            if (!string.IsNullOrWhiteSpace(updateUserDto.Name))
+                user.Name = updateUserDto.Name;
+
+            if (!string.IsNullOrWhiteSpace(updateUserDto.Surname))
+                user.Surname = updateUserDto.Surname;
 
             if (!string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber))
                 user.PhoneNumber = updateUserDto.PhoneNumber;
 
             if (updateUserDto.IsActive.HasValue)
                 user.IsActive = updateUserDto.IsActive.Value;
-
-            user.UpdatedAt = DateTime.UtcNow;
 
             _userRepository.Update(user);
             await _context.SaveChangesAsync();
@@ -97,12 +92,11 @@ namespace TurnoLink.Business.Services
         {
             return new UserDto
             {
-                Id = user.Id,
-                FullName = user.FullName,
+                Name = user.Name,
+                Surname = user.Surname,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                IsActive = user.IsActive,
-                CreatedAt = user.CreatedAt
+                IsActive = user.IsActive
             };
         }
     }

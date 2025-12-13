@@ -6,32 +6,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TurnoLink.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigrations : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "availabilities",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    service_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    start_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    duration_minutes = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_availabilities", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "clients",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    full_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    surname = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -46,13 +32,14 @@ namespace TurnoLink.DataAccess.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    full_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    surname = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     password_hash = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    slug = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,12 +71,41 @@ namespace TurnoLink.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "availabilities",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    service_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    start_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    end_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    repeat = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_availabilities", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_availabilities_services_service_id",
+                        column: x => x.service_id,
+                        principalTable: "services",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_availabilities_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "bookings",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     client_id = table.Column<Guid>(type: "uuid", nullable: false),
                     service_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    availability_id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     start_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     end_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -100,6 +116,12 @@ namespace TurnoLink.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_bookings", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_bookings_availabilities_availability_id",
+                        column: x => x.availability_id,
+                        principalTable: "availabilities",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_bookings_clients_client_id",
                         column: x => x.client_id,
@@ -134,6 +156,11 @@ namespace TurnoLink.DataAccess.Migrations
                 name: "IX_availabilities_user_id",
                 table: "availabilities",
                 column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_bookings_availability_id",
+                table: "bookings",
+                column: "availability_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_bookings_client_id",
@@ -182,10 +209,10 @@ namespace TurnoLink.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "availabilities");
+                name: "bookings");
 
             migrationBuilder.DropTable(
-                name: "bookings");
+                name: "availabilities");
 
             migrationBuilder.DropTable(
                 name: "clients");

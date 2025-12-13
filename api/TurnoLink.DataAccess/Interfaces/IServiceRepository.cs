@@ -8,27 +8,23 @@ namespace TurnoLink.DataAccess.Interfaces
     public interface IServiceRepository
     {
         /// <summary>
-        /// Gets all services
-        /// </summary>
-        Task<IEnumerable<Service>> GetAllAsync();
-
-        /// <summary>
         /// Gets a service by its ID
         /// </summary>
         /// <param name="id">Service ID</param>
         Task<Service?> GetByIdAsync(Guid id);
 
         /// <summary>
-        /// Gets active services by user ID
-        /// </summary>
-        /// <param name="userId">User ID</param>
-        Task<IEnumerable<Service>> GetActiveServicesByUserIdAsync(Guid userId);
-
-        /// <summary>
         /// Gets all services by user ID
         /// </summary>
         /// <param name="userId">User ID</param>
         Task<IEnumerable<Service>> GetServicesByUserIdAsync(Guid userId);
+
+        /// <summary>
+        /// Gets all services by slug
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Service>> GetServicesBySlug(string slug);
 
         /// <summary>
         /// Adds a new service

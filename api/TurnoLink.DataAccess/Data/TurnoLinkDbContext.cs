@@ -88,11 +88,6 @@ namespace TurnoLink.DataAccess.Data
                     .HasForeignKey(b => b.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                /* entity.HasMany(b => b.Notifications)
-                    .WithOne(n => n.Booking)
-                    .HasForeignKey(n => n.BookingId)
-                    .OnDelete(DeleteBehavior.Cascade); */
-
                 entity.HasIndex(b => b.StartTime);
                 entity.HasIndex(b => b.Status);
             });
@@ -103,18 +98,26 @@ namespace TurnoLink.DataAccess.Data
                 entity.HasIndex(a => a.UserId);
                 entity.HasIndex(a => a.ServiceId);
                 entity.HasIndex(a => a.StartTime);
-            });
 
-            // Configuration of Notification
-            /* modelBuilder.Entity<Notification>(entity =>
-            {
-                entity.HasOne(n => n.Booking)
-                    .WithMany(b => b.Notifications)
-                    .HasForeignKey(n => n.BookingId)
+                entity.HasOne(a => a.User)
+                    .WithMany(u => u.Availabilities)
+                    .HasForeignKey(a => a.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasIndex(n => n.Status);
-            }); */
+                entity.HasOne(a => a.Service)
+                    .WithMany()
+                    .HasForeignKey(a => a.ServiceId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configuration of Booking - Availability relationship
+            modelBuilder.Entity<Booking>(entity =>
+            {
+                entity.HasOne(b => b.Availability)
+                    .WithMany()
+                    .HasForeignKey(b => b.AvailabilityId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
 
         /// <summary>

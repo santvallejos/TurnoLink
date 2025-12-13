@@ -17,6 +17,7 @@ namespace TurnoLink.Business.Services
         private readonly IClientRepository _clientRepository;
         private readonly IServiceRepository _serviceRepository;
         private readonly IiCalDotnet _serviceIcalDotnet;
+        private readonly IAvailabilityRepository _availabilityRepository;
         private readonly TurnoLinkDbContext _context;
         private readonly ResendService _resendService;
 
@@ -32,12 +33,14 @@ namespace TurnoLink.Business.Services
             IClientRepository clientRepository,
             IServiceRepository serviceRepository,
             IiCalDotnet serviceIcalDotnet,
+            IAvailabilityRepository availabilityRepository,
             ResendService resendService,
             TurnoLinkDbContext context)
         {
             _bookingRepository = bookingRepository;
             _clientRepository = clientRepository;
             _serviceRepository = serviceRepository;
+            _availabilityRepository = availabilityRepository;
             _serviceIcalDotnet = serviceIcalDotnet;
             _resendService = resendService;
             _context = context;
@@ -77,6 +80,10 @@ namespace TurnoLink.Business.Services
             if (service == null || !service.IsActive)
                 throw new InvalidOperationException("Service not found or not available");
 
+            var avalaibility = await _availabilityRepository.GetByIdAsync(createBookingDto.AvailabilityId);
+            if (avalaibility == null || avalaibility.UserId != service.UserId)
+                throw new InvalidOperationException("Availability not found or does not match the service's user");
+
             // Find or create client
             var client = await _clientRepository.GetByEmailAsync(createBookingDto.ClientEmail);
             if (client == null)
@@ -84,7 +91,8 @@ namespace TurnoLink.Business.Services
                 client = new Client
                 {
                     Id = Guid.NewGuid(),
-                    FullName = createBookingDto.ClientName,
+                    Name = createBookingDto.ClientName,
+                    Surname = createBookingDto.ClientSurname,
                     Email = createBookingDto.ClientEmail,
                     PhoneNumber = createBookingDto.ClientPhone,
                     CreatedAt = DateTime.UtcNow
@@ -93,12 +101,9 @@ namespace TurnoLink.Business.Services
             }
 
             // Calculate end time based on service duration
-            var endTime = createBookingDto.StartTime.AddMinutes(service.DurationMinutes);
+            //var endTime = createBookingDto.StartTime.AddMinutes(service.DurationMinutes);
 
-            // Check availability
-            var isAvailable = await CheckAvailabilityAsync(service.UserId, createBookingDto.StartTime, service.DurationMinutes);
-            if (!isAvailable)
-                throw new InvalidOperationException("The selected time slot is not available");
+            var endTime = avalaibility.StartTime.AddMinutes(service.DurationMinutes);
 
             var booking = new Booking
             {
@@ -106,7 +111,7 @@ namespace TurnoLink.Business.Services
                 ClientId = client.Id,
                 ServiceId = service.Id,
                 UserId = service.UserId,
-                StartTime = createBookingDto.StartTime,
+                StartTime = avalaibility.StartTime,
                 EndTime = endTime,
                 Status = BookingStatus.Pending,
                 Notes = createBookingDto.Notes,
@@ -160,35 +165,19 @@ namespace TurnoLink.Business.Services
             return true;
         }
 
-        public async Task<bool> CheckAvailabilityAsync(Guid userId, DateTime startTime, int durationMinutes)
-        {
-            var endTime = startTime.AddMinutes(durationMinutes);
-            var date = startTime.Date;
-
-            var existingBookings = await _bookingRepository.GetBookingsByUserAndDateAsync(userId, date);
-            
-            // Verificar si hay conflictos con reservas existentes (excluyendo canceladas)
-            var hasConflict = existingBookings
-                .Where(b => b.Status != BookingStatus.Canceled)
-                .Any(b => b.StartTime < endTime && b.EndTime > startTime);
-
-            return !hasConflict;
-        }
-
         private static BookingDto MapToDto(Booking booking)
         {
             return new BookingDto
             {
                 Id = booking.Id,
-                ClientId = booking.ClientId,
-                ClientName = booking.Client?.FullName ?? string.Empty,
+                ClientName = $"{booking.Client?.Name} {booking.Client?.Surname}" ?? string.Empty,
                 ClientEmail = booking.Client?.Email ?? string.Empty,
                 ClientPhone = booking.Client?.PhoneNumber,
+                UserId = booking.UserId,
                 ServiceId = booking.ServiceId,
                 ServiceName = booking.Service?.Name ?? string.Empty,
                 ServicePrice = booking.Service?.Price ?? 0,
-                UserId = booking.UserId,
-                UserName = booking.User?.FullName ?? string.Empty,
+                UserName = $"{booking.User?.Name} {booking.User?.Surname}" ?? string.Empty,
                 StartTime = booking.StartTime,
                 EndTime = booking.EndTime,
                 Status = booking.Status.ToString(),

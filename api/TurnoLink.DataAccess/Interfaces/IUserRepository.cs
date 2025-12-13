@@ -25,11 +25,6 @@ namespace TurnoLink.DataAccess.Interfaces
         Task<User?> GetByEmailAsync(string email);
 
         /// <summary>
-        /// Gets active users
-        /// </summary>
-        Task<IEnumerable<User>> GetActiveUsersAsync();
-
-        /// <summary>
         /// Adds a new user
         /// </summary>
         /// <param name="entity">User entity</param>

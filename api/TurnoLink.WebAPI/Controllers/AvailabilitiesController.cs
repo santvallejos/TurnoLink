@@ -117,7 +117,7 @@ namespace TurnoLink.WebAPI.Controllers
             {
                 var userId = GetUserIdFromClaims();
                 var availability = await _availabilityService.CreateAvailabilityAsync(userId, createDto);
-                return CreatedAtAction(nameof(GetById), new { id = availability.Id }, availability);
+                return CreatedAtAction(nameof(GetById), new { id = availability }, availability);
             }
             catch (ArgumentException ex)
             {
@@ -196,30 +196,6 @@ namespace TurnoLink.WebAPI.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
-        }
-
-        /// <summary>
-        /// Checks if a time slot is available
-        /// </summary>
-        /// <param name="startTime">Start time (ISO 8601 format)</param>
-        /// <param name="durationMinutes">Duration in minutes</param>
-        /// <returns>Availability status</returns>
-        [HttpGet("check-availability")]
-        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
-        public async Task<ActionResult<object>> CheckAvailability(
-            [FromQuery] DateTime startTime,
-            [FromQuery] int durationMinutes)
-        {
-            var userId = GetUserIdFromClaims();
-            var isAvailable = await _availabilityService.IsSlotAvailableAsync(userId, startTime, durationMinutes);
-            
-            return Ok(new 
-            { 
-                isAvailable,
-                startTime,
-                endTime = startTime.AddMinutes(durationMinutes),
-                durationMinutes
-            });
         }
 
         /// <summary>

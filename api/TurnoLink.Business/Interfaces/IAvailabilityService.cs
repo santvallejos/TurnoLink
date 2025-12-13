@@ -43,7 +43,7 @@ namespace TurnoLink.Business.Interfaces
         /// <param name="userId">User ID creating the availability</param>
         /// <param name="createDto">Availability creation data</param>
         /// <returns>Created availability DTO</returns>
-        Task<AvailabilityDto> CreateAvailabilityAsync(Guid userId, CreateAvailabilityDto createDto);
+        Task<IEnumerable<AvailabilityDto>> CreateAvailabilityAsync(Guid userId, CreateAvailabilityDto createDto);
 
         /// <summary>
         /// Updates an existing availability
@@ -60,15 +60,5 @@ namespace TurnoLink.Business.Interfaces
         /// <param name="id">Availability ID</param>
         /// <param name="userId">User ID performing the deletion</param>
         Task DeleteAvailabilityAsync(Guid id, Guid userId);
-
-        /// <summary>
-        /// Checks if a time slot overlaps with existing availabilities or bookings
-        /// </summary>
-        /// <param name="userId">User ID</param>
-        /// <param name="startTime">Start time</param>
-        /// <param name="durationMinutes">Duration in minutes</param>
-        /// <param name="excludeAvailabilityId">Optional availability ID to exclude from check</param>
-        /// <returns>True if slot is available, false if it overlaps</returns>
-        Task<bool> IsSlotAvailableAsync(Guid userId, DateTime startTime, int durationMinutes, Guid? excludeAvailabilityId = null);
     }
 }

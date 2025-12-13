@@ -17,12 +17,20 @@ namespace TurnoLink.DataAccess.Entities
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Full name of the user
+        /// Name of the user
         /// </summary>
         [Required]
         [MaxLength(200)]
-        [Column("full_name")]
-        public string FullName { get; set; } = string.Empty;
+        [Column("name")]
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Surname of the user
+        /// </summary>
+        [Required]
+        [MaxLength(200)]
+        [Column("surname")]
+        public string Surname { get; set; } = string.Empty;
 
         /// <summary>
         /// Email of the user
@@ -45,7 +53,15 @@ namespace TurnoLink.DataAccess.Entities
         /// </summary>
         [MaxLength(20)]
         [Column("phone_number")]
-        public string? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Slug for the user profile
+        /// </summary>
+        [Required]
+        [MaxLength(100)]
+        [Column("slug")]
+        public string Slug { get; set; } = string.Empty;
 
         /// <summary>
         /// Indicates if the user is active
@@ -59,12 +75,6 @@ namespace TurnoLink.DataAccess.Entities
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        /// <summary>
-        /// Last update date
-        /// </summary>
-        [Column("updated_at")]
-        public DateTime? UpdatedAt { get; set; }
-
         // Navigation properties
         /// <summary>
         /// Services offered by this professional
@@ -75,5 +85,10 @@ namespace TurnoLink.DataAccess.Entities
         /// Bookings associated with this professional
         /// </summary>
         public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
+        /// <summary>
+        /// Availabilities created by this professional
+        /// </summary>
+        public virtual ICollection<Availability> Availabilities { get; set; } = new List<Availability>();
     }
 }

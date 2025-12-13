@@ -39,20 +39,6 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets active services of the authenticated professional
-        /// </summary>
-        [HttpGet("my-services/active")]
-        [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetMyActiveServices()
-        {
-            var userId = GetAuthenticatedUserId();
-            _logger.LogInformation("Getting active services for user: {UserId}", userId);
-            
-            var services = await _serviceService.GetActiveServicesByUserIdAsync(userId);
-            return Ok(services);
-        }
-
-        /// <summary>
         /// Gets a specific service by ID
         /// </summary>
         [HttpGet("{id:guid}")]
@@ -67,6 +53,20 @@ namespace TurnoLink.WebAPI.Controllers
                 return NotFound(new { message = "Service not found" });
 
             return Ok(service);
+        }
+
+        /// <summary>
+        /// Gets all services for User ID
+        /// </summary>
+        [HttpGet("{slug}")]
+        [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetServicesBySlugUser(string slug)
+        {
+            var services = await _serviceService.GetServicesBySlugAsync(slug);
+            if (services == null)
+                return NotFound(new { message = $"{slug}" });
+
+            return Ok(services);
         }
 
         /// <summary>

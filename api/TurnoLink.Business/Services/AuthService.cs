@@ -1,8 +1,9 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using System.Xml.Linq;
 using TurnoLink.Business.DTOs;
 using TurnoLink.Business.Interfaces;
 using TurnoLink.DataAccess.Data;
@@ -35,6 +36,10 @@ namespace TurnoLink.Business.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto registerDto)
         {
+            // Validate passwords match
+            if (registerDto.Password != registerDto.RepeatPassword)
+                throw new InvalidOperationException("Passwords do not match");
+
             // Check if email is already registered
             var existingUser = await _userRepository.GetByEmailAsync(registerDto.Email);
             if (existingUser != null)
@@ -43,14 +48,22 @@ namespace TurnoLink.Business.Services
             // Password hashing
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
 
+            // Generate slug safely
+            var fullName = $"{registerDto.Name}-{registerDto.Surname}".ToLowerInvariant();
+            var userSlug = fullName.Length > 20 ? fullName.Substring(0, 20) : fullName;
+
+            var slugId = Guid.NewGuid().ToString("N").Substring(0, 6);
+
             // Create user
             var user = new User
             {
                 Id = Guid.NewGuid(),
-                FullName = registerDto.FullName,
+                Name = registerDto.Name,
+                Surname = registerDto.Surname,
                 Email = registerDto.Email,
                 PasswordHash = passwordHash,
-                PhoneNumber = registerDto.PhoneNumber,
+                PhoneNumber = registerDto.PhoneNumber ?? string.Empty,
+                Slug = $"{userSlug}-{slugId}",
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -130,7 +143,8 @@ namespace TurnoLink.Business.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Surname, user.Surname),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim("userId", user.Id.ToString())
             };

@@ -6,18 +6,28 @@ namespace TurnoLink.Business.DTOs
     {
         [Required (ErrorMessage = "Email is required")]
         public string Email { get; set; } = string.Empty;
+        
         [Required (ErrorMessage = "Password is required")]
         public string Password { get; set; } = string.Empty;
     }
 
     public class RegisterDto
     {
-        [Required (ErrorMessage = "Full name is required")]
-        public string FullName { get; set; } = string.Empty;
+        [Required (ErrorMessage = "Name is required")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Surname is required")]
+        public string Surname { get; set; } = string.Empty;
+        
         [Required (ErrorMessage = "Email is required")]
         public string Email { get; set; } = string.Empty;
+        
         [Required (ErrorMessage = "Password is required")]
         public string Password { get; set; } = string.Empty;
+
+        [Required (ErrorMessage = "Repeat password is required")]
+        public string RepeatPassword { get; set; } = string.Empty;
+
         public string? PhoneNumber { get; set; }
     }
 

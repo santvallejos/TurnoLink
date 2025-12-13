@@ -25,11 +25,6 @@ namespace TurnoLink.Business.Interfaces
         Task<UserDto?> GetUserByEmailAsync(string email);
 
         /// <summary>
-        /// Get all active users.
-        /// </summary>
-        Task<IEnumerable<UserDto>> GetActiveUsersAsync();
-
-        /// <summary>
         /// Update an existing user.
         /// </summary>
         /// <param name="id">User ID</param>

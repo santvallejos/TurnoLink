@@ -65,11 +65,11 @@ namespace TurnoLink.Business.Services
 
                 // Serializar el calendario
                 var serializer = new CalendarSerializer();
-                return serializer.SerializeToString(calendar);
+                return serializer.SerializeToString(calendar) ?? string.Empty;
             }
             catch (Exception)
             {
-                return null;
+                return string.Empty;
             }
         }
     }

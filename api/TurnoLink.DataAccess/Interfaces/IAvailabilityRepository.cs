@@ -2,50 +2,50 @@ using TurnoLink.DataAccess.Entities;
 
 namespace TurnoLink.DataAccess.Interfaces
 {
-    /// <sumary>
+    /// <summary>
     /// Interface for availability repository
-    /// </sumary>
+    /// </summary>
     public interface IAvailabilityRepository
     {
-        /// <sumary>
+        /// <summary>
         /// Get availability entities by ID
-        /// </sumary>
+        /// </summary>
         /// <param name="id">Availability ID</param>
         Task<Availability?> GetByIdAsync(Guid id);
 
-        /// <sumary>
+        /// <summary>
         /// Gets availabilities by user ID
-        /// </sumary>
+        /// </summary>
         /// <param name="userId">User ID</param>
         Task<IEnumerable<Availability>> GetAvailabilitiesByUserIdAsync(Guid userId);
 
-        /// <sumary>
+        /// <summary>
         /// Gets availabilities by service ID
-        /// </sumary>
+        /// </summary>
         /// <param name="serviceId">Service ID</param>
         Task<IEnumerable<Availability>> GetAvailabilitiesByServiceIdAsync(Guid serviceId);
 
-        /// <sumary>
+        /// <summary>
         /// Adds a new availability
-        /// </sumary>
+        /// </summary>
         /// <param name="entity">Availability entity</param>
         Task<Availability> AddAsync(Availability entity);
 
-        /// <sumary>
+        /// <summary>
         /// Updates an existing availability
-        /// </sumary>
+        /// </summary>
         /// <param name="entity">Availability entity</param>
         void Update(Availability entity);
 
-        /// <sumary>
+        /// <summary>
         /// Removes an availability
-        /// </sumary>
+        /// </summary>
         /// <param name="entity">Availability entity</param>
         void Remove(Availability entity);
 
-        /// <sumary>
+        /// <summary>
         /// Checks if an availability exists that meets a condition
-        /// </sumary>
+        /// </summary>
         /// <param name="predicate">Condition to check</param>
         Task<bool> ExistsAsync(Func<Availability, bool> predicate);
     }

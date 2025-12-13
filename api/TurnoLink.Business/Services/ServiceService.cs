@@ -38,16 +38,6 @@ namespace TurnoLink.Business.Services
             return services.Select(MapToDto);
         }
 
-        public async Task<IEnumerable<ServiceDto>> GetActiveServicesByUserIdAsync(Guid userId)
-        {
-            var services = await _serviceRepository.GetActiveServicesByUserIdAsync(userId);
-
-            if (services == null)
-                throw new InvalidOperationException("User not found");
-
-            return services.Select(MapToDto);
-        }
-
         public async Task<ServiceDto?> GetServiceByIdAsync(Guid id)
         {
             var service = await _serviceRepository.GetByIdAsync(id);
@@ -56,6 +46,16 @@ namespace TurnoLink.Business.Services
                 throw new InvalidOperationException("Service not found");
 
             return MapToDto(service);
+        }
+
+        public async Task<IEnumerable<ServiceDto>> GetServicesBySlugAsync(string slug)
+        {
+            var services = await _serviceRepository.GetServicesBySlug(slug);
+
+            if (services == null)
+                throw new InvalidOperationException("User not found");
+
+            return services.Select(MapToDto);
         }
 
         public async Task<ServiceDto> CreateServiceAsync(Guid userId, CreateServiceDto createServiceDto)
@@ -130,25 +130,17 @@ namespace TurnoLink.Business.Services
             return true;
         }
 
-        public async Task<IEnumerable<ServiceDto>> GetAllActiveServicesAsync()
-        {
-            var services = await _serviceRepository.GetAllAsync();
-            return services.Where(s => s.IsActive).Select(MapToDto);
-        }
-
         private static ServiceDto MapToDto(Service service)
         {
             return new ServiceDto
             {
                 Id = service.Id,
-                UserId = service.UserId,
                 Name = service.Name,
                 Description = service.Description,
                 DurationMinutes = service.DurationMinutes,
                 Price = service.Price,
                 IsActive = service.IsActive,
-                CreatedAt = service.CreatedAt,
-                UserName = service.User?.FullName ?? string.Empty
+                UserName = $"{service.User?.Name}  {service.User?.Surname}" ?? string.Empty
             };
         }
     }

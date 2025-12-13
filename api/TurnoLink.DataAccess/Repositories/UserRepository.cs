@@ -33,13 +33,6 @@ namespace TurnoLink.DataAccess.Repositories
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
         }
 
-        public async Task<IEnumerable<User>> GetActiveUsersAsync()
-        {
-            return await _db.Users
-                .Where(u => u.IsActive)
-                .ToListAsync();
-        }
-
         public async Task<User> AddAsync(User entity)
         {
             await _db.Users.AddAsync(entity);

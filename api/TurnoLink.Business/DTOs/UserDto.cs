@@ -23,6 +23,7 @@ namespace TurnoLink.Business.DTOs
         public string Surname { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+        public string Slug { get; set; } = string.Empty;
         public bool IsActive { get; set; }
     }
 }

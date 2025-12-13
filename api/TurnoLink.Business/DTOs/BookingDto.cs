@@ -28,9 +28,9 @@ namespace TurnoLink.Business.DTOs
         public string? ClientPhone { get; set; }
         public Guid UserId { get; set; }
         public Guid ServiceId { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public string ServiceName { get; set; } = string.Empty;
         public decimal ServicePrice { get; set; }
-        public string UserName { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public string Status { get; set; } = string.Empty;

@@ -5,29 +5,36 @@ namespace TurnoLink.Business.DTOs
 {
     public class CreateAvailabilityDto
     {
-        private DateTime _endTime;
+        
         [Required(ErrorMessage = "Service ID is required")]
         public Guid ServiceId { get; set; }
 
         [Required(ErrorMessage = "Start date and time is required")]
         public DateTime StartTime { get; set; }
+    }
+
+    public class CreateRecurringAvailabilityDto : CreateAvailabilityDto
+    {
+        private RepeatAvailability _repeat;
 
         [Required(ErrorMessage = "End date and time is required")]
         public RepeatAvailability Repeat 
-        { get; set; }
-
-        public DateTime? EndTime 
         { 
-            get => _endTime; 
+            get => _repeat; 
             set
             {
-                if (Repeat != RepeatAvailability.None && value == null)
+                if (value == RepeatAvailability.None)
                 {
-                    throw new ValidationException("EndTime is required when Repeat is set");
+                    throw new ValidationException("Repeat frequency must be specified for recurring availability.");
                 }
-                _endTime = value ?? DateTime.MinValue;
+                else
+                {
+                    _repeat = value;
+                }
             }
         }
+
+        public DateTime EndTime { get; set;}
     }
 
     public class UpdateAvailabilityDto

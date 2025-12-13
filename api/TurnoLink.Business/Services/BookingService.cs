@@ -80,9 +80,12 @@ namespace TurnoLink.Business.Services
             if (service == null || !service.IsActive)
                 throw new InvalidOperationException("Service not found or not available");
 
-            var avalaibility = await _availabilityRepository.GetByIdAsync(createBookingDto.AvailabilityId);
-            if (avalaibility == null || avalaibility.UserId != service.UserId)
-                throw new InvalidOperationException("Availability not found or does not match the service's user");
+            var availability = await _availabilityRepository.GetByIdAsync(createBookingDto.AvailabilityId);
+            if (availability == null)
+                throw new InvalidOperationException("Availability not found");
+            
+            if (availability.UserId != service.UserId)
+                throw new InvalidOperationException("Availability does not match the service's user");
 
             // Find or create client
             var client = await _clientRepository.GetByEmailAsync(createBookingDto.ClientEmail);
@@ -98,12 +101,11 @@ namespace TurnoLink.Business.Services
                     CreatedAt = DateTime.UtcNow
                 };
                 await _clientRepository.AddAsync(client);
+                await _context.SaveChangesAsync();
             }
 
             // Calculate end time based on service duration
-            //var endTime = createBookingDto.StartTime.AddMinutes(service.DurationMinutes);
-
-            var endTime = avalaibility.StartTime.AddMinutes(service.DurationMinutes);
+            var endTime = availability.StartTime.AddMinutes(service.DurationMinutes);
 
             var booking = new Booking
             {
@@ -111,7 +113,8 @@ namespace TurnoLink.Business.Services
                 ClientId = client.Id,
                 ServiceId = service.Id,
                 UserId = service.UserId,
-                StartTime = avalaibility.StartTime,
+                AvailabilityId = createBookingDto.AvailabilityId,
+                StartTime = availability.StartTime,
                 EndTime = endTime,
                 Status = BookingStatus.Pending,
                 Notes = createBookingDto.Notes,
@@ -125,8 +128,9 @@ namespace TurnoLink.Business.Services
             var createdBooking = await _bookingRepository.GetByIdAsync(booking.Id);
             if (createdBooking == null)
                 throw new InvalidOperationException("Error creating booking");
-            //await _serviceIcalDotnet.CreateFileIcsBookingAsync(MapToDto(createdBooking));
-            await _resendService.SendEmailAsync(MapToDto(createdBooking!), await _serviceIcalDotnet.CreateFileIcsBookingAsync(MapToDto(createdBooking!))); // You need to generate the ICS string here
+            
+            await _resendService.SendEmailAsync(MapToDto(createdBooking!), await _serviceIcalDotnet.CreateFileIcsBookingAsync(MapToDto(createdBooking!)));
+            
             return MapToDto(createdBooking!);
         }
 
@@ -173,16 +177,15 @@ namespace TurnoLink.Business.Services
                 ClientName = $"{booking.Client?.Name} {booking.Client?.Surname}" ?? string.Empty,
                 ClientEmail = booking.Client?.Email ?? string.Empty,
                 ClientPhone = booking.Client?.PhoneNumber,
-                UserId = booking.UserId,
                 ServiceId = booking.ServiceId,
+                UserId = booking.UserId,
                 ServiceName = booking.Service?.Name ?? string.Empty,
                 ServicePrice = booking.Service?.Price ?? 0,
                 UserName = $"{booking.User?.Name} {booking.User?.Surname}" ?? string.Empty,
                 StartTime = booking.StartTime,
                 EndTime = booking.EndTime,
                 Status = booking.Status.ToString(),
-                Notes = booking.Notes,
-                CreatedAt = booking.CreatedAt
+                Notes = booking.Notes
             };
         }
     }

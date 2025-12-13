@@ -52,20 +52,6 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Gets availabilities by user ID (public endpoint for clients)
-        /// </summary>
-        /// <param name="userId">User ID</param>
-        /// <returns>List of availabilities</returns>
-        [HttpGet("user/{userId}")]
-        [AllowAnonymous]
-        [ProducesResponseType(typeof(IEnumerable<AvailabilityDto>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<AvailabilityDto>>> GetByUserId(Guid userId)
-        {
-            var availabilities = await _availabilityService.GetAvailabilitiesByUserIdAsync(userId);
-            return Ok(availabilities);
-        }
-
-        /// <summary>
         /// Gets availabilities by service ID
         /// </summary>
         /// <param name="serviceId">Service ID</param>
@@ -111,12 +97,43 @@ namespace TurnoLink.WebAPI.Controllers
         [ProducesResponseType(typeof(AvailabilityDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<AvailabilityDto>> Create([FromBody] CreateAvailabilityDto createDto)
+        public async Task<ActionResult<AvailabilityDto>> CreateNotRecurring([FromBody] CreateAvailabilityDto createDto)
         {
             try
             {
                 var userId = GetUserIdFromClaims();
-                var availability = await _availabilityService.CreateAvailabilityAsync(userId, createDto);
+                var availability = await _availabilityService.CreateAvailabilityNotRecurringAsync(userId, createDto);
+                return CreatedAtAction(nameof(GetById), new { id = availability }, availability);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Creates a new availability slot with recurring options
+        /// </summary>
+        /// <param name="createDto">Availability creation data</param>
+        /// <returns>Created availability</returns>
+        [HttpPost("/recurring")]
+        [ProducesResponseType(typeof(AvailabilityDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<AvailabilityDto>> CreateWithRecurring([FromBody] CreateRecurringAvailabilityDto createDto)
+        {
+            try 
+            {
+                var userId = GetUserIdFromClaims();
+                var availability = await _availabilityService.CreateAvailabilityWhitRecurringAsync(userId, createDto);
                 return CreatedAtAction(nameof(GetById), new { id = availability }, availability);
             }
             catch (ArgumentException ex)

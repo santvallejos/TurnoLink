@@ -174,7 +174,7 @@ namespace TurnoLink.Business.Services
         {
             return int.TryParse(_configuration["Jwt:ExpirationMinutes"], out var minutes) 
                 ? minutes 
-                : 60;
+                : 120;
         }
     }
 }

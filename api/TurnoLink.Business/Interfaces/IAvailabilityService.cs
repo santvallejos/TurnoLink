@@ -1,4 +1,5 @@
 using TurnoLink.Business.DTOs;
+using TurnoLink.DataAccess.Entities;
 
 namespace TurnoLink.Business.Interfaces
 {
@@ -15,10 +16,10 @@ namespace TurnoLink.Business.Interfaces
         Task<AvailabilityDto?> GetByIdAsync(Guid id);
 
         /// <summary>
-        /// Gets all availabilities for a specific user (professional)
+        /// Gets all availabilities for a specific user
         /// </summary>
-        /// <param name="userId">User ID</param>
-        /// <returns>Collection of availability DTOs</returns>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<IEnumerable<AvailabilityDto>> GetAvailabilitiesByUserIdAsync(Guid userId);
 
         /// <summary>
@@ -38,12 +39,20 @@ namespace TurnoLink.Business.Interfaces
         Task<IEnumerable<AvailabilityDto>> GetAvailableSlotsByDateRangeAsync(Guid userId, DateTime startDate, DateTime endDate);
 
         /// <summary>
-        /// Creates a new availability slot
+        /// Creates a new availability without recurring 
         /// </summary>
         /// <param name="userId">User ID creating the availability</param>
         /// <param name="createDto">Availability creation data</param>
         /// <returns>Created availability DTO</returns>
-        Task<IEnumerable<AvailabilityDto>> CreateAvailabilityAsync(Guid userId, CreateAvailabilityDto createDto);
+        public Task<AvailabilityDto> CreateAvailabilityNotRecurringAsync(Guid userId, CreateAvailabilityDto createDto);
+
+        /// <summary>
+        /// Creates a new availability with recurring options
+        /// </summary>
+        /// <param name="userId">User ID creating the availability</param>
+        /// <param name="createDto">Availability creation data</param>
+        /// <returns>Created availability DTO</returns>
+        Task<IEnumerable<AvailabilityDto>> CreateAvailabilityWhitRecurringAsync(Guid userId, CreateRecurringAvailabilityDto createDto);
 
         /// <summary>
         /// Updates an existing availability

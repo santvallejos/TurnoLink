@@ -5,6 +5,7 @@ using TurnoLink.DataAccess.Entities;
 using TurnoLink.DataAccess.Enums;
 using TurnoLink.DataAccess.Interfaces;
 using TurnoLink.Business.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace TurnoLink.Business.Services
 {
@@ -86,6 +87,16 @@ namespace TurnoLink.Business.Services
             
             if (availability.UserId != service.UserId)
                 throw new InvalidOperationException("Availability does not match the service's user");
+
+            // Validate that the availability is not already booked
+            var existingBooking = await _context.Bookings
+                .Where(b => b.AvailabilityId == createBookingDto.AvailabilityId 
+                    && b.Status != BookingStatus.Canceled 
+                    && b.Status != BookingStatus.NoShow)
+                .FirstOrDefaultAsync();
+
+            if (existingBooking != null)
+                throw new InvalidOperationException("This time slot is already booked. Please select another availability.");
 
             // Find or create client
             var client = await _clientRepository.GetByEmailAsync(createBookingDto.ClientEmail);

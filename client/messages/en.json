@@ -1,0 +1,103 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "confirm": "Confirm"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "services": "Services",
+    "bookings": "Bookings",
+    "availability": "Availability",
+    "profile": "Profile",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "Don't have an account?",
+      "register": "Register here"
+    },
+    "register": {
+      "title": "Create account",
+      "name": "First name",
+      "surname": "Last name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "password": "Password",
+      "repeatPassword": "Repeat password",
+      "submit": "Create account",
+      "hasAccount": "Already have an account?",
+      "login": "Login here"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid credentials",
+      "emailExists": "Email already registered",
+      "passwordMismatch": "Passwords do not match"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome, {name}",
+    "summary": {
+      "title": "Summary",
+      "todayBookings": "Today's bookings",
+      "pendingBookings": "Pending",
+      "totalServices": "Active services"
+    }
+  },
+  "services": {
+    "title": "My Services",
+    "empty": "You have no services",
+    "create": "Create service",
+    "form": {
+      "name": "Service name",
+      "description": "Description",
+      "duration": "Duration (minutes)",
+      "price": "Price"
+    }
+  },
+  "bookings": {
+    "title": "My Bookings",
+    "empty": "You have no bookings",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
+    "client": "Client",
+    "service": "Service",
+    "date": "Date",
+    "actions": {
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    }
+  },
+  "public": {
+    "booking": {
+      "title": "Book appointment",
+      "selectService": "Select a service",
+      "selectSlot": "Select a time slot",
+      "yourDetails": "Your details",
+      "name": "First name",
+      "surname": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "notes": "Notes (optional)",
+      "submit": "Confirm booking",
+      "success": "Booking confirmed!",
+      "successMessage": "You will receive an email with the details"
+    }
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ha ocurrido un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Volver",
+    "confirm": "Confirmar"
+  },
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "services": "Servicios",
+    "bookings": "Reservas",
+    "availability": "Disponibilidad",
+    "profile": "Perfil",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión"
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Entrar",
+      "noAccount": "¿No tienes cuenta?",
+      "register": "Regístrate aquí"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "name": "Nombre",
+      "surname": "Apellido",
+      "email": "Correo electrónico",
+      "phone": "Teléfono (opcional)",
+      "password": "Contraseña",
+      "repeatPassword": "Repetir contraseña",
+      "submit": "Crear cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "login": "Inicia sesión aquí"
+    },
+    "errors": {
+      "invalidCredentials": "Credenciales inválidas",
+      "emailExists": "El correo ya está registrado",
+      "passwordMismatch": "Las contraseñas no coinciden"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bienvenido, {name}",
+    "summary": {
+      "title": "Resumen",
+      "todayBookings": "Reservas de hoy",
+      "pendingBookings": "Pendientes",
+      "totalServices": "Servicios activos"
+    }
+  },
+  "services": {
+    "title": "Mis Servicios",
+    "empty": "No tienes servicios creados",
+    "create": "Crear servicio",
+    "form": {
+      "name": "Nombre del servicio",
+      "description": "Descripción",
+      "duration": "Duración (minutos)",
+      "price": "Precio"
+    }
+  },
+  "bookings": {
+    "title": "Mis Reservas",
+    "empty": "No tienes reservas",
+    "status": {
+      "pending": "Pendiente",
+      "confirmed": "Confirmada",
+      "cancelled": "Cancelada",
+      "completed": "Completada"
+    },
+    "client": "Cliente",
+    "service": "Servicio",
+    "date": "Fecha",
+    "actions": {
+      "confirm": "Confirmar",
+      "cancel": "Cancelar"
+    }
+  },
+  "public": {
+    "booking": {
+      "title": "Reservar cita",
+      "selectService": "Selecciona un servicio",
+      "selectSlot": "Selecciona un horario",
+      "yourDetails": "Tus datos",
+      "name": "Nombre",
+      "surname": "Apellido",
+      "email": "Email",
+      "phone": "Teléfono",
+      "notes": "Notas (opcional)",
+      "submit": "Confirmar reserva",
+      "success": "¡Reserva confirmada!",
+      "successMessage": "Recibirás un correo con los detalles"
+    }
+  }
+}

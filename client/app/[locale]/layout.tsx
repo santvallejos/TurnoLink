@@ -3,6 +3,12 @@ import { notFound } from 'next/navigation';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { routing } from '@/lib/i18n/routing';
 import './globals.css';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'TurnoLink',
+  description: 'Platform for booking management',
+};
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,10 +20,10 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-type Props = {
+interface Props {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
-};
+}
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;

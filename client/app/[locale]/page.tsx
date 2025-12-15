@@ -40,8 +40,7 @@ export default function HomePage() {
             <span className="text-blue-600">de forma simple</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
-            TurnoLink te permite crear tu página de reservas personalizada 
-            y permitir a tus clientes agendar citas fácilmente.
+            TurnoLink te permite crear tu página de reservas personalizada y permitir a tus clientes agendar citas fácilmente.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
             <Link

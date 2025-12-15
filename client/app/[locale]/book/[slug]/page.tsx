@@ -3,9 +3,9 @@ import { publicService } from '@/lib/services';
 import type { Service } from '@/types';
 import BookingForm from './booking-form';
 
-type Props = {
+interface Props {
   params: Promise<{ slug: string }>;
-};
+}
 
 export default async function PublicBookingPage({ params }: Props) {
   const { slug } = await params;

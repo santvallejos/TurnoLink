@@ -136,10 +136,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <span className={`rounded-full px-2 py-1 text-xs ${
-                    booking.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
-                    booking.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                    booking.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                    'bg-zinc-100 text-zinc-800'
+                    booking.status === 'Confirmed' ? 'bg-green-100 text-green-800' :booking.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :booking.status === 'Cancelled' ? 'bg-red-100 text-red-800' :'bg-zinc-100 text-zinc-800'
                   }`}>
                     {t(`bookings.status.${booking.status.toLowerCase()}`)}
                   </span>

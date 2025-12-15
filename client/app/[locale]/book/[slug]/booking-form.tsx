@@ -5,9 +5,9 @@ import { useTranslations } from 'next-intl';
 import { publicService, availabilityService } from '@/lib/services';
 import type { Service, Availability, ApiError } from '@/types';
 
-type Props = {
+interface Props {
   services: Service[];
-};
+}
 
 export default function BookingForm({ services }: Props) {
   const t = useTranslations('public.booking');
@@ -132,7 +132,7 @@ export default function BookingForm({ services }: Props) {
       {selectedSlot && (
         <div className="space-y-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
           <h3 className="font-medium text-zinc-900 dark:text-white">{t('yourDetails')}</h3>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1 block text-sm text-zinc-600 dark:text-zinc-400">{t('name')}</label>

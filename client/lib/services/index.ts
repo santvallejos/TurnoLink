@@ -1,10 +1,10 @@
 // Re-export all services for convenient imports
-export { authService } from './auth.service';
-export { userService } from './user.service';
-export { serviceService } from './service.service';
-export { bookingService } from './booking.service';
-export { availabilityService } from './availability.service';
-export { publicService } from './public.service';
+export { authService } from './auth';
+export { userService } from './user';
+export { serviceService } from './service';
+export { bookingService } from './booking';
+export { availabilityService } from './availability';
+export { publicService } from './public';
 
 // Re-export token utilities
 export { setAuthToken, clearAuthToken } from '../api/client';

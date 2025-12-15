@@ -62,7 +62,6 @@ export default function BookingsPage() {
                   <th className="px-4 py-3 font-medium">{t('bookings.service')}</th>
                   <th className="px-4 py-3 font-medium">{t('bookings.date')}</th>
                   <th className="px-4 py-3 font-medium">Status</th>
-                  <th className="px-4 py-3 font-medium"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -73,10 +72,7 @@ export default function BookingsPage() {
                     <td className="px-4 py-3">{new Date(booking.startTime).toLocaleString()}</td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2 py-1 text-xs ${
-                        booking.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
-                        booking.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                        booking.status === 'Cancelled' ? 'bg-red-100 text-red-800' :
-                        'bg-zinc-100 text-zinc-800'
+                        booking.status === 'Confirmed' ? 'bg-green-100 text-green-800' : booking.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : booking.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-zinc-100 text-zinc-800'
                       }`}>
                         {t(`bookings.status.${booking.status.toLowerCase()}`)}
                       </span>

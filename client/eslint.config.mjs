@@ -1,172 +1,84 @@
-import nextConfig from "eslint-config-next";
+import { defineConfig, globalIgnores } from 'eslint/config';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
 
-const eslintConfig = [
-  ...nextConfig,
-  
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
+    'node_modules/**',
+  ]),
   {
-    ignores: [
-      ".next/**",
-      "out/**",
-      "build/**",
-      "dist/**",
-      "coverage/**",
-      "next-env.d.ts",
-      "*.config.js",
-      "*.config.mjs",
-      "*.config.ts",
-      "node_modules/**",
-    ],
-  },
-
-  {
+    // Reglas personalizadas
     rules: {
-      // ===================================
-      // TypeScript - Reglas estrictas
-      // ===================================
-      "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-      "@typescript-eslint/no-non-null-assertion": "warn",
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        {
-          prefer: "type-imports",
-          fixStyle: "inline-type-imports",
-        },
-      ],
-      "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
-      "@typescript-eslint/naming-convention": [
-        "error",
-        {
-          selector: "interface",
-          format: ["PascalCase"],
-          custom: {
-            regex: "^I[A-Z]",
-            match: false,
-          },
-        },
-        {
-          selector: "typeAlias",
-          format: ["PascalCase"],
-        },
-        {
-          selector: "enum",
-          format: ["PascalCase"],
-        },
-      ],
+      // ===== Formato y estilo =====
+      // Máximo 1 línea vacía consecutiva
+      'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0, maxBOF: 0 }],
+      // Requiere punto y coma
+      semi: ['error', 'always'],
+      // Comillas simples para strings
+      quotes: ['error', 'single', { avoidEscape: true }],
+      // Indentación de 2 espacios
+      indent: ['error', 2, { SwitchCase: 1 }],
+      // Coma final en multilínea
+      'comma-dangle': ['error', 'always-multiline'],
+      // Sin espacios al final de línea
+      'no-trailing-spaces': 'error',
+      // Línea vacía al final del archivo
+      'eol-last': ['error', 'always'],
 
-      // ===================================
-      // React - Mejores prácticas
-      // ===================================
-      "react/jsx-no-target-blank": "error",
-      "react/jsx-key": [
-        "error",
-        {
-          checkFragmentShorthand: true,
-          checkKeyMustBeforeSpread: true,
-        },
+      // ===== Mejores prácticas JavaScript =====
+      // Sin console.log (warning para desarrollo)
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      // Sin variables no utilizadas
+      'no-unused-vars': 'off', // Desactivado en favor de @typescript-eslint
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      "react/no-array-index-key": "warn",
-      "react/self-closing-comp": "error",
-      "react/jsx-curly-brace-presence": [
-        "error",
-        {
-          props: "never",
-          children: "never",
-        },
-      ],
-      "react/jsx-boolean-value": ["error", "never"],
-      "react/jsx-sort-props": [
-        "warn",
-        {
-          callbacksLast: true,
-          shorthandFirst: true,
-          reservedFirst: true,
-        },
-      ],
+      // Sin var, usar let o const
+      'no-var': 'error',
+      // Preferir const cuando no se reasigna
+      'prefer-const': 'error',
+      // Sin debugger
+      'no-debugger': 'error',
 
-      // ===================================
-      // React Hooks - Reglas estrictas
-      // ===================================
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "error",
+      // ===== React/Next.js =====
+      // Requiere key en listas
+      'react/jsx-key': 'error',
+      // Sin uso de índice como key
+      'react/no-array-index-key': 'warn',
+      // Ordenar props alfabéticamente (opcional, descomenta si lo deseas)
+      // "react/jsx-sort-props": ["warn", { callbacksLast: true, shorthandFirst: true }],
+      // Auto-cerrar componentes sin hijos
+      'react/self-closing-comp': 'error',
+      // Sin fragmentos innecesarios
+      'react/jsx-no-useless-fragment': 'warn',
 
-      // ===================================
-      // Next.js - Optimizaciones
-      // ===================================
-      "@next/next/no-html-link-for-pages": "error",
-      "@next/next/no-img-element": "error",
-      "@next/next/no-sync-scripts": "error",
+      // ===== Hooks =====
+      // Reglas de hooks ya incluidas en nextVitals
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
 
-      // ===================================
-      // JavaScript/General - Calidad de código
-      // ===================================
-      "no-console": [
-        "warn",
-        {
-          allow: ["warn", "error"],
-        },
-      ],
-      "no-debugger": "error",
-      "no-alert": "error",
-      "no-multiple-empty-lines": [
-        "error",
-        {
-          max: 1,
-          maxEOF: 0,
-          maxBOF: 0,
-        },
-      ],
-      "prefer-const": "error",
-      "no-var": "error",
-      "object-shorthand": ["error", "always"],
-      "prefer-template": "error",
-      "prefer-arrow-callback": "error",
-      "no-nested-ternary": "warn",
-      "no-unneeded-ternary": "error",
-      eqeqeq: ["error", "always"],
-      curly: ["error", "all"],
-      "max-lines": [
-        "warn",
-        {
-          max: 300,
-          skipBlankLines: true,
-          skipComments: true,
-        },
-      ],
-      complexity: ["warn", 10],
+      // ===== TypeScript =====
+      // Tipos explícitos en funciones públicas (opcional)
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      // Preferir interfaces sobre types
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      // Sin any explícito (warning)
+      '@typescript-eslint/no-explicit-any': 'warn',
 
-      // ===================================
-      // Imports - Organización
-      // ===================================
-      "sort-imports": [
-        "error",
-        {
-          ignoreCase: false,
-          ignoreDeclarationSort: true,
-          ignoreMemberSort: false,
-          memberSyntaxSortOrder: ["none", "all", "multiple", "single"],
-        },
-      ],
-      "no-duplicate-imports": "error",
-
-      // ===================================
-      // Accesibilidad
-      // ===================================
-      "jsx-a11y/alt-text": "error",
-      "jsx-a11y/anchor-is-valid": "error",
-      "jsx-a11y/aria-props": "error",
-      "jsx-a11y/aria-proptypes": "error",
-      "jsx-a11y/role-has-required-aria-props": "error",
-      "jsx-a11y/role-supports-aria-props": "error",
+      // ===== Imports =====
+      // Sin imports duplicados
+      'no-duplicate-imports': 'error',
     },
   },
-];
+]);
 
 export default eslintConfig;

@@ -1,4 +1,195 @@
 {
+  "navbar": {
+    "home": "Inicio",
+    "about": "Características",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "login": "Iniciar sesión",
+    "register": "Comenzar gratis"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Gestión de reservas simplificada",
+      "titleStart": "Organiza tus",
+      "titleHighlight": "citas",
+      "titleEnd": "sin esfuerzo",
+      "subtitle": "TurnoLink es la plataforma todo-en-uno que permite a profesionales gestionar reservas, sincronizar calendarios y mantener a sus clientes informados automáticamente.",
+      "ctaPrimary": "Comenzar gratis",
+      "ctaSecondary": "Ver demo",
+      "statsUsers": "Profesionales activos",
+      "statsBookings": "Reservas gestionadas",
+      "statsUptime": "Disponibilidad",
+      "previewTitle": "Agenda profesional",
+      "previewSubtitle": "Selecciona fecha y hora",
+      "previewMonth": "Diciembre 2025",
+      "previewAvailable": "Horarios disponibles",
+      "notificationTitle": "¡Reserva confirmada!",
+      "notificationTime": "Hace 2 minutos"
+    },
+    "features": {
+      "badge": "Características",
+      "title": "Todo lo que necesitas para gestionar tu agenda",
+      "subtitle": "Herramientas poderosas diseñadas para profesionales que quieren enfocarse en lo que mejor saben hacer.",
+      "items": {
+        "calendar": {
+          "title": "Calendario inteligente",
+          "description": "Gestiona tu disponibilidad con un calendario visual e intuitivo. Sincroniza con Google Calendar y Outlook."
+        },
+        "notifications": {
+          "title": "Notificaciones automáticas",
+          "description": "Envía recordatorios por email y WhatsApp a tus clientes. Reduce las ausencias hasta un 70%."
+        },
+        "clients": {
+          "title": "Gestión de clientes",
+          "description": "Mantén un historial completo de cada cliente, sus preferencias y reservas anteriores."
+        },
+        "analytics": {
+          "title": "Estadísticas detalladas",
+          "description": "Analiza tu rendimiento con métricas claras: ingresos, ocupación y tendencias de reservas."
+        },
+        "multilingual": {
+          "title": "Multi-idioma",
+          "description": "Ofrece tu página de reservas en múltiples idiomas para alcanzar más clientes."
+        },
+        "mobile": {
+          "title": "Optimizado para móvil",
+          "description": "Gestiona tu agenda desde cualquier dispositivo. Tus clientes pueden reservar fácilmente."
+        },
+        "security": {
+          "title": "Seguridad garantizada",
+          "description": "Tus datos y los de tus clientes están protegidos con encriptación de nivel bancario."
+        },
+        "fast": {
+          "title": "Reservas instantáneas",
+          "description": "Tus clientes pueden reservar en segundos, 24/7, sin necesidad de llamadas o mensajes."
+        }
+      },
+      "cta": {
+        "text": "¿Quieres conocer más detalles?",
+        "link": "Ver todos los planes"
+      }
+    },
+    "pricing": {
+      "badge": "Precios",
+      "title": "Planes que se adaptan a tu negocio",
+      "subtitle": "Comienza gratis y escala cuando lo necesites. Sin compromisos, cancela cuando quieras.",
+      "popularBadge": "Más popular",
+      "perMonth": "/mes",
+      "faqHint": "¿Tienes preguntas?",
+      "faqLink": "Consulta nuestras FAQ",
+      "plans": {
+        "free": {
+          "name": "Starter",
+          "description": "Perfecto para empezar",
+          "price": "Gratis",
+          "cta": "Comenzar ahora",
+          "features": {
+            "1": { "text": "Hasta 20 reservas/mes", "included": true },
+            "2": { "text": "1 servicio", "included": true },
+            "3": { "text": "Página de reservas básica", "included": true },
+            "4": { "text": "Notificaciones por email", "included": true },
+            "5": { "text": "Sincronización de calendarios", "included": false }
+          }
+        },
+        "pro": {
+          "name": "Profesional",
+          "description": "Para profesionales en crecimiento",
+          "price": "$19",
+          "cta": "Prueba 14 días gratis",
+          "features": {
+            "1": { "text": "Reservas ilimitadas", "included": true },
+            "2": { "text": "Servicios ilimitados", "included": true },
+            "3": { "text": "Página personalizable", "included": true },
+            "4": { "text": "Notificaciones WhatsApp", "included": true },
+            "5": { "text": "Sincronización de calendarios", "included": true }
+          }
+        },
+        "business": {
+          "name": "Business",
+          "description": "Para equipos y empresas",
+          "price": "$49",
+          "cta": "Contactar ventas",
+          "features": {
+            "1": { "text": "Todo lo de Pro", "included": true },
+            "2": { "text": "Múltiples usuarios", "included": true },
+            "3": { "text": "API y webhooks", "included": true },
+            "4": { "text": "Soporte prioritario", "included": true },
+            "5": { "text": "Reportes avanzados", "included": true }
+          }
+        }
+      }
+    },
+    "testimonials": {
+      "badge": "Testimonios",
+      "title": "Lo que dicen nuestros usuarios",
+      "subtitle": "Miles de profesionales ya confían en TurnoLink para gestionar sus reservas.",
+      "trustedBy": "Empresas que confían en nosotros",
+      "items": {
+        "1": {
+          "quote": "TurnoLink me ha ahorrado horas cada semana. Ya no tengo que responder llamadas para agendar citas.",
+          "name": "María García",
+          "role": "Dentista"
+        },
+        "2": {
+          "quote": "Mis clientes adoran poder reservar en cualquier momento. Las notificaciones automáticas son geniales.",
+          "name": "Carlos Rodríguez",
+          "role": "Peluquero"
+        },
+        "3": {
+          "quote": "La sincronización con mi calendario personal es perfecta. Nunca más doble reservas.",
+          "name": "Ana Martínez",
+          "role": "Fisioterapeuta"
+        },
+        "4": {
+          "quote": "Desde que uso TurnoLink, las ausencias de clientes han bajado drásticamente.",
+          "name": "Pedro López",
+          "role": "Entrenador personal"
+        },
+        "5": {
+          "quote": "Interfaz simple e intuitiva. En 5 minutos tenía mi página de reservas funcionando.",
+          "name": "Laura Sánchez",
+          "role": "Psicóloga"
+        },
+        "6": {
+          "quote": "El soporte es excepcional y las funciones cubren todas mis necesidades.",
+          "name": "Diego Torres",
+          "role": "Consultor"
+        }
+      }
+    },
+    "cta": {
+      "badge": "Empieza hoy",
+      "title": "¿Listo para transformar tu gestión de citas?",
+      "subtitle": "Únete a miles de profesionales que ya optimizan su tiempo con TurnoLink. Configuración en minutos, sin tarjeta de crédito.",
+      "primaryButton": "Crear cuenta gratis",
+      "secondaryButton": "Agendar demo",
+      "trustText": "✓ Sin tarjeta de crédito · ✓ Configuración en 2 minutos · ✓ Cancela cuando quieras"
+    },
+    "footer": {
+      "description": "La plataforma de gestión de reservas que simplifica tu agenda y mejora la experiencia de tus clientes.",
+      "product": {
+        "title": "Producto",
+        "features": "Características",
+        "pricing": "Precios",
+        "integrations": "Integraciones",
+        "changelog": "Novedades"
+      },
+      "company": {
+        "title": "Empresa",
+        "about": "Sobre nosotros",
+        "blog": "Blog",
+        "careers": "Trabaja con nosotros",
+        "contact": "Contacto"
+      },
+      "legal": {
+        "title": "Legal",
+        "privacy": "Privacidad",
+        "terms": "Términos",
+        "cookies": "Cookies"
+      },
+      "copyright": "Todos los derechos reservados."
+    }
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Ha ocurrido un error",
@@ -23,23 +214,51 @@
   "auth": {
     "login": {
       "title": "Iniciar sesión",
+      "subtitle": "Bienvenido de vuelta. Ingresa tus credenciales para continuar.",
       "email": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
       "password": "Contraseña",
-      "submit": "Entrar",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión",
+      "loading": "Iniciando sesión...",
+      "or": "o continúa con",
+      "googleLogin": "Continuar con Google",
       "noAccount": "¿No tienes cuenta?",
-      "register": "Regístrate aquí"
+      "register": "Regístrate gratis",
+      "welcomeBack": "Bienvenido de vuelta",
+      "welcomeMessage": "Accede a tu panel y continúa gestionando tus citas de forma eficiente.",
+      "statUsers": "Profesionales activos",
+      "statBookings": "Reservas gestionadas"
     },
     "register": {
       "title": "Crear cuenta",
+      "subtitle": "Comienza gratis y gestiona tus reservas como un profesional.",
       "name": "Nombre",
+      "namePlaceholder": "Juan",
       "surname": "Apellido",
+      "surnamePlaceholder": "García",
       "email": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
       "phone": "Teléfono (opcional)",
+      "phonePlaceholder": "+34 600 000 000",
       "password": "Contraseña",
       "repeatPassword": "Repetir contraseña",
-      "submit": "Crear cuenta",
+      "submit": "Crear cuenta gratis",
+      "loading": "Creando cuenta...",
+      "or": "o regístrate con",
+      "googleRegister": "Registrarse con Google",
       "hasAccount": "¿Ya tienes cuenta?",
-      "login": "Inicia sesión aquí"
+      "login": "Inicia sesión",
+      "termsText": "Al registrarte, aceptas nuestros",
+      "termsLink": "Términos de servicio",
+      "termsAnd": "y",
+      "privacyLink": "Política de privacidad",
+      "welcomeTitle": "Empieza a gestionar tus citas",
+      "welcomeMessage": "Únete a miles de profesionales que ya optimizan su tiempo con TurnoLink.",
+      "benefit1": "Configuración en menos de 2 minutos",
+      "benefit2": "Sin necesidad de tarjeta de crédito",
+      "benefit3": "Página de reservas personalizada",
+      "benefit4": "Soporte en español 24/7"
     },
     "errors": {
       "invalidCredentials": "Credenciales inválidas",
@@ -49,27 +268,72 @@
   },
   "dashboard": {
     "welcome": "Bienvenido, {name}",
+    "subtitle": "Aquí tienes un resumen de tu actividad reciente",
     "summary": {
       "title": "Resumen",
       "todayBookings": "Reservas de hoy",
       "pendingBookings": "Pendientes",
-      "totalServices": "Servicios activos"
-    }
+      "totalServices": "Servicios activos",
+      "totalClients": "Total clientes"
+    },
+    "vsYesterday": "vs ayer",
+    "needsAttention": "Requieren atención",
+    "servicesActive": "servicios disponibles",
+    "thisMonth": "este mes",
+    "recentBookings": "Reservas recientes",
+    "recentBookingsDesc": "Últimas reservas de tus clientes",
+    "viewAll": "Ver todas",
+    "noBookingsYet": "Las reservas de tus clientes aparecerán aquí",
+    "quickActions": "Acciones rápidas",
+    "createService": "Crear nuevo servicio",
+    "setAvailability": "Configurar disponibilidad",
+    "shareBookingPage": "Compartir página de reservas",
+    "todaySchedule": "Agenda de hoy",
+    "noBookingsToday": "No tienes citas programadas para hoy"
   },
   "services": {
     "title": "Mis Servicios",
+    "description": "Gestiona los servicios que ofreces a tus clientes",
     "empty": "No tienes servicios creados",
+    "emptyDesc": "Crea tu primer servicio para empezar a recibir reservas",
     "create": "Crear servicio",
+    "createFirst": "Crear mi primer servicio",
+    "editService": "Editar servicio",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "noDescription": "Sin descripción",
+    "searchPlaceholder": "Buscar servicios...",
+    "stats": {
+      "total": "Total servicios",
+      "active": "Activos",
+      "inactive": "Inactivos"
+    },
     "form": {
       "name": "Nombre del servicio",
+      "namePlaceholder": "Ej: Corte de cabello",
       "description": "Descripción",
-      "duration": "Duración (minutos)",
-      "price": "Precio"
+      "descriptionPlaceholder": "Describe tu servicio...",
+      "duration": "Duración (min)",
+      "price": "Precio ($)",
+      "isActive": "Servicio activo y disponible para reservas"
     }
   },
   "bookings": {
     "title": "Mis Reservas",
+    "description": "Gestiona todas las reservas de tus clientes",
     "empty": "No tienes reservas",
+    "emptyDesc": "Las reservas de tus clientes aparecerán aquí",
+    "searchPlaceholder": "Buscar por cliente o servicio...",
+    "details": "Detalles de la reserva",
+    "selectBooking": "Selecciona una reserva",
+    "selectBookingDesc": "Haz clic en una reserva para ver sus detalles",
+    "time": "Hora",
+    "filter": {
+      "all": "Todas",
+      "Pending": "Pendientes",
+      "Confirmed": "Confirmadas",
+      "Cancelled": "Canceladas"
+    },
     "status": {
       "pending": "Pendiente",
       "confirmed": "Confirmada",
@@ -87,17 +351,81 @@
   "public": {
     "booking": {
       "title": "Reservar cita",
-      "selectService": "Selecciona un servicio",
+      "subtitle": "Completa los pasos para agendar tu cita",
+      "bookingWith": "Reservando con",
+      "notFound": "Profesional no encontrado",
+      "notFoundMessage": "No pudimos encontrar la página de reservas que buscas. El enlace puede estar incorrecto o el profesional ya no está disponible.",
+      "backHome": "Volver al inicio",
+      "poweredBy": "Impulsado por",
+      "selectService": "Elige tu servicio",
+      "selectServiceDesc": "Selecciona el servicio que deseas reservar",
+      "selectDateTime": "Elige fecha y hora",
+      "selectDateTimeDesc": "Selecciona el día y horario que prefieras",
       "selectSlot": "Selecciona un horario",
-      "yourDetails": "Tus datos",
+      "yourDetails": "Tus datos de contacto",
+      "yourDetailsDesc": "Necesitamos esta información para confirmar tu reserva",
+      "confirmBooking": "Confirmar reserva",
+      "confirmBookingDesc": "Revisa los detalles antes de confirmar",
+      "steps": {
+        "service": "Servicio",
+        "datetime": "Fecha y hora",
+        "details": "Datos",
+        "confirm": "Confirmar"
+      },
+      "months": {
+        "january": "Enero",
+        "february": "Febrero",
+        "march": "Marzo",
+        "april": "Abril",
+        "may": "Mayo",
+        "june": "Junio",
+        "july": "Julio",
+        "august": "Agosto",
+        "september": "Septiembre",
+        "october": "Octubre",
+        "november": "Noviembre",
+        "december": "Diciembre"
+      },
+      "days": {
+        "sun": "Dom",
+        "mon": "Lun",
+        "tue": "Mar",
+        "wed": "Mié",
+        "thu": "Jue",
+        "fri": "Vie",
+        "sat": "Sáb"
+      },
+      "selected": "Seleccionado",
+      "today": "Hoy",
+      "unavailable": "No disponible",
+      "availableSlots": "Horarios disponibles",
+      "selectDateFirst": "Selecciona una fecha en el calendario",
+      "noSlotsAvailable": "No hay horarios disponibles para esta fecha",
+      "minutes": "minutos",
       "name": "Nombre",
+      "namePlaceholder": "Tu nombre",
       "surname": "Apellido",
-      "email": "Email",
-      "phone": "Teléfono",
-      "notes": "Notas (opcional)",
+      "surnamePlaceholder": "Tu apellido",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "phone": "Teléfono (opcional)",
+      "phonePlaceholder": "+1 234 567 8900",
+      "notes": "Notas adicionales (opcional)",
+      "notesPlaceholder": "¿Hay algo que debamos saber?",
+      "bookingSummary": "Resumen de tu reserva",
+      "service": "Servicio",
+      "date": "Fecha",
+      "time": "Hora",
+      "dateTime": "Fecha y hora",
+      "duration": "Duración",
+      "professional": "Profesional",
+      "next": "Continuar",
+      "back": "Volver",
       "submit": "Confirmar reserva",
+      "processing": "Procesando...",
       "success": "¡Reserva confirmada!",
-      "successMessage": "Recibirás un correo con los detalles"
+      "successMessage": "Tu cita ha sido agendada exitosamente",
+      "emailConfirmation": "Recibirás un correo electrónico con todos los detalles de tu reserva"
     }
   }
 }

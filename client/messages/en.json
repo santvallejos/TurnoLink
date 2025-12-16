@@ -1,4 +1,195 @@
 {
+  "navbar": {
+    "home": "Home",
+    "about": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Get started free"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Booking management simplified",
+      "titleStart": "Organize your",
+      "titleHighlight": "appointments",
+      "titleEnd": "effortlessly",
+      "subtitle": "TurnoLink is the all-in-one platform that enables professionals to manage bookings, sync calendars, and keep clients automatically informed.",
+      "ctaPrimary": "Get started free",
+      "ctaSecondary": "Watch demo",
+      "statsUsers": "Active professionals",
+      "statsBookings": "Bookings managed",
+      "statsUptime": "Uptime",
+      "previewTitle": "Professional calendar",
+      "previewSubtitle": "Select date and time",
+      "previewMonth": "December 2025",
+      "previewAvailable": "Available times",
+      "notificationTitle": "Booking confirmed!",
+      "notificationTime": "2 minutes ago"
+    },
+    "features": {
+      "badge": "Features",
+      "title": "Everything you need to manage your schedule",
+      "subtitle": "Powerful tools designed for professionals who want to focus on what they do best.",
+      "items": {
+        "calendar": {
+          "title": "Smart calendar",
+          "description": "Manage your availability with a visual and intuitive calendar. Sync with Google Calendar and Outlook."
+        },
+        "notifications": {
+          "title": "Automatic notifications",
+          "description": "Send reminders via email and WhatsApp to your clients. Reduce no-shows by up to 70%."
+        },
+        "clients": {
+          "title": "Client management",
+          "description": "Keep a complete history of each client, their preferences, and previous bookings."
+        },
+        "analytics": {
+          "title": "Detailed analytics",
+          "description": "Analyze your performance with clear metrics: revenue, occupancy, and booking trends."
+        },
+        "multilingual": {
+          "title": "Multi-language",
+          "description": "Offer your booking page in multiple languages to reach more clients."
+        },
+        "mobile": {
+          "title": "Mobile optimized",
+          "description": "Manage your schedule from any device. Your clients can book easily."
+        },
+        "security": {
+          "title": "Guaranteed security",
+          "description": "Your data and your clients' data are protected with bank-level encryption."
+        },
+        "fast": {
+          "title": "Instant bookings",
+          "description": "Your clients can book in seconds, 24/7, without calls or messages."
+        }
+      },
+      "cta": {
+        "text": "Want to know more details?",
+        "link": "View all plans"
+      }
+    },
+    "pricing": {
+      "badge": "Pricing",
+      "title": "Plans that fit your business",
+      "subtitle": "Start free and scale when you need to. No commitments, cancel anytime.",
+      "popularBadge": "Most popular",
+      "perMonth": "/month",
+      "faqHint": "Have questions?",
+      "faqLink": "Check our FAQ",
+      "plans": {
+        "free": {
+          "name": "Starter",
+          "description": "Perfect to get started",
+          "price": "Free",
+          "cta": "Start now",
+          "features": {
+            "1": { "text": "Up to 20 bookings/month", "included": true },
+            "2": { "text": "1 service", "included": true },
+            "3": { "text": "Basic booking page", "included": true },
+            "4": { "text": "Email notifications", "included": true },
+            "5": { "text": "Calendar sync", "included": false }
+          }
+        },
+        "pro": {
+          "name": "Professional",
+          "description": "For growing professionals",
+          "price": "$19",
+          "cta": "Try 14 days free",
+          "features": {
+            "1": { "text": "Unlimited bookings", "included": true },
+            "2": { "text": "Unlimited services", "included": true },
+            "3": { "text": "Customizable page", "included": true },
+            "4": { "text": "WhatsApp notifications", "included": true },
+            "5": { "text": "Calendar sync", "included": true }
+          }
+        },
+        "business": {
+          "name": "Business",
+          "description": "For teams and enterprises",
+          "price": "$49",
+          "cta": "Contact sales",
+          "features": {
+            "1": { "text": "Everything in Pro", "included": true },
+            "2": { "text": "Multiple users", "included": true },
+            "3": { "text": "API and webhooks", "included": true },
+            "4": { "text": "Priority support", "included": true },
+            "5": { "text": "Advanced reports", "included": true }
+          }
+        }
+      }
+    },
+    "testimonials": {
+      "badge": "Testimonials",
+      "title": "What our users say",
+      "subtitle": "Thousands of professionals already trust TurnoLink to manage their bookings.",
+      "trustedBy": "Companies that trust us",
+      "items": {
+        "1": {
+          "quote": "TurnoLink has saved me hours every week. I no longer have to answer calls to schedule appointments.",
+          "name": "Maria Garcia",
+          "role": "Dentist"
+        },
+        "2": {
+          "quote": "My clients love being able to book anytime. The automatic notifications are great.",
+          "name": "Carlos Rodriguez",
+          "role": "Hairdresser"
+        },
+        "3": {
+          "quote": "The sync with my personal calendar is perfect. Never double bookings again.",
+          "name": "Ana Martinez",
+          "role": "Physiotherapist"
+        },
+        "4": {
+          "quote": "Since using TurnoLink, client no-shows have dropped dramatically.",
+          "name": "Pedro Lopez",
+          "role": "Personal trainer"
+        },
+        "5": {
+          "quote": "Simple and intuitive interface. In 5 minutes I had my booking page running.",
+          "name": "Laura Sanchez",
+          "role": "Psychologist"
+        },
+        "6": {
+          "quote": "Support is exceptional and the features cover all my needs.",
+          "name": "Diego Torres",
+          "role": "Consultant"
+        }
+      }
+    },
+    "cta": {
+      "badge": "Start today",
+      "title": "Ready to transform your appointment management?",
+      "subtitle": "Join thousands of professionals who already optimize their time with TurnoLink. Setup in minutes, no credit card required.",
+      "primaryButton": "Create free account",
+      "secondaryButton": "Schedule demo",
+      "trustText": "✓ No credit card required · ✓ Setup in 2 minutes · ✓ Cancel anytime"
+    },
+    "footer": {
+      "description": "The booking management platform that simplifies your schedule and improves your clients' experience.",
+      "product": {
+        "title": "Product",
+        "features": "Features",
+        "pricing": "Pricing",
+        "integrations": "Integrations",
+        "changelog": "Changelog"
+      },
+      "company": {
+        "title": "Company",
+        "about": "About us",
+        "blog": "Blog",
+        "careers": "Careers",
+        "contact": "Contact"
+      },
+      "legal": {
+        "title": "Legal",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "cookies": "Cookies"
+      },
+      "copyright": "All rights reserved."
+    }
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
@@ -22,24 +213,52 @@
   },
   "auth": {
     "login": {
-      "title": "Login",
+      "title": "Sign in",
+      "subtitle": "Welcome back. Enter your credentials to continue.",
       "email": "Email",
+      "emailPlaceholder": "you@email.com",
       "password": "Password",
+      "forgotPassword": "Forgot password?",
       "submit": "Sign in",
+      "loading": "Signing in...",
+      "or": "or continue with",
+      "googleLogin": "Continue with Google",
       "noAccount": "Don't have an account?",
-      "register": "Register here"
+      "register": "Sign up for free",
+      "welcomeBack": "Welcome back",
+      "welcomeMessage": "Access your dashboard and continue managing your appointments efficiently.",
+      "statUsers": "Active professionals",
+      "statBookings": "Bookings managed"
     },
     "register": {
       "title": "Create account",
+      "subtitle": "Start free and manage your bookings like a professional.",
       "name": "First name",
+      "namePlaceholder": "John",
       "surname": "Last name",
+      "surnamePlaceholder": "Smith",
       "email": "Email",
+      "emailPlaceholder": "you@email.com",
       "phone": "Phone (optional)",
+      "phonePlaceholder": "+1 555 000 0000",
       "password": "Password",
       "repeatPassword": "Repeat password",
-      "submit": "Create account",
+      "submit": "Create free account",
+      "loading": "Creating account...",
+      "or": "or sign up with",
+      "googleRegister": "Sign up with Google",
       "hasAccount": "Already have an account?",
-      "login": "Login here"
+      "login": "Sign in",
+      "termsText": "By signing up, you agree to our",
+      "termsLink": "Terms of Service",
+      "termsAnd": "and",
+      "privacyLink": "Privacy Policy",
+      "welcomeTitle": "Start managing your appointments",
+      "welcomeMessage": "Join thousands of professionals who already optimize their time with TurnoLink.",
+      "benefit1": "Setup in less than 2 minutes",
+      "benefit2": "No credit card required",
+      "benefit3": "Customizable booking page",
+      "benefit4": "24/7 support"
     },
     "errors": {
       "invalidCredentials": "Invalid credentials",
@@ -49,27 +268,72 @@
   },
   "dashboard": {
     "welcome": "Welcome, {name}",
+    "subtitle": "Here's an overview of your recent activity",
     "summary": {
       "title": "Summary",
       "todayBookings": "Today's bookings",
       "pendingBookings": "Pending",
-      "totalServices": "Active services"
-    }
+      "totalServices": "Active services",
+      "totalClients": "Total clients"
+    },
+    "vsYesterday": "vs yesterday",
+    "needsAttention": "Need attention",
+    "servicesActive": "services available",
+    "thisMonth": "this month",
+    "recentBookings": "Recent bookings",
+    "recentBookingsDesc": "Latest bookings from your clients",
+    "viewAll": "View all",
+    "noBookingsYet": "Your clients' bookings will appear here",
+    "quickActions": "Quick actions",
+    "createService": "Create new service",
+    "setAvailability": "Set availability",
+    "shareBookingPage": "Share booking page",
+    "todaySchedule": "Today's schedule",
+    "noBookingsToday": "No appointments scheduled for today"
   },
   "services": {
     "title": "My Services",
+    "description": "Manage the services you offer to your clients",
     "empty": "You have no services",
+    "emptyDesc": "Create your first service to start receiving bookings",
     "create": "Create service",
+    "createFirst": "Create my first service",
+    "editService": "Edit service",
+    "active": "Active",
+    "inactive": "Inactive",
+    "noDescription": "No description",
+    "searchPlaceholder": "Search services...",
+    "stats": {
+      "total": "Total services",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
     "form": {
       "name": "Service name",
+      "namePlaceholder": "E.g.: Haircut",
       "description": "Description",
-      "duration": "Duration (minutes)",
-      "price": "Price"
+      "descriptionPlaceholder": "Describe your service...",
+      "duration": "Duration (min)",
+      "price": "Price ($)",
+      "isActive": "Service active and available for bookings"
     }
   },
   "bookings": {
     "title": "My Bookings",
+    "description": "Manage all your client bookings",
     "empty": "You have no bookings",
+    "emptyDesc": "Your clients' bookings will appear here",
+    "searchPlaceholder": "Search by client or service...",
+    "details": "Booking details",
+    "selectBooking": "Select a booking",
+    "selectBookingDesc": "Click on a booking to see its details",
+    "time": "Time",
+    "filter": {
+      "all": "All",
+      "Pending": "Pending",
+      "Confirmed": "Confirmed",
+      "Cancelled": "Cancelled"
+    },
     "status": {
       "pending": "Pending",
       "confirmed": "Confirmed",
@@ -87,17 +351,81 @@
   "public": {
     "booking": {
       "title": "Book appointment",
-      "selectService": "Select a service",
+      "subtitle": "Complete the steps to schedule your appointment",
+      "bookingWith": "Booking with",
+      "notFound": "Professional not found",
+      "notFoundMessage": "We couldn't find the booking page you're looking for. The link might be incorrect or the professional is no longer available.",
+      "backHome": "Back to home",
+      "poweredBy": "Powered by",
+      "selectService": "Choose your service",
+      "selectServiceDesc": "Select the service you want to book",
+      "selectDateTime": "Choose date and time",
+      "selectDateTimeDesc": "Select the day and time you prefer",
       "selectSlot": "Select a time slot",
-      "yourDetails": "Your details",
+      "yourDetails": "Your contact details",
+      "yourDetailsDesc": "We need this information to confirm your booking",
+      "confirmBooking": "Confirm booking",
+      "confirmBookingDesc": "Review the details before confirming",
+      "steps": {
+        "service": "Service",
+        "datetime": "Date & time",
+        "details": "Details",
+        "confirm": "Confirm"
+      },
+      "months": {
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December"
+      },
+      "days": {
+        "sun": "Sun",
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat"
+      },
+      "selected": "Selected",
+      "today": "Today",
+      "unavailable": "Unavailable",
+      "availableSlots": "Available time slots",
+      "selectDateFirst": "Select a date on the calendar",
+      "noSlotsAvailable": "No time slots available for this date",
+      "minutes": "minutes",
       "name": "First name",
+      "namePlaceholder": "Your first name",
       "surname": "Last name",
-      "email": "Email",
-      "phone": "Phone",
-      "notes": "Notes (optional)",
+      "surnamePlaceholder": "Your last name",
+      "email": "Email address",
+      "emailPlaceholder": "you@email.com",
+      "phone": "Phone (optional)",
+      "phonePlaceholder": "+1 234 567 8900",
+      "notes": "Additional notes (optional)",
+      "notesPlaceholder": "Is there anything we should know?",
+      "bookingSummary": "Your booking summary",
+      "service": "Service",
+      "date": "Date",
+      "time": "Time",
+      "dateTime": "Date and time",
+      "duration": "Duration",
+      "professional": "Professional",
+      "next": "Continue",
+      "back": "Back",
       "submit": "Confirm booking",
+      "processing": "Processing...",
       "success": "Booking confirmed!",
-      "successMessage": "You will receive an email with the details"
+      "successMessage": "Your appointment has been successfully scheduled",
+      "emailConfirmation": "You will receive an email with all your booking details"
     }
   }
 }

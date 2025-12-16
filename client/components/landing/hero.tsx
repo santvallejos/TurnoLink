@@ -1,11 +1,12 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Hero() {
   const t = useTranslations('landing.hero');
+  const locale = useLocale();
 
   return (
     <section className='relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/5'>
@@ -46,17 +47,11 @@ export default function Hero() {
             {/* CTA Buttons */}
             <div className='flex flex-col sm:flex-row gap-4 justify-center lg:justify-start'>
               <Link
-                href='/register'
+                href={`/${locale}/register`}
                 className='group inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold text-lg shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-105 transition-all duration-300'
               >
                 {t('ctaPrimary')}
                 <ArrowRight className='w-5 h-5 group-hover:translate-x-1 transition-transform' />
-              </Link>
-              <Link
-                href='#demo'
-                className='inline-flex items-center justify-center gap-2 px-8 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold text-lg border border-border hover:bg-accent hover:scale-105 transition-all duration-300'
-              >
-                {t('ctaSecondary')}
               </Link>
             </div>
 
@@ -164,34 +159,6 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Floating notification */}
-              <div className='absolute -bottom-4 -left-4 bg-card border border-border rounded-xl p-4 shadow-lg animate-bounce'>
-                <div className='flex items-center gap-3'>
-                  <div className='w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center'>
-                    <svg
-                      className='w-4 h-4 text-green-600'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      stroke='currentColor'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M5 13l4 4L19 7'
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className='text-sm font-medium text-foreground'>
-                      {t('notificationTitle')}
-                    </p>
-                    <p className='text-xs text-muted-foreground'>
-                      {t('notificationTime')}
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

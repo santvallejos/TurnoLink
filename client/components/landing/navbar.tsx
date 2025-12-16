@@ -1,14 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { Calendar, Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Navbar() {
   const t = useTranslations('navbar');
+  const locale = useLocale();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navLinks = [
+    { href: '/', label: t('home') },
+    { href: '#features', label: t('about') },
+    { href: '#pricing', label: t('pricing') },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,12 +25,6 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const navLinks = [
-    { href: '/', label: t('home') },
-    { href: '#features', label: t('about') },
-    { href: '#pricing', label: t('pricing') },
-  ];
 
   return (
     <nav
@@ -35,10 +37,13 @@ export default function Navbar() {
       <div className='container mx-auto px-6'>
         <div className='flex items-center justify-between h-20'>
           {/* Logo */}
-          <Link href='/' className='flex items-center gap-2'>
-            <div className='w-10 h-10 bg-primary rounded-xl flex items-center justify-center'>
-              <Calendar className='w-5 h-5 text-primary-foreground' />
-            </div>
+          <Link href='/' className='flex items-center'>
+            <Image
+              src='/link-circle-svgrepo-com.png'
+              alt='TurnoLink Logo'
+              width={40}
+              height={40}
+            />
             <span className='text-xl font-bold text-foreground'>TurnoLink</span>
           </Link>
 
@@ -58,13 +63,13 @@ export default function Navbar() {
           {/* Desktop CTA */}
           <div className='hidden md:flex items-center gap-4'>
             <Link
-              href='/login'
+              href={`/${locale}/login`}
               className='px-4 py-2 text-muted-foreground hover:text-foreground transition-colors font-medium'
             >
               {t('login')}
             </Link>
             <Link
-              href='/register'
+              href={`/${locale}/register`}
               className='px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300'
             >
               {t('register')}
@@ -101,14 +106,14 @@ export default function Navbar() {
               ))}
               <div className='pt-4 space-y-3 border-t border-border'>
                 <Link
-                  href='/login'
+                  href={`/${locale}/login`}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className='block w-full text-center py-3 text-foreground font-medium border border-border rounded-xl hover:bg-accent transition-colors'
                 >
                   {t('login')}
                 </Link>
                 <Link
-                  href='/register'
+                  href={`/${locale}/register`}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className='block w-full text-center py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors'
                 >

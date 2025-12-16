@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Check, X } from 'lucide-react';
 import Link from 'next/link';
 
@@ -14,6 +14,7 @@ const plans: { key: PlanKey; popular: boolean }[] = [
 
 export default function Pricing() {
   const t = useTranslations('landing.pricing');
+  const locale = useLocale();
 
   return (
     <section id='pricing' className='py-24 bg-background'>
@@ -72,7 +73,7 @@ export default function Pricing() {
 
                 {/* CTA Button */}
                 <Link
-                  href='/register'
+                  href={`/${locale}/login`}
                   className={`block w-full text-center py-3 rounded-xl font-semibold transition-all duration-300 ${
                     popular
                       ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25'

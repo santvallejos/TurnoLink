@@ -1,4 +1,19 @@
 {
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "Lo sentimos, la página que buscas no existe o ha sido movida. Puede que el enlace esté incorrecto o la página haya sido eliminada.",
+    "backHome": "Volver al inicio",
+    "goBack": "Página anterior",
+    "helpfulLinks": "Enlaces útiles",
+    "links": {
+      "home": "Inicio",
+      "features": "Características",
+      "pricing": "Precios",
+      "login": "Iniciar sesión",
+      "register": "Registrarse"
+    },
+    "copyright": "Todos los derechos reservados."
+  },
   "navbar": {
     "home": "Inicio",
     "about": "Características",

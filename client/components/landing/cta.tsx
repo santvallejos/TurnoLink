@@ -1,11 +1,12 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 export default function CTA() {
   const t = useTranslations('landing.cta');
+  const locale = useLocale();
 
   return (
     <section className='py-24 bg-background relative overflow-hidden'>
@@ -45,17 +46,11 @@ export default function CTA() {
             {/* CTA Buttons */}
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
               <Link
-                href='/register'
+                href={`/${locale}/register`}
                 className='group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary rounded-xl font-semibold text-lg hover:bg-white/90 hover:scale-105 transition-all duration-300'
               >
                 {t('primaryButton')}
                 <ArrowRight className='w-5 h-5 group-hover:translate-x-1 transition-transform' />
-              </Link>
-              <Link
-                href='#demo'
-                className='inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 text-white rounded-xl font-semibold text-lg border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300'
-              >
-                {t('secondaryButton')}
               </Link>
             </div>
 

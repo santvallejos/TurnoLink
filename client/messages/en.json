@@ -1,4 +1,19 @@
 {
+  "notFound": {
+    "title": "Page not found",
+    "description": "Sorry, the page you're looking for doesn't exist or has been moved. The link might be incorrect or the page may have been removed.",
+    "backHome": "Back to home",
+    "goBack": "Go back",
+    "helpfulLinks": "Helpful links",
+    "links": {
+      "home": "Home",
+      "features": "Features",
+      "pricing": "Pricing",
+      "login": "Login",
+      "register": "Sign up"
+    },
+    "copyright": "All rights reserved."
+  },
   "navbar": {
     "home": "Home",
     "about": "Features",

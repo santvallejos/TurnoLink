@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Loader2,
 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const t = useTranslations('auth.login');
@@ -48,10 +49,13 @@ export default function LoginPage() {
       <div className='flex w-full flex-col justify-center px-6 py-12 lg:w-1/2 lg:px-16 xl:px-24'>
         <div className='mx-auto w-full max-w-md'>
           {/* Logo */}
-          <Link href='/' className='mb-8 flex items-center gap-2'>
-            <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-primary'>
-              <Calendar className='h-5 w-5 text-primary-foreground' />
-            </div>
+          <Link href='/' className='mb-8 flex items-center'>
+            <Image
+              src='/link-circle-svgrepo-com.png'
+              alt='TurnoLink Logo'
+              width={40}
+              height={40}
+            />
             <span className='text-xl font-bold text-foreground'>TurnoLink</span>
           </Link>
 
@@ -95,12 +99,12 @@ export default function LoginPage() {
                 >
                   {t('password')}
                 </label>
-                <Link
+                {/* <Link
                   href='/forgot-password'
                   className='text-sm text-primary hover:underline'
                 >
                   {t('forgotPassword')}
-                </Link>
+                </Link> */}
               </div>
               <div className='relative'>
                 <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4'>
@@ -156,14 +160,14 @@ export default function LoginPage() {
           </form>
 
           {/* Divider */}
-          <div className='my-8 flex items-center gap-4'>
+          {/* <div className='my-8 flex items-center gap-4'>
             <div className='h-px flex-1 bg-border' />
             <span className='text-sm text-muted-foreground'>{t('or')}</span>
             <div className='h-px flex-1 bg-border' />
-          </div>
+          </div> */}
 
           {/* Social login buttons */}
-          <div className='space-y-3'>
+          {/* <div className='space-y-3'>
             <button
               type='button'
               className='flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-background py-3 font-medium text-foreground transition-colors hover:bg-accent'
@@ -188,7 +192,7 @@ export default function LoginPage() {
               </svg>
               {t('googleLogin')}
             </button>
-          </div>
+          </div> */}
 
           {/* Register link */}
           <p className='mt-8 text-center text-sm text-muted-foreground'>

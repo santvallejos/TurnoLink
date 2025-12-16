@@ -69,24 +69,6 @@ export default function Testimonials() {
             </div>
           ))}
         </div>
-
-        {/* Trust badges */}
-        <div className='mt-16 text-center'>
-          <p className='text-sm text-muted-foreground mb-6'>{t('trustedBy')}</p>
-          <div className='flex flex-wrap justify-center items-center gap-8 opacity-60'>
-            {/* Placeholder company logos */}
-            {['Company A', 'Company B', 'Company C', 'Company D'].map(
-              (company) => (
-                <div
-                  key={company}
-                  className='text-2xl font-bold text-muted-foreground/50 hover:text-muted-foreground transition-colors'
-                >
-                  {company}
-                </div>
-              ),
-            )}
-          </div>
-        </div>
       </div>
     </section>
   );

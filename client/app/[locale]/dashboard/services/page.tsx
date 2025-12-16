@@ -2,16 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { authService, serviceService } from '@/lib/services';
-import type { CurrentUser, Service } from '@/types';
-import DashboardLayout from '@/components/dashboard/dashboard-layout';
+import { serviceService } from '@/lib/services';
+import type { Service } from '@/types';
 import {
   Plus,
   Search,
   Briefcase,
   Clock,
   DollarSign,
-  MoreHorizontal,
   Edit,
   Trash2,
   ToggleLeft,
@@ -22,7 +20,6 @@ import {
 
 export default function ServicesPage() {
   const t = useTranslations();
-  const [user, setUser] = useState<CurrentUser | null>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,14 +29,10 @@ export default function ServicesPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [userData, servicesData] = await Promise.all([
-          authService.getCurrentUser(),
-          serviceService.getMyServices(),
-        ]);
-        setUser(userData);
+        const servicesData = await serviceService.getMyServices();
         setServices(servicesData);
       } catch {
-        window.location.href = '/login';
+        // Error handling managed by layout
       } finally {
         setLoading(false);
       }
@@ -50,7 +43,7 @@ export default function ServicesPage() {
   const filteredServices = services.filter(
     (service) =>
       service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      service.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const activeServices = services.filter((s) => s.isActive).length;
@@ -68,7 +61,7 @@ export default function ServicesPage() {
   }
 
   return (
-    <DashboardLayout user={user}>
+    <>
       <div className='p-6 lg:p-8'>
         {/* Header */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8'>
@@ -345,6 +338,6 @@ export default function ServicesPage() {
           </div>
         </div>
       )}
-    </DashboardLayout>
+    </>
   );
 }

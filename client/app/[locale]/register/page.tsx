@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { authService } from '@/lib/services';
 import type { ApiError } from '@/types';
@@ -21,6 +21,7 @@ import Image from 'next/image';
 
 export default function RegisterPage() {
   const t = useTranslations('auth.register');
+  const locale = useLocale();
   const tErrors = useTranslations('auth.errors');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -51,7 +52,7 @@ export default function RegisterPage() {
         repeatPassword,
         phoneNumber: (formData.get('phone') as string) || undefined,
       });
-      window.location.href = '/dashboard';
+      window.location.href = `/${locale}/dashboard`;
     } catch (err) {
       const apiError = err as ApiError;
       setError(apiError.message);

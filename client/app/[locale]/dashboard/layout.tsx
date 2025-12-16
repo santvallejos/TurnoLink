@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { usePathname } from 'next/navigation';
 import { authService } from '@/lib/services';
+import type { CurrentUser } from '@/types';
 import {
   Calendar,
   LayoutDashboard,
@@ -18,12 +19,8 @@ import {
   X,
   ChevronRight,
   Bell,
+  Loader2,
 } from 'lucide-react';
-
-interface DashboardLayoutProps {
-  children: React.ReactNode;
-  user: { name: string; email: string } | null;
-}
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, labelKey: 'dashboard' },
@@ -36,11 +33,29 @@ const navItems = [
 
 export default function DashboardLayout({
   children,
-  user,
-}: DashboardLayoutProps) {
+}: {
+  children: React.ReactNode;
+}) {
   const t = useTranslations('nav');
+  const tCommon = useTranslations('common');
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState<CurrentUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const userData = await authService.getCurrentUser();
+        setUser(userData);
+      } catch {
+        window.location.href = '/login';
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadUser();
+  }, []);
 
   function handleLogout() {
     authService.logout();
@@ -57,6 +72,17 @@ export default function DashboardLayout({
     }
     return pathname.includes(href.replace('/dashboard', ''));
   };
+
+  if (loading) {
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-background'>
+        <div className='flex flex-col items-center gap-4'>
+          <Loader2 className='h-8 w-8 animate-spin text-primary' />
+          <p className='text-muted-foreground'>{tCommon('loading')}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='flex min-h-screen bg-background'>

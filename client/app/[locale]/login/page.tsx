@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { authService } from '@/lib/services';
 import type { ApiError } from '@/types';
@@ -18,6 +18,7 @@ import Image from 'next/image';
 
 export default function LoginPage() {
   const t = useTranslations('auth.login');
+  const locale = useLocale();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +35,7 @@ export default function LoginPage() {
         email: formData.get('email') as string,
         password: formData.get('password') as string,
       });
-      window.location.href = '/dashboard';
+      window.location.href = `/${locale}/dashboard`;
     } catch (err) {
       const apiError = err as ApiError;
       setError(apiError.message);

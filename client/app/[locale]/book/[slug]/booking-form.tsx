@@ -268,6 +268,13 @@ export default function BookingForm({ services, professionalName }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingSlots, setLoadingSlots] = useState(false);
+  
+  // Client details state
+  const [clientName, setClientName] = useState('');
+  const [clientSurname, setClientSurname] = useState('');
+  const [clientEmail, setClientEmail] = useState('');
+  const [clientPhone, setClientPhone] = useState('');
+  const [notes, setNotes] = useState('');
 
   const steps = [
     t('steps.service'),
@@ -314,17 +321,15 @@ export default function BookingForm({ services, professionalName }: Props) {
     setError(null);
     setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-
     try {
       await publicService.createBooking({
         serviceId: selectedService!.id,
         availabilityId: selectedSlot!.id,
-        clientName: formData.get('name') as string,
-        clientSurname: formData.get('surname') as string,
-        clientEmail: formData.get('email') as string,
-        clientPhone: (formData.get('phone') as string) || undefined,
-        notes: (formData.get('notes') as string) || undefined,
+        clientName: clientName,
+        clientSurname: clientSurname,
+        clientEmail: clientEmail,
+        clientPhone: clientPhone || undefined,
+        notes: notes || undefined,
       });
       setSuccess(true);
     } catch (err) {
@@ -630,6 +635,8 @@ export default function BookingForm({ services, professionalName }: Props) {
                       name='name'
                       type='text'
                       required
+                      value={clientName}
+                      onChange={(e) => setClientName(e.target.value)}
                       placeholder={t('namePlaceholder')}
                       className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
                     />
@@ -643,6 +650,8 @@ export default function BookingForm({ services, professionalName }: Props) {
                       name='surname'
                       type='text'
                       required
+                      value={clientSurname}
+                      onChange={(e) => setClientSurname(e.target.value)}
                       placeholder={t('surnamePlaceholder')}
                       className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
                     />
@@ -659,6 +668,8 @@ export default function BookingForm({ services, professionalName }: Props) {
                     name='email'
                     type='email'
                     required
+                    value={clientEmail}
+                    onChange={(e) => setClientEmail(e.target.value)}
                     placeholder={t('emailPlaceholder')}
                     className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
                   />
@@ -673,6 +684,8 @@ export default function BookingForm({ services, professionalName }: Props) {
                   <input
                     name='phone'
                     type='tel'
+                    value={clientPhone}
+                    onChange={(e) => setClientPhone(e.target.value)}
                     placeholder={t('phonePlaceholder')}
                     className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
                   />
@@ -687,6 +700,8 @@ export default function BookingForm({ services, professionalName }: Props) {
                   <textarea
                     name='notes'
                     rows={3}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
                     placeholder={t('notesPlaceholder')}
                     className='w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20'
                   />
@@ -706,8 +721,9 @@ export default function BookingForm({ services, professionalName }: Props) {
               </button>
               <button
                 type='button'
+                disabled={!clientName || !clientSurname || !clientEmail}
                 onClick={() => setCurrentStep(3)}
-                className='inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground transition-all hover:bg-primary/90'
+                className='inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50'
               >
                 {t('next')}
                 <ChevronRight className='h-4 w-4' />

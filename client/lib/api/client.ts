@@ -52,28 +52,45 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     requestHeaders['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    method,
-    headers: requestHeaders,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  const fullUrl = `${API_URL}${endpoint}`;
+  
+  // Debug logging
+  console.log('=== API REQUEST ===');
+  console.log('URL:', fullUrl);
+  console.log('Method:', method);
+  console.log('Body:', body ? JSON.stringify(body, null, 2) : 'none');
 
-  // Handle no content response
-  if (response.status === 204) {
-    return undefined as T;
+  try {
+    const response = await fetch(fullUrl, {
+      method,
+      headers: requestHeaders,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    console.log('Response status:', response.status);
+
+    // Handle no content response
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    const data = await response.json();
+    console.log('Response data:', data);
+
+    if (!response.ok) {
+      const error: ApiError = {
+        message: data.message || 'An error occurred',
+        status: response.status,
+      };
+      console.error('API Error:', error);
+      throw error;
+    }
+
+    return data;
+  } catch (err) {
+    console.error('=== FETCH ERROR ===', err);
+    throw err;
   }
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    const error: ApiError = {
-      message: data.message || 'An error occurred',
-      status: response.status,
-    };
-    throw error;
-  }
-
-  return data;
 }
 
 // HTTP method helpers

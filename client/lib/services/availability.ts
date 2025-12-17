@@ -52,8 +52,8 @@ export const availabilityService = {
   /**
    * Create a recurring availability slot
    */
-  async createRecurring(data: CreateRecurringAvailabilityRequest): Promise<Availability> {
-    return api.post<Availability>('/recurring', data);
+  async createRecurring(data: CreateRecurringAvailabilityRequest): Promise<Availability[]> {
+    return api.post<Availability[]>('/api/Availabilities/recurring', data);
   },
 
   /**

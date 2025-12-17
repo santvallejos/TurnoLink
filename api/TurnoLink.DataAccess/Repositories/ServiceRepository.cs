@@ -27,13 +27,15 @@ namespace TurnoLink.DataAccess.Repositories
         public async Task<IEnumerable<Service>> GetServicesBySlug(string slug)
         {
             return await _db.Services
-                .Where(s => s.User.Slug == slug)
+                .Include(s => s.User)
+                .Where(s => s.User.Slug == slug && s.IsActive)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Service>> GetServicesByUserIdAsync(Guid userId)
         {
             return await _db.Services
+                .Include(s => s.User)
                 .Where(s => s.UserId == userId)
                 .ToListAsync();
         }

@@ -52,9 +52,7 @@ namespace TurnoLink.Business.Services
         {
             var services = await _serviceRepository.GetServicesBySlug(slug);
 
-            if (services == null)
-                throw new InvalidOperationException("User not found");
-
+            // Retorna lista vacía si no hay servicios (no es un error)
             return services.Select(MapToDto);
         }
 

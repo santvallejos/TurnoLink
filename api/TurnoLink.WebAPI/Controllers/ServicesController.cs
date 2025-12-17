@@ -60,11 +60,13 @@ namespace TurnoLink.WebAPI.Controllers
         /// </summary>
         [HttpGet("{slug}")]
         [ProducesResponseType(typeof(IEnumerable<ServiceDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<ServiceDto>>> GetServicesBySlugUser(string slug)
         {
             var services = await _serviceService.GetServicesBySlugAsync(slug);
-            if (services == null)
-                return NotFound(new { message = $"{slug}" });
+            
+            if (!services.Any())
+                return NotFound(new { message = $"No services found for '{slug}'" });
 
             return Ok(services);
         }

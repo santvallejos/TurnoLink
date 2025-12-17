@@ -222,6 +222,7 @@
     "bookings": "Bookings",
     "availability": "Availability",
     "profile": "Profile",
+    "settings": "Settings",
     "login": "Login",
     "register": "Register",
     "logout": "Logout"
@@ -318,10 +319,12 @@
     "inactive": "Inactive",
     "noDescription": "No description",
     "searchPlaceholder": "Search services...",
+    "confirmDelete": "Are you sure you want to delete this service?",
     "stats": {
       "total": "Total services",
       "active": "Active",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "avgDuration": "Average duration"
     },
     "form": {
       "name": "Service name",
@@ -331,6 +334,42 @@
       "duration": "Duration (min)",
       "price": "Price ($)",
       "isActive": "Service active and available for bookings"
+    }
+  },
+  "availability": {
+    "title": "Availability",
+    "description": "Configure the times when you are available to receive bookings",
+    "empty": "You have no availability configured",
+    "emptyDesc": "Add time slots so your clients can book",
+    "create": "Add availability",
+    "createFirst": "Add my first availability",
+    "noServicesTitle": "You need to create a service first",
+    "noServicesDesc": "Before configuring availability, you must create at least one service",
+    "stats": {
+      "total": "Total availabilities",
+      "services": "Services with availability"
+    },
+    "form": {
+      "service": "Service",
+      "dayOfWeek": "Day of the week",
+      "startTime": "Start time",
+      "recurring": "Repeat this availability",
+      "repeatType": "Repeat frequency",
+      "endDate": "End date"
+    },
+    "days": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    },
+    "repeat": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
     }
   },
   "bookings": {

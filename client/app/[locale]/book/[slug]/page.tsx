@@ -1,5 +1,4 @@
 import { getTranslations } from 'next-intl/server';
-import { publicService } from '@/lib/services';
 import type { Service } from '@/types';
 import BookingForm from './booking-form';
 import { Calendar, AlertCircle, ArrowLeft } from 'lucide-react';
@@ -17,15 +16,45 @@ export default async function PublicBookingPage({ params }: Props) {
   let error = null;
   let professionalName = slug; // Por defecto usa el slug
 
+  // URL de la API para Server Components
+  const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5009';
+  const fetchUrl = `${API_URL}/api/Public/${slug}`;
+  
+  console.log('=== DEBUG BOOKING PAGE ===');
+  console.log('API_URL:', API_URL);
+  console.log('Slug:', slug);
+  console.log('Fetch URL:', fetchUrl);
+
   try {
-    services = await publicService.getServicesBySlug(slug);
-    // Si hay servicios, intentamos obtener el nombre del profesional del primer servicio
-    if (services.length > 0 && services[0].user) {
-      professionalName = services[0].user.name || slug;
+    // Fetch directo desde el servidor para evitar problemas con el cliente API
+    const response = await fetch(fetchUrl, {
+      cache: 'no-store', // No cachear para obtener datos frescas
+    });
+    
+    console.log('Response status:', response.status);
+    console.log('Response ok:', response.ok);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log('Error response:', errorText);
+      error = 'Professional not found';
+    } else {
+      services = await response.json();
+      console.log('Services received:', services.length);
+      console.log('Services data:', JSON.stringify(services, null, 2));
+      // Si hay servicios, usamos el userName del primer servicio
+      if (services.length > 0 && services[0].userName) {
+        professionalName = services[0].userName;
+      }
     }
-  } catch {
+  } catch (err) {
+    console.error('=== FETCH ERROR ===');
+    console.error('Error fetching services:', err);
     error = 'Professional not found';
   }
+  
+  console.log('Final error:', error);
+  console.log('Final services count:', services.length);
 
   if (error || services.length === 0) {
     return (

@@ -134,18 +134,31 @@ export interface Availability {
 
 export interface CreateAvailabilityRequest {
   serviceId: string;
-  startTime: string;
+  dayOfWeek: number; // 0=Sunday, 1=Monday, ..., 6=Saturday
+  startTime: string; // TimeSpan format: "09:00:00"
+  startDate?: string; // Optional: specific date to start
 }
 
-export type RepeatAvailability = 'None' | 'Daily' | 'Weekly' | 'Monthly';
+export enum RepeatAvailability {
+  None = 0,
+  Daily = 1,
+  Weekly = 2,
+  Monthly = 3,
+}
 
-export interface CreateRecurringAvailabilityRequest extends CreateAvailabilityRequest {
-  repeat: Exclude<RepeatAvailability, 'None'>;
-  endTime: string;
+export interface CreateRecurringAvailabilityRequest {
+  serviceId: string;
+  dayOfWeek: number;
+  startTime: string;
+  repeat: RepeatAvailability;
+  endDate: string;
+  startDate?: string;
 }
 
 export interface UpdateAvailabilityRequest {
+  dayOfWeek?: number;
   startTime?: string;
+  newDate?: string;
 }
 
 // ============================================

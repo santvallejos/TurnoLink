@@ -26,7 +26,7 @@ namespace TurnoLink.Business.Services
 
             var message = new EmailMessage
             {
-                From = "TurnoLink <onboarding@resend.dev>",
+                From = "TurnoLink <turnolink@santvallejos.dev>",
                 To = [booking.ClientEmail ?? string.Empty],
                 Subject = "✅ Confirmación de Turno - TurnoLink",
                 HtmlBody = htmlContent,
@@ -53,7 +53,7 @@ namespace TurnoLink.Business.Services
 
             var message = new EmailMessage
             {
-                From = "TurnoLink <onboarding@resend.dev>",
+                From = "TurnoLink <onboarding@santvallejos.dev>",
                 To = [userEmail],
                 Subject = $"📅 Nueva Reserva - {booking.ClientName} - TurnoLink",
                 HtmlBody = htmlContent

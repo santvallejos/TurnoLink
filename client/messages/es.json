@@ -222,6 +222,7 @@
     "bookings": "Reservas",
     "availability": "Disponibilidad",
     "profile": "Perfil",
+    "settings": "Configuración",
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "logout": "Cerrar sesión"
@@ -318,10 +319,12 @@
     "inactive": "Inactivo",
     "noDescription": "Sin descripción",
     "searchPlaceholder": "Buscar servicios...",
+    "confirmDelete": "¿Estás seguro de que deseas eliminar este servicio?",
     "stats": {
       "total": "Total servicios",
       "active": "Activos",
-      "inactive": "Inactivos"
+      "inactive": "Inactivos",
+      "avgDuration": "Duración promedio"
     },
     "form": {
       "name": "Nombre del servicio",
@@ -331,6 +334,42 @@
       "duration": "Duración (min)",
       "price": "Precio ($)",
       "isActive": "Servicio activo y disponible para reservas"
+    }
+  },
+  "availability": {
+    "title": "Disponibilidad",
+    "description": "Configura los horarios en los que estás disponible para recibir reservas",
+    "empty": "No tienes disponibilidades configuradas",
+    "emptyDesc": "Agrega horarios para que tus clientes puedan reservar",
+    "create": "Agregar disponibilidad",
+    "createFirst": "Agregar mi primera disponibilidad",
+    "noServicesTitle": "Primero necesitas crear un servicio",
+    "noServicesDesc": "Antes de configurar disponibilidad, debes crear al menos un servicio",
+    "stats": {
+      "total": "Total disponibilidades",
+      "services": "Servicios con disponibilidad"
+    },
+    "form": {
+      "service": "Servicio",
+      "dayOfWeek": "Día de la semana",
+      "startTime": "Hora de inicio",
+      "recurring": "Repetir esta disponibilidad",
+      "repeatType": "Frecuencia de repetición",
+      "endDate": "Fecha de fin"
+    },
+    "days": {
+      "sunday": "Domingo",
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado"
+    },
+    "repeat": {
+      "daily": "Diario",
+      "weekly": "Semanal",
+      "monthly": "Mensual"
     }
   },
   "bookings": {

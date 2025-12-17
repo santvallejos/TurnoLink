@@ -1,5 +1,4 @@
 using TurnoLink.Business.DTOs;
-using TurnoLink.DataAccess.Entities;
 
 namespace TurnoLink.Business.Interfaces
 {
@@ -18,8 +17,8 @@ namespace TurnoLink.Business.Interfaces
         /// <summary>
         /// Gets all availabilities for a specific user
         /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
+        /// <param name="userId">User ID</param>
+        /// <returns>Collection of availability DTOs</returns>
         Task<IEnumerable<AvailabilityDto>> GetAvailabilitiesByUserIdAsync(Guid userId);
 
         /// <summary>
@@ -39,20 +38,20 @@ namespace TurnoLink.Business.Interfaces
         Task<IEnumerable<AvailabilityDto>> GetAvailableSlotsByDateRangeAsync(Guid userId, DateTime startDate, DateTime endDate);
 
         /// <summary>
-        /// Creates a new availability without recurring 
+        /// Creates a new availability using DayOfWeek and TimeSpan
         /// </summary>
         /// <param name="userId">User ID creating the availability</param>
-        /// <param name="createDto">Availability creation data</param>
+        /// <param name="createDto">Availability creation data with DayOfWeek and TimeSpan</param>
         /// <returns>Created availability DTO</returns>
-        public Task<AvailabilityDto> CreateAvailabilityNotRecurringAsync(Guid userId, CreateAvailabilityDto createDto);
+        Task<AvailabilityDto> CreateAvailabilityAsync(Guid userId, CreateAvailabilityDto createDto);
 
         /// <summary>
-        /// Creates a new availability with recurring options
+        /// Creates recurring availability using DayOfWeek and TimeSpan
         /// </summary>
         /// <param name="userId">User ID creating the availability</param>
-        /// <param name="createDto">Availability creation data</param>
-        /// <returns>Created availability DTO</returns>
-        Task<IEnumerable<AvailabilityDto>> CreateAvailabilityWhitRecurringAsync(Guid userId, CreateRecurringAvailabilityDto createDto);
+        /// <param name="createDto">Recurring availability creation data</param>
+        /// <returns>Collection of created availability DTOs</returns>
+        Task<IEnumerable<AvailabilityDto>> CreateRecurringAvailabilityAsync(Guid userId, CreateRecurringAvailabilityDto createDto);
 
         /// <summary>
         /// Updates an existing availability

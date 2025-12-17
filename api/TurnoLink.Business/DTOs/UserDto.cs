@@ -7,6 +7,7 @@ namespace TurnoLink.Business.DTOs
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+        public string? Address { get; set; }
     }
 
     public class UpdateUserDto
@@ -14,6 +15,7 @@ namespace TurnoLink.Business.DTOs
         public string? Name { get; set; }
         public string? Surname { get; set; }
         public string? PhoneNumber { get; set; }
+        public string? Address { get; set; }
         public bool? IsActive { get; set; }
     }
 
@@ -23,6 +25,7 @@ namespace TurnoLink.Business.DTOs
         public string Surname { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
+        public string? Address { get; set; }
         public string Slug { get; set; } = string.Empty;
         public bool IsActive { get; set; }
     }

@@ -19,25 +19,22 @@ namespace TurnoLink.Business.Services
             try
             {
                 // Crear un nuevo calendario
-                var calendar = new Calendar();
-                
-                // Configurar propiedades del calendario
-                calendar.ProductId = "-//TurnoLink//Booking Calendar//ES";
-                calendar.Version = "2.0";
-                calendar.Method = "REQUEST";
+                var calendar = new Calendar
+                {
+                    ProductId = "-//TurnoLink//Booking Calendar//ES",
+                    Version = "2.0",
+                    Method = "REQUEST"
+                };
 
                 // Crear el evento
                 var calendarEvent = new CalendarEvent
                 {
                     Uid = booking.Id.ToString(),
                     Summary = $"Turno: {booking.ServiceName}",
-                    Description = $"Servicio: {booking.ServiceName}\n" +
-                                  $"Profesional: {booking.UserName}\n" +
-                                  $"Precio: ${booking.ServicePrice}\n" +
-                                  (string.IsNullOrEmpty(booking.Notes) ? "" : $"Notas: {booking.Notes}\n"),
+                    Description = BuildDescription(booking),
                     Start = new CalDateTime(booking.StartTime),
                     End = new CalDateTime(booking.EndTime),
-                    // Location = "Service location",
+                    Location = booking.Location ?? string.Empty,
                     Created = new CalDateTime(booking.CreatedAt),
                     Status = booking.Status.ToUpper(),
                     Transparency = TransparencyType.Opaque
@@ -52,14 +49,6 @@ namespace TurnoLink.Business.Services
                     };
                 }
 
-                // Agregar recordatorio (15 minutos antes)
-                //calendarEvent.Alarms.Add(new Alarm
-                //{
-                    //Trigger = new Trigger(new Ical.Net.DataTypes.Duration(0, 0, -15, 0)),
-                    //Action = "DISPLAY",
-                    //Description = $"Recordatorio: Reserva de {booking.ServiceName} en 15 minutos"
-                //});
-
                 // Agregar el evento al calendario
                 calendar.Events.Add(calendarEvent);
 
@@ -71,6 +60,21 @@ namespace TurnoLink.Business.Services
             {
                 return string.Empty;
             }
+        }
+
+        private static string BuildDescription(BookingDto booking)
+        {
+            var description = $"Servicio: {booking.ServiceName}\n" +
+                              $"Profesional: {booking.UserName}\n" +
+                              $"Precio: ${booking.ServicePrice}\n";
+
+            if (!string.IsNullOrEmpty(booking.Location))
+                description += $"Dirección: {booking.Location}\n";
+
+            if (!string.IsNullOrEmpty(booking.Notes))
+                description += $"Notas: {booking.Notes}\n";
+
+            return description;
         }
     }
 }

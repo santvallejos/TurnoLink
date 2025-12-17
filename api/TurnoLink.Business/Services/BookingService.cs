@@ -4,7 +4,6 @@ using TurnoLink.DataAccess.Data;
 using TurnoLink.DataAccess.Entities;
 using TurnoLink.DataAccess.Enums;
 using TurnoLink.DataAccess.Interfaces;
-using TurnoLink.Business.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace TurnoLink.Business.Services
@@ -46,6 +45,7 @@ namespace TurnoLink.Business.Services
             _resendService = resendService;
             _context = context;
         }
+
         public async Task<BookingDto?> GetBookingByIdAsync(Guid id)
         {
             var booking = await _bookingRepository.GetByIdAsync(id);
@@ -84,6 +84,10 @@ namespace TurnoLink.Business.Services
             var availability = await _availabilityRepository.GetByIdAsync(createBookingDto.AvailabilityId);
             if (availability == null)
                 throw new InvalidOperationException("Availability not found");
+            
+            // Validate that the availability is not in the past
+            if (availability.StartTime < DateTime.UtcNow)
+                throw new InvalidOperationException("Cannot book an appointment in the past. Please select a future date.");
             
             if (availability.UserId != service.UserId)
                 throw new InvalidOperationException("Availability does not match the service's user");
@@ -140,9 +144,19 @@ namespace TurnoLink.Business.Services
             if (createdBooking == null)
                 throw new InvalidOperationException("Error creating booking");
             
-            await _resendService.SendEmailAsync(MapToDto(createdBooking!), await _serviceIcalDotnet.CreateFileIcsBookingAsync(MapToDto(createdBooking!)));
+            var bookingDto = MapToDto(createdBooking);
             
-            return MapToDto(createdBooking!);
+            // Send confirmation email to client
+            var icsContent = await _serviceIcalDotnet.CreateFileIcsBookingAsync(bookingDto);
+            await _resendService.SendClientConfirmationEmailAsync(bookingDto, icsContent);
+            
+            // Send notification email to professional
+            if (!string.IsNullOrEmpty(bookingDto.UserEmail))
+            {
+                await _resendService.SendProfessionalNotificationEmailAsync(bookingDto, bookingDto.UserEmail);
+            }
+            
+            return bookingDto;
         }
 
         public async Task<BookingDto> UpdateBookingAsync(Guid id, UpdateBookingDto updateBookingDto)
@@ -193,10 +207,14 @@ namespace TurnoLink.Business.Services
                 ServiceName = booking.Service?.Name ?? string.Empty,
                 ServicePrice = booking.Service?.Price ?? 0,
                 UserName = $"{booking.User?.Name} {booking.User?.Surname}" ?? string.Empty,
+                UserEmail = booking.User?.Email,
+                UserPhone = booking.User?.PhoneNumber,
                 StartTime = booking.StartTime,
                 EndTime = booking.EndTime,
                 Status = booking.Status.ToString(),
-                Notes = booking.Notes
+                Notes = booking.Notes,
+                CreatedAt = booking.CreatedAt,
+                Location = booking.User?.Address
             };
         }
     }

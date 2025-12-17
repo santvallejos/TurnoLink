@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Xml.Linq;
 using TurnoLink.Business.DTOs;
 using TurnoLink.Business.Interfaces;
 using TurnoLink.DataAccess.Data;
@@ -51,7 +50,6 @@ namespace TurnoLink.Business.Services
             // Generate slug safely
             var fullName = $"{registerDto.Name}-{registerDto.Surname}".ToLowerInvariant();
             var userSlug = fullName.Length > 20 ? fullName.Substring(0, 20) : fullName;
-
             var slugId = Guid.NewGuid().ToString("N").Substring(0, 6);
 
             // Create user
@@ -63,6 +61,7 @@ namespace TurnoLink.Business.Services
                 Email = registerDto.Email,
                 PasswordHash = passwordHash,
                 PhoneNumber = registerDto.PhoneNumber ?? string.Empty,
+                Address = registerDto.Address ?? string.Empty,
                 Slug = $"{userSlug}-{slugId}",
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow

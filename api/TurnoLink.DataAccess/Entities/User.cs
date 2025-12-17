@@ -56,6 +56,12 @@ namespace TurnoLink.DataAccess.Entities
         public string PhoneNumber { get; set; } = string.Empty;
 
         /// <summary>
+        /// Address of the user
+        /// </summary>
+        [Column("address")]
+        public string Address { get; set; } = string.Empty;
+
+        /// <summary>
         /// Slug for the user profile
         /// </summary>
         [Required]

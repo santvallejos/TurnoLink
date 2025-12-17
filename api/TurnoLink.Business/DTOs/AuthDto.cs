@@ -29,6 +29,11 @@ namespace TurnoLink.Business.DTOs
         public string RepeatPassword { get; set; } = string.Empty;
 
         public string? PhoneNumber { get; set; }
+
+        /// <summary>
+        /// Address where the professional offers their services
+        /// </summary>
+        public string? Address { get; set; }
     }
 
     public class AuthResponseDto

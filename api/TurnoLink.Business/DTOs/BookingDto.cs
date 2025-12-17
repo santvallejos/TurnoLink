@@ -29,6 +29,8 @@ namespace TurnoLink.Business.DTOs
         public Guid UserId { get; set; }
         public Guid ServiceId { get; set; }
         public string UserName { get; set; } = string.Empty;
+        public string? UserEmail { get; set; }
+        public string? UserPhone { get; set; }
         public string ServiceName { get; set; } = string.Empty;
         public decimal ServicePrice { get; set; }
         public DateTime StartTime { get; set; }
@@ -36,5 +38,10 @@ namespace TurnoLink.Business.DTOs
         public string Status { get; set; } = string.Empty;
         public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Location/Address where the service will be provided
+        /// </summary>
+        public string? Location { get; set; }
     }
 }

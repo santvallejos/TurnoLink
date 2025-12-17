@@ -67,6 +67,9 @@ namespace TurnoLink.Business.Services
             if (!string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber))
                 user.PhoneNumber = updateUserDto.PhoneNumber;
 
+            if (!string.IsNullOrWhiteSpace(updateUserDto.Address))
+                user.Address = updateUserDto.Address;
+
             if (updateUserDto.IsActive.HasValue)
                 user.IsActive = updateUserDto.IsActive.Value;
 
@@ -96,6 +99,8 @@ namespace TurnoLink.Business.Services
                 Surname = user.Surname,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+                Slug = user.Slug,
                 IsActive = user.IsActive
             };
         }

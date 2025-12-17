@@ -12,8 +12,8 @@ using TurnoLink.DataAccess.Data;
 namespace TurnoLink.DataAccess.Migrations
 {
     [DbContext(typeof(TurnoLinkDbContext))]
-    [Migration("20251213180603_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251217153537_NewMigration")]
+    partial class NewMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -218,6 +218,11 @@ namespace TurnoLink.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("address");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")

@@ -89,21 +89,28 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Creates a new availability slot
+        /// Creates a new availability slot using DayOfWeek and TimeSpan
         /// </summary>
-        /// <param name="createDto">Availability creation data</param>
-        /// <returns>Created availability</returns>
+        /// <remarks>
+        /// Example request:
+        /// {
+        ///     "serviceId": "guid",
+        ///     "dayOfWeek": 1,  // 0=Sunday, 1=Monday, ..., 6=Saturday
+        ///     "startTime": "09:00:00",
+        ///     "startDate": "2024-01-15"  // Optional
+        /// }
+        /// </remarks>
         [HttpPost]
         [ProducesResponseType(typeof(AvailabilityDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<AvailabilityDto>> CreateNotRecurring([FromBody] CreateAvailabilityDto createDto)
+        public async Task<ActionResult<AvailabilityDto>> Create([FromBody] CreateAvailabilityDto createDto)
         {
             try
             {
                 var userId = GetUserIdFromClaims();
-                var availability = await _availabilityService.CreateAvailabilityNotRecurringAsync(userId, createDto);
-                return CreatedAtAction(nameof(GetById), new { id = availability }, availability);
+                var availability = await _availabilityService.CreateAvailabilityAsync(userId, createDto);
+                return CreatedAtAction(nameof(GetById), new { id = availability.Id }, availability);
             }
             catch (ArgumentException ex)
             {
@@ -120,21 +127,30 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Creates a new availability slot with recurring options
+        /// Creates recurring availability using DayOfWeek and TimeSpan
         /// </summary>
-        /// <param name="createDto">Availability creation data</param>
-        /// <returns>Created availability</returns>
-        [HttpPost("/recurring")]
-        [ProducesResponseType(typeof(AvailabilityDto), StatusCodes.Status201Created)]
+        /// <remarks>
+        /// Example request:
+        /// {
+        ///     "serviceId": "guid",
+        ///     "dayOfWeek": 1,  // 0=Sunday, 1=Monday, ..., 6=Saturday
+        ///     "startTime": "09:00:00",
+        ///     "repeat": 2,  // 1=Daily, 2=Weekly, 3=Monthly
+        ///     "endDate": "2024-06-15",
+        ///     "startDate": "2024-01-15"  // Optional
+        /// }
+        /// </remarks>
+        [HttpPost("recurring")]
+        [ProducesResponseType(typeof(IEnumerable<AvailabilityDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<AvailabilityDto>> CreateWithRecurring([FromBody] CreateRecurringAvailabilityDto createDto)
+        public async Task<ActionResult<IEnumerable<AvailabilityDto>>> CreateRecurring([FromBody] CreateRecurringAvailabilityDto createDto)
         {
             try 
             {
                 var userId = GetUserIdFromClaims();
-                var availability = await _availabilityService.CreateAvailabilityWhitRecurringAsync(userId, createDto);
-                return CreatedAtAction(nameof(GetById), new { id = availability }, availability);
+                var availabilities = await _availabilityService.CreateRecurringAvailabilityAsync(userId, createDto);
+                return CreatedAtAction(nameof(GetMyAvailabilities), availabilities);
             }
             catch (ArgumentException ex)
             {
@@ -153,9 +169,14 @@ namespace TurnoLink.WebAPI.Controllers
         /// <summary>
         /// Updates an existing availability
         /// </summary>
-        /// <param name="id">Availability ID</param>
-        /// <param name="updateDto">Update data</param>
-        /// <returns>Updated availability</returns>
+        /// <remarks>
+        /// Example request:
+        /// {
+        ///     "dayOfWeek": 2,  // Optional: new day of week
+        ///     "startTime": "10:00:00",  // Optional: new time
+        ///     "newDate": "2024-02-20"  // Optional: specific new date
+        /// }
+        /// </remarks>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(AvailabilityDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -186,8 +207,6 @@ namespace TurnoLink.WebAPI.Controllers
         /// <summary>
         /// Deletes an availability slot
         /// </summary>
-        /// <param name="id">Availability ID</param>
-        /// <returns>No content</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

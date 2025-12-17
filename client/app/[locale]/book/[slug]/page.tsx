@@ -19,7 +19,7 @@ export default async function PublicBookingPage({ params }: Props) {
   // URL de la API para Server Components
   const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5009';
   const fetchUrl = `${API_URL}/api/Public/${slug}`;
-  
+
   console.log('=== DEBUG BOOKING PAGE ===');
   console.log('API_URL:', API_URL);
   console.log('Slug:', slug);

@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TurnoLink.Business.Interfaces;
 using TurnoLink.Business.Services;
+using TurnoLink.Business.Hubs;
 using TurnoLink.DataAccess.Data;
 using TurnoLink.DataAccess.Interfaces;
 using TurnoLink.DataAccess.Repositories;
@@ -14,6 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Add SignalR
+builder.Services.AddSignalR();
 
 // Configure PostgreSQL Database
 builder.Services.AddDbContext<TurnoLinkDbContext>(options =>
@@ -43,6 +47,7 @@ builder.Services.AddScoped<ResendService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
 builder.Services.AddScoped<IiCalDotnet, IcalDotnetService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 // Configure JWT Authentication
 var jwtSecretKey = builder.Configuration["Jwt:SecretKey"] 
@@ -67,6 +72,22 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtAudience,
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
+    };
+    
+    // Configurar SignalR para usar el token de la query string
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/notifications"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -114,9 +135,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:3000") // URL del frontend
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -141,6 +163,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Mapear el hub de notificaciones SignalR
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 // Health check endpoint
 app.MapGet("/health", () => Results.Ok(new

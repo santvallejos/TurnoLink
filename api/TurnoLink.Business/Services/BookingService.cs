@@ -20,6 +20,7 @@ namespace TurnoLink.Business.Services
         private readonly IAvailabilityRepository _availabilityRepository;
         private readonly TurnoLinkDbContext _context;
         private readonly ResendService _resendService;
+        private readonly INotificationService _notificationService;
 
         /// <summary>
         /// Constructor for BookingService.
@@ -35,6 +36,7 @@ namespace TurnoLink.Business.Services
             IiCalDotnet serviceIcalDotnet,
             IAvailabilityRepository availabilityRepository,
             ResendService resendService,
+            INotificationService notificationService,
             TurnoLinkDbContext context)
         {
             _bookingRepository = bookingRepository;
@@ -43,6 +45,7 @@ namespace TurnoLink.Business.Services
             _availabilityRepository = availabilityRepository;
             _serviceIcalDotnet = serviceIcalDotnet;
             _resendService = resendService;
+            _notificationService = notificationService;
             _context = context;
         }
 
@@ -145,6 +148,9 @@ namespace TurnoLink.Business.Services
                 throw new InvalidOperationException("Error creating booking");
             
             var bookingDto = MapToDto(createdBooking);
+            
+            // Send real-time notification to professional via SignalR
+            await _notificationService.NotifyNewBookingAsync(bookingDto.UserId, bookingDto);
             
             // Send confirmation email to client
             var icsContent = await _serviceIcalDotnet.CreateFileIcsBookingAsync(bookingDto);

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { usePathname } from 'next/navigation';
-import { authService } from '@/lib/services';
+import { authService, signalRService, type BookingNotification } from '@/lib/services';
+import { NotificationToast } from '@/components/ui/notification-toast';
 import type { CurrentUser } from '@/types';
 import {
   Calendar,
@@ -42,6 +43,7 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState<BookingNotification[]>([]);
 
   useEffect(() => {
     async function loadUser() {
@@ -57,7 +59,31 @@ export default function DashboardLayout({
     loadUser();
   }, []);
 
+  // Conectar SignalR cuando el usuario esté autenticado
+  useEffect(() => {
+    if (!user) return;
+
+    // Iniciar conexión SignalR
+    signalRService.start();
+
+    // Registrar callback para notificaciones
+    const unsubscribe = signalRService.onNotification((notification) => {
+      setNotifications((prev) => [...prev, notification]);
+    });
+
+    // Cleanup al desmontar
+    return () => {
+      unsubscribe();
+      signalRService.stop();
+    };
+  }, [user]);
+
+  const removeNotification = useCallback((index: number) => {
+    setNotifications((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
   function handleLogout() {
+    signalRService.stop();
     authService.logout();
     window.location.href = '/';
   }
@@ -86,6 +112,17 @@ export default function DashboardLayout({
 
   return (
     <div className='flex min-h-screen bg-background'>
+      {/* Notifications Container */}
+      <div className='fixed top-4 right-4 z-100 flex flex-col gap-3'>
+        {notifications.map((notification, index) => (
+          <NotificationToast
+            key={`${notification.bookingId}-${index}`}
+            notification={notification}
+            onClose={() => removeNotification(index)}
+          />
+        ))}
+      </div>
+
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -171,7 +208,7 @@ export default function DashboardLayout({
       {/* Main content */}
       <div className='flex flex-1 flex-col'>
         {/* Top header */}
-        <header className='sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6'>
+        <header className='sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-6'>
           <button
             onClick={() => setSidebarOpen(true)}
             className='p-2 text-muted-foreground hover:text-foreground lg:hidden'

@@ -6,14 +6,8 @@ const withNextIntl = createNextIntlPlugin('./lib/i18n/request.ts');
 const nextConfig: NextConfig = {
   output: 'export',
   // Configuración de imágenes para `next/image`.
-  // Ajusta `domains` o `remotePatterns` según los orígenes reales que uses.
+  // Ajusta `remotePatterns` según los orígenes reales que uses.
   images: {
-    // Dominio(s) permitidos para cargar imágenes externas
-    domains: [
-      'localhost',
-      'res.cloudinary.com',
-      'images.unsplash.com',
-    ],
     // Formatos modernos preferidos
     formats: ['image/avif', 'image/webp'],
     // Tamaños de dispositivo usados por Next.js para generar srcset

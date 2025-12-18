@@ -3,6 +3,20 @@ import type { Service } from '@/types';
 import BookingForm from './booking-form';
 import { Calendar, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { routing } from '@/lib/i18n/routing';
+
+// Slugs de profesionales para la demo (exportación estática)
+const DEMO_SLUGS = ['sofia-cubilla-f0b49a', 'santiago-vallejos-7da3a3', 'demo', 'doctor', 'lawyer', 'consultant'];
+
+/**
+ * Genera las rutas estáticas para la demo.
+ * Combina todos los locales con los slugs de ejemplo.
+ */
+export function generateStaticParams() {
+  return routing.locales.flatMap((locale) =>
+    DEMO_SLUGS.map((slug) => ({ locale, slug }))
+  );
+}
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -30,10 +44,10 @@ export default async function PublicBookingPage({ params }: Props) {
     const response = await fetch(fetchUrl, {
       cache: 'no-store', // No cachear para obtener datos frescas
     });
-    
+
     console.log('Response status:', response.status);
     console.log('Response ok:', response.ok);
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       console.log('Error response:', errorText);

@@ -12,20 +12,11 @@ namespace TurnoLink.Business.Services
     {
         private readonly IHubContext<NotificationHub> _hubContext;
 
-        /// <summary>
-        /// Constructor del servicio de notificaciones
-        /// </summary>
-        /// <param name="hubContext">Contexto del hub de SignalR</param>
         public NotificationService(IHubContext<NotificationHub> hubContext)
         {
             _hubContext = hubContext;
         }
 
-        /// <summary>
-        /// Notifica a un profesional sobre una nueva reserva
-        /// </summary>
-        /// <param name="userId">ID del profesional</param>
-        /// <param name="booking">Datos de la reserva</param>
         public async Task NotifyNewBookingAsync(Guid userId, BookingDto booking)
         {
             var notification = new BookingNotificationDto
@@ -39,8 +30,7 @@ namespace TurnoLink.Business.Services
                 Message = $"Nueva reserva de {booking.ClientName} para {booking.ServiceName}"
             };
 
-            // Enviar notificación al grupo del usuario específico
-            await _hubContext.Clients.Group($"user_{userId}").SendAsync("ReceiveBookingNotification", notification);
+            await _hubContext.Clients.Group($"user_{userId}").SendAsync("ReceiveBookingNotification", notification); // Send notifications to the specific user group
         }
     }
 }

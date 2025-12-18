@@ -26,12 +26,13 @@ namespace TurnoLink.Business.Services
 
             var message = new EmailMessage
             {
-                From = "TurnoLink <turnolink@santvallejos.dev>",
-                To = [booking.ClientEmail ?? string.Empty],
-                Subject = "✅ Confirmación de Turno - TurnoLink",
-                HtmlBody = htmlContent,
+                From = "TurnoLink <turnolink@santvallejos.dev>", // Use verified sender email
+                To = [booking.ClientEmail ?? string.Empty], // Use client's email
+                Subject = "✅ Confirmación de Turno - TurnoLink", // Email subject
+                HtmlBody = htmlContent, // HTML content of the email
                 Attachments =
                 [
+                    // ICS file attachment
                     new EmailAttachment
                     {
                         Filename = $"turno_{booking.Id}.ics",
@@ -67,6 +68,7 @@ namespace TurnoLink.Business.Services
         /// </summary>
         public string GenerateClientConfirmationHtml(BookingDto booking)
         {
+            // Feature: Add location or Link of Meet (Google Meet) if available
             var locationSection = !string.IsNullOrEmpty(booking.Location)
                 ? $@"
                     <tr>

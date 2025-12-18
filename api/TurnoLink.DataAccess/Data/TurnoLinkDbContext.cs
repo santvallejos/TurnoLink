@@ -97,7 +97,7 @@ namespace TurnoLink.DataAccess.Data
             {
                 entity.HasIndex(a => a.UserId);
                 entity.HasIndex(a => a.ServiceId);
-                entity.HasIndex(a => a.StartTime);
+                entity.HasIndex(a => a.StartTimeUtc);
 
                 entity.HasOne(a => a.User)
                     .WithMany(u => u.Availabilities)

@@ -29,9 +29,13 @@ namespace TurnoLink.DataAccess.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("end_time");
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("EndTimeUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("end_time_utc");
 
                     b.Property<int>("Repeat")
                         .HasColumnType("integer")
@@ -41,9 +45,9 @@ namespace TurnoLink.DataAccess.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("service_id");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime>("StartTimeUtc")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("start_time");
+                        .HasColumnName("start_time_utc");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -53,7 +57,7 @@ namespace TurnoLink.DataAccess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("StartTime");
+                    b.HasIndex("StartTimeUtc");
 
                     b.HasIndex("UserId");
 

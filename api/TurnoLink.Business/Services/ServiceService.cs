@@ -15,12 +15,6 @@ namespace TurnoLink.Business.Services
         private readonly IUserRepository _userRepository;
         private readonly TurnoLinkDbContext _context;
 
-        /// <summary>
-        /// Constructor for ServiceService.
-        /// </summary>
-        /// <param name="serviceRepository"></param>
-        /// <param name="userRepository"></param>
-        /// <param name="context"></param>
         public ServiceService(IServiceRepository serviceRepository, IUserRepository userRepository, TurnoLinkDbContext context)
         {
             _serviceRepository = serviceRepository;
@@ -30,104 +24,151 @@ namespace TurnoLink.Business.Services
 
         public async Task<IEnumerable<ServiceDto>> GetServicesByUserIdAsync(Guid userId)
         {
-            var services = await _serviceRepository.GetServicesByUserIdAsync(userId);
+            try
+            {
+                var services = await _serviceRepository.GetServicesByUserIdAsync(userId);
 
-            if (services == null)
-                throw new InvalidOperationException("User not found");
+                if (services == null)
+                    throw new InvalidOperationException("User not found");
 
-            return services.Select(MapToDto);
+                return services.Select(MapToDto);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving services by user ID.", e);
+            }
         }
 
         public async Task<ServiceDto?> GetServiceByIdAsync(Guid id)
         {
-            var service = await _serviceRepository.GetByIdAsync(id);
+            try
+            {
+                var service = await _serviceRepository.GetByIdAsync(id);
 
-            if (service == null)
-                throw new InvalidOperationException("Service not found");
+                if (service == null)
+                    throw new InvalidOperationException("Service not found");
 
-            return MapToDto(service);
+                return MapToDto(service);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving the service by ID.", e);
+            }
         }
 
         public async Task<IEnumerable<ServiceDto>> GetServicesBySlugAsync(string slug)
         {
-            var services = await _serviceRepository.GetServicesBySlug(slug);
+            try
+            {
+                var services = await _serviceRepository.GetServicesBySlug(slug);
 
-            // Retorna lista vacía si no hay servicios (no es un error)
-            return services.Select(MapToDto);
+                // Fix: Check if services is null or empty
+                return services.Select(MapToDto);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while retrieving services by slug.", e);
+            }
         }
 
         public async Task<ServiceDto> CreateServiceAsync(Guid userId, CreateServiceDto createServiceDto)
         {
-            // Verify that the user exists
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                throw new InvalidOperationException("User not found");
-
-            var service = new Service
+            try
             {
-                Id = Guid.NewGuid(),
-                UserId = userId,
-                Name = createServiceDto.Name,
-                Description = createServiceDto.Description,
-                DurationMinutes = createServiceDto.DurationMinutes,
-                Price = createServiceDto.Price,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            };
+                // Verify that the user exists
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                    throw new InvalidOperationException("User not found");
 
-            await _serviceRepository.AddAsync(service);
-            await _context.SaveChangesAsync();
+                var service = new Service
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    Name = createServiceDto.Name,
+                    Description = createServiceDto.Description,
+                    DurationMinutes = createServiceDto.DurationMinutes,
+                    Price = createServiceDto.Price,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                };
 
-            return MapToDto(service);
+                await _serviceRepository.AddAsync(service);
+                await _context.SaveChangesAsync();
+
+                return MapToDto(service);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while creating the service.", e);
+            }
         }
 
         public async Task<ServiceDto> UpdateServiceAsync(Guid userId, Guid serviceId, UpdateServiceDto updateServiceDto)
         {
-            var service = await _serviceRepository.GetByIdAsync(serviceId);
-            if (service == null)
-                throw new InvalidOperationException("Service not found");
+            try
+            {
+                var service = await _serviceRepository.GetByIdAsync(serviceId);
+                if (service == null)
+                    throw new InvalidOperationException("Service not found");
 
-            // Check that the service belongs to the user
-            if (service.UserId != userId)
-                throw new UnauthorizedAccessException("You do not have permission to modify this service");
+                // Check that the service belongs to the user
+                if (service.UserId != userId)
+                    throw new UnauthorizedAccessException("You do not have permission to modify this service");
 
-            if (!string.IsNullOrWhiteSpace(updateServiceDto.Name))
-                service.Name = updateServiceDto.Name;
+                if (!string.IsNullOrWhiteSpace(updateServiceDto.Name))
+                    service.Name = updateServiceDto.Name;
 
-            if (!string.IsNullOrWhiteSpace(updateServiceDto.Description))
-                service.Description = updateServiceDto.Description;
+                if (!string.IsNullOrWhiteSpace(updateServiceDto.Description))
+                    service.Description = updateServiceDto.Description;
 
-            if (updateServiceDto.DurationMinutes.HasValue)
-                service.DurationMinutes = updateServiceDto.DurationMinutes.Value;
+                if (updateServiceDto.DurationMinutes.HasValue)
+                    service.DurationMinutes = updateServiceDto.DurationMinutes.Value;
 
-            if (updateServiceDto.Price.HasValue)
-                service.Price = updateServiceDto.Price.Value;
+                if (updateServiceDto.Price.HasValue)
+                    service.Price = updateServiceDto.Price.Value;
 
-            if (updateServiceDto.IsActive.HasValue)
-                service.IsActive = updateServiceDto.IsActive.Value;
+                if (updateServiceDto.IsActive.HasValue)
+                    service.IsActive = updateServiceDto.IsActive.Value;
 
-            _serviceRepository.Update(service);
-            await _context.SaveChangesAsync();
+                _serviceRepository.Update(service);
+                await _context.SaveChangesAsync();
 
-            return MapToDto(service);
+                return MapToDto(service);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while updating the service.", e);
+            }
         }
 
         public async Task<bool> DeleteServiceAsync(Guid userId, Guid serviceId)
         {
-            var service = await _serviceRepository.GetByIdAsync(serviceId);
-            if (service == null)
-                throw new InvalidOperationException("Service not found");
+            try
+            {
+                var service = await _serviceRepository.GetByIdAsync(serviceId);
+                if (service == null)
+                    throw new InvalidOperationException("Service not found");
 
-            // Check that the service belongs to the user
-            if (service.UserId != userId)
-                throw new UnauthorizedAccessException("You do not have permission to delete this service");
+                // Check that the service belongs to the user
+                if (service.UserId != userId)
+                    throw new UnauthorizedAccessException("You do not have permission to delete this service");
 
-            _serviceRepository.Remove(service);
-            await _context.SaveChangesAsync();
+                _serviceRepository.Remove(service);
+                await _context.SaveChangesAsync();
 
-            return true;
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error occurred while deleting the service.", e);
+            }
         }
 
+        /// <summary>
+        /// Maps a Service entity to a ServiceDto
+        /// </summary>
+        /// <param name="service">Entity Service</param>
+        /// <returns>DTO of Service</returns>
         private static ServiceDto MapToDto(Service service)
         {
             return new ServiceDto

@@ -22,13 +22,6 @@ namespace TurnoLink.Business.Services
         private readonly ResendService _resendService;
         private readonly INotificationService _notificationService;
 
-        /// <summary>
-        /// Constructor for BookingService.
-        /// </summary>
-        /// <param name="bookingRepository">Booking repository</param>
-        /// <param name="clientRepository">Client repository</param>
-        /// <param name="serviceRepository">Service repository</param>
-        /// <param name="context">Database context</param>
         public BookingService(
             IBookingRepository bookingRepository,
             IClientRepository clientRepository,
@@ -51,155 +44,209 @@ namespace TurnoLink.Business.Services
 
         public async Task<BookingDto?> GetBookingByIdAsync(Guid id)
         {
-            var booking = await _bookingRepository.GetByIdAsync(id);
+            try
+            {
+                var booking = await _bookingRepository.GetByIdAsync(id);
 
-            if (booking == null)
-                throw new InvalidOperationException("Booking not found");
+                if (booking == null)
+                    throw new InvalidOperationException("Booking not found");
 
-            return MapToDto(booking);
+                return MapToDto(booking);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Error retrieving booking: {e.Message}");
+            }
         }
 
         public async Task<IEnumerable<BookingDto>> GetBookingsByClientIdAsync(Guid clientId)
         {
-            var bookings = await _bookingRepository.GetBookingsByClientIdAsync(clientId);
-            return bookings.Select(MapToDto);
+            try
+            {
+                var bookings = await _bookingRepository.GetBookingsByClientIdAsync(clientId);
+                return bookings.Select(MapToDto);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Error retrieving bookings for client: {e.Message}");
+            }
         }
 
         public async Task<IEnumerable<BookingDto>> GetBookingsByUserIdAsync(Guid userId)
         {
-            var bookings = await _bookingRepository.GetBookingsByUserIdAsync(userId);
-            return bookings.Select(MapToDto);
+            try
+            {
+                var bookings = await _bookingRepository.GetBookingsByUserIdAsync(userId);
+                return bookings.Select(MapToDto);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Error retrieving bookings for user: {e.Message}");
+            }
         }
 
         public async Task<IEnumerable<BookingDto>> GetBookingsByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            var bookings = await _bookingRepository.GetBookingsByDateRangeAsync(startDate, endDate);
-            return bookings.Select(MapToDto);
+            try
+            {
+                var bookings = await _bookingRepository.GetBookingsByDateRangeAsync(startDate, endDate);
+                return bookings.Select(MapToDto);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Error retrieving bookings for date range: {e.Message}");
+            }
         }
 
         public async Task<BookingDto> CreateBookingAsync(CreateBookingDto createBookingDto)
         {
-            // Validate that the service exists and is active
-            var service = await _serviceRepository.GetByIdAsync(createBookingDto.ServiceId);
-            if (service == null || !service.IsActive)
-                throw new InvalidOperationException("Service not found or not available");
-
-            var availability = await _availabilityRepository.GetByIdAsync(createBookingDto.AvailabilityId);
-            if (availability == null)
-                throw new InvalidOperationException("Availability not found");
-            
-            // Validate that the availability is not in the past
-            if (availability.StartTime < DateTime.UtcNow)
-                throw new InvalidOperationException("Cannot book an appointment in the past. Please select a future date.");
-            
-            if (availability.UserId != service.UserId)
-                throw new InvalidOperationException("Availability does not match the service's user");
-
-            // Validate that the availability is not already booked
-            var existingBooking = await _context.Bookings
-                .Where(b => b.AvailabilityId == createBookingDto.AvailabilityId 
-                    && b.Status != BookingStatus.Canceled 
-                    && b.Status != BookingStatus.NoShow)
-                .FirstOrDefaultAsync();
-
-            if (existingBooking != null)
-                throw new InvalidOperationException("This time slot is already booked. Please select another availability.");
-
-            // Find or create client
-            var client = await _clientRepository.GetByEmailAsync(createBookingDto.ClientEmail);
-            if (client == null)
+            try
             {
-                client = new Client
+                // Validate that the service exists and is active
+                var service = await _serviceRepository.GetByIdAsync(createBookingDto.ServiceId);
+                if (service == null || !service.IsActive)
+                    throw new InvalidOperationException("Service not found or not available");
+
+                var availability = await _availabilityRepository.GetByIdAsync(createBookingDto.AvailabilityId);
+                if (availability == null)
+                    throw new InvalidOperationException("Availability not found");
+
+                // Validate that the availability is not in the past
+                if (availability.StartTimeUtc < DateTime.UtcNow)
+                    throw new InvalidOperationException("Cannot book an appointment in the past. Please select a future date.");
+
+                if (availability.UserId != service.UserId)
+                    throw new InvalidOperationException("Availability does not match the service's user");
+
+                // Validate that the availability is not already booked
+                var existingBooking = await _context.Bookings
+                    .Where(b => b.AvailabilityId == createBookingDto.AvailabilityId
+                        && b.Status != BookingStatus.Canceled
+                        && b.Status != BookingStatus.NoShow)
+                    .FirstOrDefaultAsync();
+
+                if (existingBooking != null)
+                    throw new InvalidOperationException("This time slot is already booked. Please select another availability.");
+
+                // Find or create client
+                var client = await _clientRepository.GetByEmailAsync(createBookingDto.ClientEmail);
+                if (client == null)
+                {
+                    client = new Client
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = createBookingDto.ClientName,
+                        Surname = createBookingDto.ClientSurname,
+                        Email = createBookingDto.ClientEmail,
+                        PhoneNumber = createBookingDto.ClientPhone,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await _clientRepository.AddAsync(client);
+                    await _context.SaveChangesAsync();
+                }
+
+                // Calculate end time based on service duration
+                var endTime = availability.StartTimeUtc.AddMinutes(service.DurationMinutes);
+
+                var booking = new Booking
                 {
                     Id = Guid.NewGuid(),
-                    Name = createBookingDto.ClientName,
-                    Surname = createBookingDto.ClientSurname,
-                    Email = createBookingDto.ClientEmail,
-                    PhoneNumber = createBookingDto.ClientPhone,
+                    ClientId = client.Id,
+                    ServiceId = service.Id,
+                    UserId = service.UserId,
+                    AvailabilityId = createBookingDto.AvailabilityId,
+                    StartTime = availability.StartTimeUtc,
+                    EndTime = endTime,
+                    Status = BookingStatus.Pending,
+                    Notes = createBookingDto.Notes,
                     CreatedAt = DateTime.UtcNow
                 };
-                await _clientRepository.AddAsync(client);
+
+                await _bookingRepository.AddAsync(booking);
                 await _context.SaveChangesAsync();
+
+                // Reload with relationships
+                var createdBooking = await _bookingRepository.GetByIdAsync(booking.Id);
+                if (createdBooking == null)
+                    throw new InvalidOperationException("Error creating booking");
+
+                var bookingDto = MapToDto(createdBooking);
+
+                // Send real-time notification to professional via SignalR
+                await _notificationService.NotifyNewBookingAsync(bookingDto.UserId, bookingDto);
+
+                // Send confirmation email to client
+                var icsContent = await _serviceIcalDotnet.CreateFileIcsBookingAsync(bookingDto);
+                await _resendService.SendClientConfirmationEmailAsync(bookingDto, icsContent);
+
+                // Send notification email to professional
+                if (!string.IsNullOrEmpty(bookingDto.UserEmail))
+                {
+                    await _resendService.SendProfessionalNotificationEmailAsync(bookingDto, bookingDto.UserEmail);
+                }
+
+                return bookingDto;
             }
-
-            // Calculate end time based on service duration
-            var endTime = availability.StartTime.AddMinutes(service.DurationMinutes);
-
-            var booking = new Booking
+            catch (Exception e)
             {
-                Id = Guid.NewGuid(),
-                ClientId = client.Id,
-                ServiceId = service.Id,
-                UserId = service.UserId,
-                AvailabilityId = createBookingDto.AvailabilityId,
-                StartTime = availability.StartTime,
-                EndTime = endTime,
-                Status = BookingStatus.Pending,
-                Notes = createBookingDto.Notes,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await _bookingRepository.AddAsync(booking);
-            await _context.SaveChangesAsync();
-
-            // Reload with relationships
-            var createdBooking = await _bookingRepository.GetByIdAsync(booking.Id);
-            if (createdBooking == null)
-                throw new InvalidOperationException("Error creating booking");
-            
-            var bookingDto = MapToDto(createdBooking);
-            
-            // Send real-time notification to professional via SignalR
-            await _notificationService.NotifyNewBookingAsync(bookingDto.UserId, bookingDto);
-            
-            // Send confirmation email to client
-            var icsContent = await _serviceIcalDotnet.CreateFileIcsBookingAsync(bookingDto);
-            await _resendService.SendClientConfirmationEmailAsync(bookingDto, icsContent);
-            
-            // Send notification email to professional
-            if (!string.IsNullOrEmpty(bookingDto.UserEmail))
-            {
-                await _resendService.SendProfessionalNotificationEmailAsync(bookingDto, bookingDto.UserEmail);
+                throw new InvalidOperationException($"Error creating booking: {e.Message}");
             }
-            
-            return bookingDto;
         }
 
         public async Task<BookingDto> UpdateBookingAsync(Guid id, UpdateBookingDto updateBookingDto)
         {
-            var booking = await _bookingRepository.GetByIdAsync(id);
-            if (booking == null)
-                throw new InvalidOperationException("Booking not found");
-
-            if (!string.IsNullOrWhiteSpace(updateBookingDto.Status))
+            try
             {
-                if (Enum.TryParse<BookingStatus>(updateBookingDto.Status, true, out var status))
-                    booking.Status = status;
+                var booking = await _bookingRepository.GetByIdAsync(id);
+                if (booking == null)
+                    throw new InvalidOperationException("Booking not found");
+
+                if (!string.IsNullOrWhiteSpace(updateBookingDto.Status))
+                {
+                    if (Enum.TryParse<BookingStatus>(updateBookingDto.Status, true, out var status))
+                        booking.Status = status;
+                }
+
+                if (!string.IsNullOrWhiteSpace(updateBookingDto.Notes))
+                    booking.Notes = updateBookingDto.Notes;
+
+                _bookingRepository.Update(booking);
+                await _context.SaveChangesAsync();
+
+                var updatedBooking = await _bookingRepository.GetByIdAsync(id);
+                return MapToDto(updatedBooking!);
             }
-
-            if (!string.IsNullOrWhiteSpace(updateBookingDto.Notes))
-                booking.Notes = updateBookingDto.Notes;
-
-            _bookingRepository.Update(booking);
-            await _context.SaveChangesAsync();
-
-            var updatedBooking = await _bookingRepository.GetByIdAsync(id);
-            return MapToDto(updatedBooking!);
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Error updating booking: {e.Message}");
+            }
         }
 
         public async Task<bool> CancelBookingAsync(Guid id)
         {
-            var booking = await _bookingRepository.GetByIdAsync(id);
-            if (booking == null)
-                throw new InvalidOperationException("Booking not found");
+            try
+            {
+                var booking = await _bookingRepository.GetByIdAsync(id);
+                if (booking == null)
+                    throw new InvalidOperationException("Booking not found");
 
-            booking.Status = BookingStatus.Canceled;
-            _bookingRepository.Update(booking);
-            await _context.SaveChangesAsync();
+                booking.Status = BookingStatus.Canceled;
+                _bookingRepository.Update(booking);
+                await _context.SaveChangesAsync();
 
-            return true;
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Error canceling booking: {e.Message}");
+            }
         }
 
+        /// <summary>
+        /// Maps a Booking entity to a BookingDto
+        /// </summary>
+        /// <param name="booking">Entity booking to map</param>
+        /// <returns>Mapped BookingDto</returns>
         private static BookingDto MapToDto(Booking booking)
         {
             return new BookingDto

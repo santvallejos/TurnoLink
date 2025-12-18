@@ -18,7 +18,7 @@ namespace TurnoLink.Business.Services
         {
             try
             {
-                // Crear un nuevo calendario
+                // Create the calendar
                 var calendar = new Calendar
                 {
                     ProductId = "-//TurnoLink//Booking Calendar//ES",
@@ -26,7 +26,7 @@ namespace TurnoLink.Business.Services
                     Method = "REQUEST"
                 };
 
-                // Crear el evento
+                // Create the event
                 var calendarEvent = new CalendarEvent
                 {
                     Uid = booking.Id.ToString(),
@@ -40,7 +40,7 @@ namespace TurnoLink.Business.Services
                     Transparency = TransparencyType.Opaque
                 };
 
-                // Agregar información de contacto si está disponible
+                // Add organizer if email is provided
                 if (!string.IsNullOrEmpty(booking.ClientEmail))
                 {
                     calendarEvent.Organizer = new Organizer($"MAILTO:{booking.ClientEmail}")
@@ -49,10 +49,10 @@ namespace TurnoLink.Business.Services
                     };
                 }
 
-                // Agregar el evento al calendario
+                // Add the event to the calendar
                 calendar.Events.Add(calendarEvent);
 
-                // Serializar el calendario
+                // Serialize the calendar
                 var serializer = new CalendarSerializer();
                 return serializer.SerializeToString(calendar) ?? string.Empty;
             }

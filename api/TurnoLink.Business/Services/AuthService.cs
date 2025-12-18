@@ -44,16 +44,15 @@ namespace TurnoLink.Business.Services
             if (existingUser != null)
                 throw new InvalidOperationException("Email is already registered");
 
-            // Password hashing
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
+
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password); // Password hashing
 
             // Generate slug safely
             var fullName = $"{registerDto.Name}-{registerDto.Surname}".ToLowerInvariant();
             var userSlug = fullName.Length > 20 ? fullName.Substring(0, 20) : fullName;
             var slugId = Guid.NewGuid().ToString("N").Substring(0, 6);
 
-            // Create user
-            var user = new User
+            var user = new User // Create a new user entity
             {
                 Id = Guid.NewGuid(),
                 Name = registerDto.Name,
@@ -114,6 +113,7 @@ namespace TurnoLink.Business.Services
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.UTF8.GetBytes(GetSecretKey());
 
+                // Validate Token
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -139,6 +139,7 @@ namespace TurnoLink.Business.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(GetSecretKey());
 
+            // Define claims for the token
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

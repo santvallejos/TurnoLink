@@ -15,11 +15,6 @@ namespace TurnoLink.Business.Services
         private readonly IUserRepository _userRepository;
         private readonly TurnoLinkDbContext _context;
 
-        /// <summary>
-        /// Constructor of UserService
-        /// </summary>
-        /// <param name="userRepository">userRepository</param>
-        /// <param name="context">context</param>
         public UserService(IUserRepository userRepository, TurnoLinkDbContext context)
         {
             _userRepository = userRepository;
@@ -28,69 +23,110 @@ namespace TurnoLink.Business.Services
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
-            var users = await _userRepository.GetAllAsync();
-            return users.Select(MapToDto);
+            try
+            {
+                var users = await _userRepository.GetAllAsync();
+                return users.Select(MapToDto);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Error retrieving all users", e);
+            }
         }
 
         public async Task<UserDto?> GetUserByIdAsync(Guid id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(id);
 
-            if (user == null)
-                throw new InvalidOperationException("User not found");
+                if (user == null)
+                    return null;
 
-            return MapToDto(user);
+                return MapToDto(user);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Error retrieving user by ID", e);
+            }
         }
 
         public async Task<UserDto?> GetUserByEmailAsync(string email)
         {
-            var user = await _userRepository.GetByEmailAsync(email);
+            try
+            {
+                var user = await _userRepository.GetByEmailAsync(email);
 
-            if (user == null)
-                throw new InvalidOperationException("User not found");
+                if (user == null)
+                    return null;
 
-            return MapToDto(user);
+                return MapToDto(user);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Error retrieving user by email", e);
+            }
         }
 
         public async Task<UserDto> UpdateUserAsync(Guid id, UpdateUserDto updateUserDto)
         {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
-                throw new InvalidOperationException("User not found");
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(id);
+                if (user == null)
+                    throw new InvalidOperationException("User not found");
 
-            if (!string.IsNullOrWhiteSpace(updateUserDto.Name))
-                user.Name = updateUserDto.Name;
+                // Update fields if provided
+                if (!string.IsNullOrWhiteSpace(updateUserDto.Name))
+                    user.Name = updateUserDto.Name;
 
-            if (!string.IsNullOrWhiteSpace(updateUserDto.Surname))
-                user.Surname = updateUserDto.Surname;
+                if (!string.IsNullOrWhiteSpace(updateUserDto.Surname))
+                    user.Surname = updateUserDto.Surname;
 
-            if (!string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber))
-                user.PhoneNumber = updateUserDto.PhoneNumber;
+                if (!string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber))
+                    user.PhoneNumber = updateUserDto.PhoneNumber;
 
-            if (!string.IsNullOrWhiteSpace(updateUserDto.Address))
-                user.Address = updateUserDto.Address;
+                if (!string.IsNullOrWhiteSpace(updateUserDto.Address))
+                    user.Address = updateUserDto.Address;
 
-            if (updateUserDto.IsActive.HasValue)
-                user.IsActive = updateUserDto.IsActive.Value;
+                if (updateUserDto.IsActive.HasValue)
+                    user.IsActive = updateUserDto.IsActive.Value;
 
-            _userRepository.Update(user);
-            await _context.SaveChangesAsync();
+                _userRepository.Update(user);
+                await _context.SaveChangesAsync();
 
-            return MapToDto(user);
+                return MapToDto(user);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Error updating user", e);
+            }
         }
 
         public async Task<bool> DeleteUserAsync(Guid id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
-                throw new InvalidOperationException("User not found");
+            try
+            {
+                var user = await _userRepository.GetByIdAsync(id);
+                if (user == null)
+                    throw new InvalidOperationException("User not found");
 
-            _userRepository.Remove(user);
-            await _context.SaveChangesAsync();
+                _userRepository.Remove(user);
+                await _context.SaveChangesAsync();
 
-            return true;
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException("Error deleting user", e);
+            }
         }
 
+        /// <summary>
+        /// Maps a User entity to a UserDto
+        /// </summary>
+        /// <param name="user">Entity of User</param>
+        /// <returns>DTO of User</returns>
         private static UserDto MapToDto(User user)
         {
             return new UserDto

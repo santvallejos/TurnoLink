@@ -78,9 +78,10 @@ namespace TurnoLink.DataAccess.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     service_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    start_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    end_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    repeat = table.Column<int>(type: "integer", nullable: false)
+                    start_time_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    end_time_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    repeat = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -149,9 +150,9 @@ namespace TurnoLink.DataAccess.Migrations
                 column: "service_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_availabilities_start_time",
+                name: "IX_availabilities_start_time_utc",
                 table: "availabilities",
-                column: "start_time");
+                column: "start_time_utc");
 
             migrationBuilder.CreateIndex(
                 name: "IX_availabilities_user_id",

@@ -89,16 +89,22 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Creates a new availability slot using DayOfWeek and TimeSpan
+        /// Creates a new availability slot.
+        /// The client sends local date/time with UTC offset, and the backend converts to UTC.
+        /// End time is automatically calculated based on service duration.
         /// </summary>
         /// <remarks>
         /// Example request:
         /// {
-        ///     "serviceId": "guid",
-        ///     "dayOfWeek": 1,  // 0=Sunday, 1=Monday, ..., 6=Saturday
-        ///     "startTime": "09:00:00",
-        ///     "startDate": "2024-01-15"  // Optional
+        ///     "serviceId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        ///     "startDate": "2025-12-24",
+        ///     "startTime": "15:00",
+        ///     "utcOffsetMinutes": -180  // UTC-3 (Argentina)
         /// }
+        /// 
+        /// The utcOffsetMinutes is the client's timezone offset in minutes:
+        /// - Negative values for west of UTC (e.g., -180 for UTC-3)
+        /// - Positive values for east of UTC (e.g., 60 for UTC+1)
         /// </remarks>
         [HttpPost]
         [ProducesResponseType(typeof(AvailabilityDto), StatusCodes.Status201Created)]
@@ -127,18 +133,24 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Creates recurring availability using DayOfWeek and TimeSpan
+        /// Creates recurring availability slots from start date to end date.
+        /// All slots will have the same time (converted to UTC) based on repeat frequency.
         /// </summary>
         /// <remarks>
         /// Example request:
         /// {
-        ///     "serviceId": "guid",
-        ///     "dayOfWeek": 1,  // 0=Sunday, 1=Monday, ..., 6=Saturday
-        ///     "startTime": "09:00:00",
+        ///     "serviceId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        ///     "startDate": "2025-12-24",
+        ///     "startTime": "15:00",
+        ///     "utcOffsetMinutes": -180,
         ///     "repeat": 2,  // 1=Daily, 2=Weekly, 3=Monthly
-        ///     "endDate": "2024-06-15",
-        ///     "startDate": "2024-01-15"  // Optional
+        ///     "endDate": "2026-01-24"
         /// }
+        /// 
+        /// Repeat values:
+        /// - 1: Daily - creates a slot every day
+        /// - 2: Weekly - creates a slot every week on the same day
+        /// - 3: Monthly - creates a slot every month on the same date
         /// </remarks>
         [HttpPost("recurring")]
         [ProducesResponseType(typeof(IEnumerable<AvailabilityDto>), StatusCodes.Status201Created)]
@@ -167,15 +179,17 @@ namespace TurnoLink.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Updates an existing availability
+        /// Updates an existing availability's date and/or time
         /// </summary>
         /// <remarks>
         /// Example request:
         /// {
-        ///     "dayOfWeek": 2,  // Optional: new day of week
-        ///     "startTime": "10:00:00",  // Optional: new time
-        ///     "newDate": "2024-02-20"  // Optional: specific new date
+        ///     "newDate": "2025-12-26",  // Optional: new date
+        ///     "newTime": "16:00",  // Optional: new time
+        ///     "utcOffsetMinutes": -180  // Required when updating date or time
         /// }
+        /// 
+        /// Note: UTC offset is required when changing date or time to properly convert to UTC.
         /// </remarks>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(AvailabilityDto), StatusCodes.Status200OK)]

@@ -30,9 +30,6 @@ namespace TurnoLink.Business.DTOs
 
         public string? PhoneNumber { get; set; }
 
-        /// <summary>
-        /// Address where the professional offers their services
-        /// </summary>
         public string? Address { get; set; }
     }
 

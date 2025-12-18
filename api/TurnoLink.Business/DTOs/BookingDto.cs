@@ -39,9 +39,6 @@ namespace TurnoLink.Business.DTOs
         public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        /// <summary>
-        /// Location/Address where the service will be provided
-        /// </summary>
         public string? Location { get; set; }
     }
 }

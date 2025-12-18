@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { serviceService } from '@/lib/services';
+import { serviceService, authService } from '@/lib/services';
 import type { Service, CreateServiceRequest, UpdateServiceRequest } from '@/types';
 import {
   Plus,
@@ -25,6 +25,7 @@ export default function ServicesPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -39,8 +40,12 @@ export default function ServicesPage() {
 
   async function loadData() {
     try {
-      const servicesData = await serviceService.getMyServices();
+      const [servicesData, currentUser] = await Promise.all([
+        serviceService.getMyServices(),
+        authService.getCurrentUser(),
+      ]);
       setServices(servicesData);
+      setCurrentUserId(currentUser.userId);
     } catch {
       setError('Error loading services');
     } finally {
@@ -83,12 +88,16 @@ export default function ServicesPage() {
         };
         const updatedService = await serviceService.update(editingService.id, updateData);
         setServices((prev) =>
-          prev.map((s) => (s.id === editingService.id ? updatedService : s))
+          prev.map((s) => (s.id === editingService.id ? updatedService : s)),
         );
       } else {
         // Create new service
+        if (!currentUserId) {
+          setError('User not authenticated');
+          return;
+        }
         const createData: CreateServiceRequest = {
-          userId: '', // Will be set by backend from JWT
+          userId: currentUserId,
           name: formName,
           description: formDescription || undefined,
           durationMinutes: formDuration,

@@ -7,7 +7,21 @@ import type {
 } from '@/types';
 
 /**
- * Availability service - Handles availability slot management
+ * Offset UTC para Argentina (UTC-3) en minutos.
+ * TODO: En el futuro, obtener dinámicamente según la zona horaria del usuario.
+ */
+const ARGENTINA_UTC_OFFSET = -180;
+
+/**
+ * Obtiene la fecha actual en formato YYYY-MM-DD
+ */
+const getTodayDate = (): string => {
+  return new Date().toISOString().split('T')[0];
+};
+
+/**
+ * Availability service - Handles availability slot management.
+ * Todas las horas se envían al backend en hora local y se convierten a UTC usando el offset.
  */
 export const availabilityService = {
   /**
@@ -44,23 +58,56 @@ export const availabilityService = {
 
   /**
    * Create a non-recurring availability slot
+   * @param serviceId - ID del servicio
+   * @param startDate - Fecha en formato YYYY-MM-DD
+   * @param startTime - Hora en formato HH:mm
    */
-  async create(data: CreateAvailabilityRequest): Promise<Availability> {
-    return api.post<Availability>('/api/Availabilities', data);
+  async create(serviceId: string, startDate: string, startTime: string): Promise<Availability> {
+    const request: CreateAvailabilityRequest = {
+      serviceId,
+      startDate,
+      startTime,
+      utcOffsetMinutes: ARGENTINA_UTC_OFFSET,
+    };
+    return api.post<Availability>('/api/Availabilities', request);
   },
 
   /**
-   * Create a recurring availability slot
+   * Create recurring availability slots
+   * @param serviceId - ID del servicio
+   * @param startDate - Fecha de inicio en formato YYYY-MM-DD
+   * @param startTime - Hora en formato HH:mm
+   * @param repeat - Tipo de repetición (Daily, Weekly, Monthly)
+   * @param endDate - Fecha de fin en formato YYYY-MM-DD
    */
-  async createRecurring(data: CreateRecurringAvailabilityRequest): Promise<Availability[]> {
-    return api.post<Availability[]>('/api/Availabilities/recurring', data);
+  async createRecurring(
+    serviceId: string,
+    startDate: string,
+    startTime: string,
+    repeat: number,
+    endDate: string
+  ): Promise<Availability[]> {
+    const request: CreateRecurringAvailabilityRequest = {
+      serviceId,
+      startDate,
+      startTime,
+      utcOffsetMinutes: ARGENTINA_UTC_OFFSET,
+      repeat,
+      endDate,
+    };
+    return api.post<Availability[]>('/api/Availabilities/recurring', request);
   },
 
   /**
    * Update an availability slot
    */
-  async update(id: string, data: UpdateAvailabilityRequest): Promise<Availability> {
-    return api.put<Availability>(`/api/Availabilities/${id}`, data);
+  async update(id: string, newDate?: string, newTime?: string): Promise<Availability> {
+    const request: UpdateAvailabilityRequest = {
+      newDate,
+      newTime,
+      utcOffsetMinutes: ARGENTINA_UTC_OFFSET,
+    };
+    return api.put<Availability>(`/api/Availabilities/${id}`, request);
   },
 
   /**
@@ -69,4 +116,9 @@ export const availabilityService = {
   async delete(id: string): Promise<void> {
     return api.delete(`/api/Availabilities/${id}`);
   },
+
+  /**
+   * Helper: Obtiene la fecha mínima permitida (hoy)
+   */
+  getMinDate: getTodayDate,
 };

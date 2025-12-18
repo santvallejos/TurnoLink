@@ -345,13 +345,15 @@
     "createFirst": "Agregar mi primera disponibilidad",
     "noServicesTitle": "Primero necesitas crear un servicio",
     "noServicesDesc": "Antes de configurar disponibilidad, debes crear al menos un servicio",
+    "booked": "Reservado",
+    "cannotDeleteBooked": "No se puede eliminar una disponibilidad con reserva activa",
     "stats": {
       "total": "Total disponibilidades",
       "services": "Servicios con disponibilidad"
     },
     "form": {
       "service": "Servicio",
-      "dayOfWeek": "Día de la semana",
+      "startDate": "Fecha de inicio",
       "startTime": "Hora de inicio",
       "recurring": "Repetir esta disponibilidad",
       "repeatType": "Frecuencia de repetición",

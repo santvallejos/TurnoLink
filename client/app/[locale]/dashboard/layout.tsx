@@ -13,8 +13,6 @@ import {
   CalendarCheck,
   Briefcase,
   Clock,
-  User,
-  Settings,
   LogOut,
   Menu,
   X,
@@ -28,8 +26,6 @@ const navItems = [
   { href: '/dashboard/bookings', icon: CalendarCheck, labelKey: 'bookings' },
   { href: '/dashboard/services', icon: Briefcase, labelKey: 'services' },
   { href: '/dashboard/availability', icon: Clock, labelKey: 'availability' },
-  { href: '/dashboard/profile', icon: User, labelKey: 'profile' },
-  { href: '/dashboard/settings', icon: Settings, labelKey: 'settings' },
 ];
 
 export default function DashboardLayout({

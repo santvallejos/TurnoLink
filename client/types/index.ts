@@ -127,16 +127,24 @@ export interface UpdateBookingRequest {
 export interface Availability {
   id: string;
   serviceId: string;
-  startTime: string;
-  endTime: string;
+  startTimeUtc: string;
+  endTimeUtc: string;
   serviceName: string;
+  durationMinutes: number;
+  repeat: RepeatAvailability;
+  isBooked: boolean;
 }
 
+/**
+ * Request para crear una disponibilidad única.
+ * startDate: formato YYYY-MM-DD
+ * startTime: formato HH:mm (24h)
+ */
 export interface CreateAvailabilityRequest {
   serviceId: string;
-  dayOfWeek: number; // 0=Sunday, 1=Monday, ..., 6=Saturday
-  startTime: string; // TimeSpan format: "09:00:00"
-  startDate?: string; // Optional: specific date to start
+  startDate: string;
+  startTime: string;
+  utcOffsetMinutes: number;
 }
 
 export enum RepeatAvailability {
@@ -146,19 +154,23 @@ export enum RepeatAvailability {
   Monthly = 3,
 }
 
+/**
+ * Request para crear disponibilidades recurrentes.
+ * Las disponibilidades se crean desde startDate hasta endDate según el tipo de repetición.
+ */
 export interface CreateRecurringAvailabilityRequest {
   serviceId: string;
-  dayOfWeek: number;
+  startDate: string;
   startTime: string;
+  utcOffsetMinutes: number;
   repeat: RepeatAvailability;
   endDate: string;
-  startDate?: string;
 }
 
 export interface UpdateAvailabilityRequest {
-  dayOfWeek?: number;
-  startTime?: string;
   newDate?: string;
+  newTime?: string;
+  utcOffsetMinutes?: number;
 }
 
 // ============================================

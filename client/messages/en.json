@@ -345,13 +345,15 @@
     "createFirst": "Add my first availability",
     "noServicesTitle": "You need to create a service first",
     "noServicesDesc": "Before configuring availability, you must create at least one service",
+    "booked": "Booked",
+    "cannotDeleteBooked": "Cannot delete an availability with an active booking",
     "stats": {
       "total": "Total availabilities",
       "services": "Services with availability"
     },
     "form": {
       "service": "Service",
-      "dayOfWeek": "Day of the week",
+      "startDate": "Start date",
       "startTime": "Start time",
       "recurring": "Repeat this availability",
       "repeatType": "Repeat frequency",

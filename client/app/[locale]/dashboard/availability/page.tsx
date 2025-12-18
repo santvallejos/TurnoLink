@@ -1,14 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { availabilityService, serviceService } from "@/lib/services";
-import type {
-  Availability,
-  Service,
-  CreateAvailabilityRequest,
-  RepeatAvailability,
-} from "@/types";
+import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { availabilityService, serviceService } from '@/lib/services';
+import type { Availability, Service, RepeatAvailability } from '@/types';
 import {
   Plus,
   Clock,
@@ -17,17 +12,7 @@ import {
   X,
   Loader2,
   AlertCircle,
-} from "lucide-react";
-
-const DAYS_OF_WEEK = [
-  { value: 0, key: "sunday" },
-  { value: 1, key: "monday" },
-  { value: 2, key: "tuesday" },
-  { value: 3, key: "wednesday" },
-  { value: 4, key: "thursday" },
-  { value: 5, key: "friday" },
-  { value: 6, key: "saturday" },
-];
+} from 'lucide-react';
 
 export default function AvailabilityPage() {
   const t = useTranslations();
@@ -39,13 +24,15 @@ export default function AvailabilityPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Form state
-  const [selectedServiceId, setSelectedServiceId] = useState<string>("");
-  const [selectedDay, setSelectedDay] = useState<number>(1);
-  const [startTime, setStartTime] = useState<string>("09:00");
+  // Form state - Ahora usa fecha en lugar de día de la semana
+  const [selectedServiceId, setSelectedServiceId] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>(
+    availabilityService.getMinDate(),
+  );
+  const [startTime, setStartTime] = useState<string>('09:00');
   const [isRecurring, setIsRecurring] = useState(false);
   const [repeatType, setRepeatType] = useState<RepeatAvailability>(2); // Weekly
-  const [endDate, setEndDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>('');
 
   useEffect(() => {
     loadData();
@@ -63,7 +50,7 @@ export default function AvailabilityPage() {
         setSelectedServiceId(servicesData[0].id);
       }
     } catch {
-      setError("Error loading data");
+      setError('Error loading data');
     } finally {
       setLoading(false);
     }
@@ -71,35 +58,29 @@ export default function AvailabilityPage() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
-    if (!selectedServiceId) return;
+    if (!selectedServiceId || !startDate) return;
 
     setCreating(true);
     setError(null);
 
     try {
-      const timeSpan = `${startTime}:00`; // Convert "09:00" to "09:00:00"
-
       if (isRecurring && endDate) {
-        await availabilityService.createRecurring({
-          serviceId: selectedServiceId,
-          dayOfWeek: selectedDay,
-          startTime: timeSpan,
-          repeat: repeatType,
-          endDate: endDate,
-        });
+        await availabilityService.createRecurring(
+          selectedServiceId,
+          startDate,
+          startTime,
+          repeatType,
+          endDate,
+        );
       } else {
-        await availabilityService.create({
-          serviceId: selectedServiceId,
-          dayOfWeek: selectedDay,
-          startTime: timeSpan,
-        });
+        await availabilityService.create(selectedServiceId, startDate, startTime);
       }
 
       await loadData();
       setShowCreateModal(false);
       resetForm();
     } catch (err) {
-      setError("Error creating availability");
+      setError('Error creating availability');
       console.error(err);
     } finally {
       setCreating(false);
@@ -112,7 +93,7 @@ export default function AvailabilityPage() {
       await availabilityService.delete(id);
       setAvailabilities((prev) => prev.filter((a) => a.id !== id));
     } catch (err) {
-      setError("Error deleting availability");
+      setError('Error deleting availability');
       console.error(err);
     } finally {
       setDeleting(null);
@@ -120,30 +101,38 @@ export default function AvailabilityPage() {
   }
 
   function resetForm() {
-    setSelectedDay(1);
-    setStartTime("09:00");
+    setStartDate(availabilityService.getMinDate());
+    setStartTime('09:00');
     setIsRecurring(false);
     setRepeatType(2);
-    setEndDate("");
+    setEndDate('');
   }
 
-  function formatTime(dateString: string) {
-    return new Date(dateString).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
+  /** Formatea hora desde UTC a hora local Argentina */
+  function formatTime(dateString: string): string {
+    return new Date(dateString).toLocaleTimeString('es-AR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'America/Argentina/Buenos_Aires',
     });
   }
 
-  function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString();
+  /** Formatea fecha desde UTC a fecha local Argentina */
+  function formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('es-AR', {
+      timeZone: 'America/Argentina/Buenos_Aires',
+    });
   }
 
-  function getDayName(dateString: string) {
-    const date = new Date(dateString);
-    return t(`availability.days.${DAYS_OF_WEEK[date.getDay()].key}`);
+  /** Obtiene el nombre del día de la semana en formato local */
+  function getDayName(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('es-AR', {
+      weekday: 'long',
+      timeZone: 'America/Argentina/Buenos_Aires',
+    });
   }
 
-  // Group availabilities by service
+  // Agrupa disponibilidades por servicio
   const availabilitiesByService = availabilities.reduce<
     Record<string, Availability[]>
   >((acc, avail) => {
@@ -159,7 +148,7 @@ export default function AvailabilityPage() {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">{t("common.loading")}</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -172,10 +161,10 @@ export default function AvailabilityPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
-              {t("availability.title")}
+              {t('availability.title')}
             </h1>
             <p className="mt-1 text-muted-foreground">
-              {t("availability.description")}
+              {t('availability.description')}
             </p>
           </div>
           <button
@@ -184,7 +173,7 @@ export default function AvailabilityPage() {
             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Plus className="h-5 w-5" />
-            {t("availability.create")}
+            {t('availability.create')}
           </button>
         </div>
 
@@ -203,10 +192,10 @@ export default function AvailabilityPage() {
               <AlertCircle className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
               <div>
                 <p className="font-medium text-yellow-800 dark:text-yellow-300">
-                  {t("availability.noServicesTitle")}
+                  {t('availability.noServicesTitle')}
                 </p>
                 <p className="text-sm text-yellow-700 dark:text-yellow-400">
-                  {t("availability.noServicesDesc")}
+                  {t('availability.noServicesDesc')}
                 </p>
               </div>
             </div>
@@ -222,7 +211,7 @@ export default function AvailabilityPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("availability.stats.total")}
+                  {t('availability.stats.total')}
                 </p>
                 <p className="text-2xl font-bold text-foreground">
                   {availabilities.length}
@@ -237,7 +226,7 @@ export default function AvailabilityPage() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">
-                  {t("availability.stats.services")}
+                  {t('availability.stats.services')}
                 </p>
                 <p className="text-2xl font-bold text-foreground">
                   {Object.keys(availabilitiesByService).length}
@@ -254,10 +243,10 @@ export default function AvailabilityPage() {
               <Clock className="h-8 w-8 text-muted-foreground" />
             </div>
             <p className="text-foreground font-medium">
-              {t("availability.empty")}
+              {t('availability.empty')}
             </p>
             <p className="text-sm text-muted-foreground mt-1 mb-6">
-              {t("availability.emptyDesc")}
+              {t('availability.emptyDesc')}
             </p>
             {services.length > 0 && (
               <button
@@ -265,7 +254,7 @@ export default function AvailabilityPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors"
               >
                 <Plus className="h-5 w-5" />
-                {t("availability.createFirst")}
+                {t('availability.createFirst')}
               </button>
             )}
           </div>
@@ -294,19 +283,25 @@ export default function AvailabilityPage() {
                           </div>
                           <div>
                             <p className="font-medium text-foreground">
-                              {getDayName(availability.startTime)} -{" "}
-                              {formatDate(availability.startTime)}
+                              {getDayName(availability.startTimeUtc)} -{' '}
+                              {formatDate(availability.startTimeUtc)}
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              {formatTime(availability.startTime)} -{" "}
-                              {formatTime(availability.endTime)}
+                              {formatTime(availability.startTimeUtc)} -{' '}
+                              {formatTime(availability.endTimeUtc)}
+                              {availability.isBooked && (
+                                <span className="ml-2 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 px-2 py-0.5 rounded-full">
+                                  {t('availability.booked')}
+                                </span>
+                              )}
                             </p>
                           </div>
                         </div>
                         <button
                           onClick={() => handleDelete(availability.id)}
-                          disabled={deleting === availability.id}
-                          className="p-2 text-muted-foreground hover:text-destructive rounded-lg hover:bg-destructive/10 transition-colors disabled:opacity-50"
+                          disabled={deleting === availability.id || availability.isBooked}
+                          className="p-2 text-muted-foreground hover:text-destructive rounded-lg hover:bg-destructive/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          title={availability.isBooked ? t('availability.cannotDeleteBooked') : undefined}
                         >
                           {deleting === availability.id ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -318,7 +313,7 @@ export default function AvailabilityPage() {
                     ))}
                   </div>
                 </div>
-              )
+              ),
             )}
           </div>
         )}
@@ -330,7 +325,7 @@ export default function AvailabilityPage() {
           <div className="w-full max-w-lg rounded-2xl bg-card border border-border p-6 shadow-xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-foreground">
-                {t("availability.create")}
+                {t('availability.create')}
               </h2>
               <button
                 onClick={() => {
@@ -347,7 +342,7 @@ export default function AvailabilityPage() {
               {/* Service selector */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  {t("availability.form.service")}
+                  {t('availability.form.service')}
                 </label>
                 <select
                   value={selectedServiceId}
@@ -363,29 +358,28 @@ export default function AvailabilityPage() {
                 </select>
               </div>
 
-              {/* Day of week */}
+              {/* Start Date */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  {t("availability.form.dayOfWeek")}
+                  {t('availability.form.startDate')}
                 </label>
-                <select
-                  value={selectedDay}
-                  onChange={(e) => setSelectedDay(Number(e.target.value))}
-                  className="w-full rounded-xl border border-border bg-background py-3 px-4 text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  required
-                >
-                  {DAYS_OF_WEEK.map((day) => (
-                    <option key={day.value} value={day.value}>
-                      {t(`availability.days.${day.key}`)}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    min={availabilityService.getMinDate()}
+                    className="w-full rounded-xl border border-border bg-background py-3 pl-12 pr-4 text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    required
+                  />
+                </div>
               </div>
 
               {/* Start time */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  {t("availability.form.startTime")}
+                  {t('availability.form.startTime')}
                 </label>
                 <div className="relative">
                   <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -412,7 +406,7 @@ export default function AvailabilityPage() {
                   htmlFor="isRecurring"
                   className="text-sm text-foreground"
                 >
-                  {t("availability.form.recurring")}
+                  {t('availability.form.recurring')}
                 </label>
               </div>
 
@@ -421,32 +415,32 @@ export default function AvailabilityPage() {
                 <>
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      {t("availability.form.repeatType")}
+                      {t('availability.form.repeatType')}
                     </label>
                     <select
                       value={repeatType}
                       onChange={(e) =>
                         setRepeatType(
-                          Number(e.target.value) as RepeatAvailability
+                          Number(e.target.value) as RepeatAvailability,
                         )
                       }
                       className="w-full rounded-xl border border-border bg-background py-3 px-4 text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
                     >
                       <option value={1}>
-                        {t("availability.repeat.daily")}
+                        {t('availability.repeat.daily')}
                       </option>
                       <option value={2}>
-                        {t("availability.repeat.weekly")}
+                        {t('availability.repeat.weekly')}
                       </option>
                       <option value={3}>
-                        {t("availability.repeat.monthly")}
+                        {t('availability.repeat.monthly')}
                       </option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      {t("availability.form.endDate")}
+                      {t('availability.form.endDate')}
                     </label>
                     <div className="relative">
                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -454,7 +448,7 @@ export default function AvailabilityPage() {
                         type="date"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        min={new Date().toISOString().split("T")[0]}
+                        min={startDate || availabilityService.getMinDate()}
                         className="w-full rounded-xl border border-border bg-background py-3 pl-12 pr-4 text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
                         required={isRecurring}
                       />
@@ -473,7 +467,7 @@ export default function AvailabilityPage() {
                   }}
                   className="flex-1 px-6 py-3 text-sm font-medium rounded-xl border border-border bg-background text-foreground hover:bg-accent transition-colors"
                 >
-                  {t("common.cancel")}
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
@@ -481,7 +475,7 @@ export default function AvailabilityPage() {
                   className="flex-1 px-6 py-3 text-sm font-medium rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {creating && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {t("availability.create")}
+                  {t('availability.create')}
                 </button>
               </div>
             </form>

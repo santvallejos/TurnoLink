@@ -268,7 +268,7 @@ export default function BookingForm({ services, professionalName }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingSlots, setLoadingSlots] = useState(false);
-  
+
   // Client details state
   const [clientName, setClientName] = useState('');
   const [clientSurname, setClientSurname] = useState('');
@@ -288,8 +288,8 @@ export default function BookingForm({ services, professionalName }: Props) {
     return [
       ...new Set(
         slots.map(
-          (slot) => new Date(slot.startTime).toISOString().split('T')[0]
-        )
+          (slot) => new Date(slot.startTimeUtc).toISOString().split('T')[0]
+        ),
       ),
     ];
   }, [slots]);
@@ -299,7 +299,7 @@ export default function BookingForm({ services, professionalName }: Props) {
     if (!selectedDate) return [];
     const dateStr = selectedDate.toISOString().split('T')[0];
     return slots.filter(
-      (slot) => new Date(slot.startTime).toISOString().split('T')[0] === dateStr
+      (slot) => new Date(slot.startTimeUtc).toISOString().split('T')[0] === dateStr
     );
   }, [slots, selectedDate]);
 
@@ -377,14 +377,14 @@ export default function BookingForm({ services, professionalName }: Props) {
                 <span className='text-muted-foreground'>{t('date')}:</span>
                 <span className='font-medium text-foreground'>
                   {selectedSlot &&
-                    new Date(selectedSlot.startTime).toLocaleDateString()}
+                    new Date(selectedSlot.startTimeUtc).toLocaleDateString()}
                 </span>
               </div>
               <div className='flex justify-between'>
                 <span className='text-muted-foreground'>{t('time')}:</span>
                 <span className='font-medium text-foreground'>
                   {selectedSlot &&
-                    new Date(selectedSlot.startTime).toLocaleTimeString([], {
+                    new Date(selectedSlot.startTimeUtc).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
@@ -561,7 +561,7 @@ export default function BookingForm({ services, professionalName }: Props) {
                   ) : (
                     <div className='grid grid-cols-2 gap-2 sm:grid-cols-3'>
                       {slotsForSelectedDate.map((slot) => {
-                        const time = new Date(slot.startTime);
+                        const time = new Date(slot.startTimeUtc);
                         return (
                           <button
                             key={slot.id}
@@ -787,7 +787,7 @@ export default function BookingForm({ services, professionalName }: Props) {
                     </p>
                     <p className='font-medium text-foreground'>
                       {selectedSlot &&
-                        new Date(selectedSlot.startTime).toLocaleDateString(
+                        new Date(selectedSlot.startTimeUtc).toLocaleDateString(
                           undefined,
                           {
                             weekday: 'long',
@@ -799,7 +799,7 @@ export default function BookingForm({ services, professionalName }: Props) {
                     </p>
                     <p className='text-sm text-muted-foreground'>
                       {selectedSlot &&
-                        new Date(selectedSlot.startTime).toLocaleTimeString(
+                        new Date(selectedSlot.startTimeUtc).toLocaleTimeString(
                           [],
                           { hour: '2-digit', minute: '2-digit' }
                         )}

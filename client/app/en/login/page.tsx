@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Link } from '@/lib/i18n/navigation';
+import { LocaleLink as Link } from '@/components/ui/locale-link';
 import { authService } from '@/lib/services';
 import type { ApiError } from '@/types';
 import {

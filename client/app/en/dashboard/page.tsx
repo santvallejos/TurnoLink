@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/lib/i18n/navigation';
+import { LocaleLink as Link } from '@/components/ui/locale-link';
 import { authService, bookingService, serviceService } from '@/lib/services';
 import type { CurrentUser, Booking, Service } from '@/types';
 import {

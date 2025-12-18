@@ -1,75 +1,70 @@
-import { getTranslations } from 'next-intl/server';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import type { Service } from '@/types';
-import BookingForm from './booking-form';
-import { Calendar, AlertCircle, ArrowLeft } from 'lucide-react';
+import BookingForm from '@/components/booking/booking-form';
+import { Calendar, AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { routing } from '@/lib/i18n/routing';
-
-// Slugs de profesionales para la demo (exportación estática)
-const DEMO_SLUGS = ['sofia-cubilla-f0b49a', 'santiago-vallejos-7da3a3', 'demo', 'doctor', 'lawyer', 'consultant'];
-
-/**
- * Genera las rutas estáticas para la demo.
- * Combina todos los locales con los slugs de ejemplo.
- */
-export function generateStaticParams() {
-  return routing.locales.flatMap((locale) =>
-    DEMO_SLUGS.map((slug) => ({ locale, slug }))
-  );
-}
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  slug: string;
+  locale: string;
 }
 
-export default async function PublicBookingPage({ params }: Props) {
-  const { slug } = await params;
-  const t = await getTranslations('public.booking');
+/**
+ * Componente cliente para la página de booking público
+ * Carga los servicios del profesional dinámicamente desde el cliente
+ */
+export default function BookingPageClient({ slug, locale }: Props) {
+  const t = useTranslations('public.booking');
+  const [services, setServices] = useState<Service[]>([]);
+  const [professionalName, setProfessionalName] = useState(slug);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  let services: Service[] = [];
-  let error = null;
-  let professionalName = slug; // Por defecto usa el slug
+  useEffect(() => {
+    async function fetchServices() {
+      const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5000';
+      const fetchUrl = `${API_URL}/api/Public/${slug}`;
 
-  // URL de la API para Server Components
-  const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5000';
-  const fetchUrl = `${API_URL}/api/Public/${slug}`;
+      try {
+        const response = await fetch(fetchUrl);
 
-  console.log('=== DEBUG BOOKING PAGE ===');
-  console.log('API_URL:', API_URL);
-  console.log('Slug:', slug);
-  console.log('Fetch URL:', fetchUrl);
+        if (!response.ok) {
+          setError('Professional not found');
+          return;
+        }
 
-  try {
-    // Fetch directo desde el servidor para evitar problemas con el cliente API
-    const response = await fetch(fetchUrl, {
-      cache: 'no-store', // No cachear para obtener datos frescas
-    });
+        const data: Service[] = await response.json();
+        setServices(data);
 
-    console.log('Response status:', response.status);
-    console.log('Response ok:', response.ok);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.log('Error response:', errorText);
-      error = 'Professional not found';
-    } else {
-      services = await response.json();
-      console.log('Services received:', services.length);
-      console.log('Services data:', JSON.stringify(services, null, 2));
-      // Si hay servicios, usamos el userName del primer servicio
-      if (services.length > 0 && services[0].userName) {
-        professionalName = services[0].userName;
+        // Si hay servicios, usamos el userName del primer servicio
+        if (data.length > 0 && data[0].userName) {
+          setProfessionalName(data[0].userName);
+        }
+      } catch (err) {
+        console.error('Error fetching services:', err);
+        setError('Professional not found');
+      } finally {
+        setLoading(false);
       }
     }
-  } catch (err) {
-    console.error('=== FETCH ERROR ===');
-    console.error('Error fetching services:', err);
-    error = 'Professional not found';
-  }
-  
-  console.log('Final error:', error);
-  console.log('Final services count:', services.length);
 
+    fetchServices();
+  }, [slug]);
+
+  // Loading State
+  if (loading) {
+    return (
+      <div className='flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4'>
+        <Loader2 className='h-12 w-12 animate-spin text-primary' />
+        <p className='mt-4 text-muted-foreground'>{t('loading') || 'Loading...'}</p>
+      </div>
+    );
+  }
+
+  // Error State
   if (error || services.length === 0) {
     return (
       <div className='flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4'>
@@ -87,7 +82,7 @@ export default async function PublicBookingPage({ params }: Props) {
 
           {/* Back Button */}
           <Link
-            href='/'
+            href={`/${locale}`}
             className='inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground transition-all hover:bg-primary/90'
           >
             <ArrowLeft className='h-4 w-4' />
@@ -106,7 +101,7 @@ export default async function PublicBookingPage({ params }: Props) {
           <div className='flex items-center justify-between'>
             {/* Logo/Brand */}
             <Link
-              href='/'
+              href={`/${locale}`}
               className='flex items-center gap-3 transition-opacity hover:opacity-80'
             >
               <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25'>
@@ -149,7 +144,7 @@ export default async function PublicBookingPage({ params }: Props) {
         <div className='mx-auto max-w-4xl px-4 text-center sm:px-6'>
           <p className='text-sm text-muted-foreground'>
             {t('poweredBy')}{' '}
-            <Link href='/' className='font-medium text-primary hover:underline'>
+            <Link href={`/${locale}`} className='font-medium text-primary hover:underline'>
               TurnoLink
             </Link>
           </p>

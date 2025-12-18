@@ -1,13 +1,17 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
+// Plugin de next-intl con configuración simplificada para static export
 const withNextIntl = createNextIntlPlugin('./lib/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   output: 'export',
+  // Deshabilitar trailing slash para mejor compatibilidad
+  trailingSlash: true,
   // Configuración de imágenes para `next/image`.
-  // Ajusta `remotePatterns` según los orígenes reales que uses.
+  // Para static export, usamos unoptimized
   images: {
+    unoptimized: true,
     // Formatos modernos preferidos
     formats: ['image/avif', 'image/webp'],
     // Tamaños de dispositivo usados por Next.js para generar srcset

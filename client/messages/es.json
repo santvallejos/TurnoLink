@@ -409,6 +409,7 @@
       "title": "Reservar cita",
       "subtitle": "Completa los pasos para agendar tu cita",
       "bookingWith": "Reservando con",
+      "loading": "Cargando...",
       "notFound": "Profesional no encontrado",
       "notFoundMessage": "No pudimos encontrar la página de reservas que buscas. El enlace puede estar incorrecto o el profesional ya no está disponible.",
       "backHome": "Volver al inicio",

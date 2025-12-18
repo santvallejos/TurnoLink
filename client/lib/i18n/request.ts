@@ -1,13 +1,15 @@
 import { getRequestConfig } from 'next-intl/server';
-import { routing } from './routing';
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  let locale = await requestLocale;
+type Locale = 'es' | 'en';
 
-  // Validate locale
-  if (!locale || !routing.locales.includes(locale as typeof routing.locales[number])) {
-    locale = routing.defaultLocale;
-  }
+/**
+ * Configuración de next-intl para carga de mensajes
+ * Para static export, usamos un locale por defecto
+ */
+export default getRequestConfig(async () => {
+  // Para static export, devolvemos un locale por defecto
+  // Los layouts específicos de cada locale cargan sus propios mensajes
+  const locale: Locale = 'es';
 
   return {
     locale,

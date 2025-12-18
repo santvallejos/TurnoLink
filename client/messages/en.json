@@ -409,6 +409,7 @@
       "title": "Book appointment",
       "subtitle": "Complete the steps to schedule your appointment",
       "bookingWith": "Booking with",
+      "loading": "Loading...",
       "notFound": "Professional not found",
       "notFoundMessage": "We couldn't find the booking page you're looking for. The link might be incorrect or the professional is no longer available.",
       "backHome": "Back to home",

@@ -45,9 +45,7 @@ function Stepper({
                 className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all ${
                   index < currentStep
                     ? 'border-primary bg-primary text-primary-foreground'
-                    : index === currentStep
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border bg-card text-muted-foreground'
+                    : index === currentStep ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground'
                 }`}
               >
                 {index < currentStep ? (
@@ -177,7 +175,7 @@ function CalendarPicker({
           type='button'
           onClick={() =>
             setCurrentMonth(
-              new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+              new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1),
             )
           }
           className='rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
@@ -191,7 +189,7 @@ function CalendarPicker({
           type='button'
           onClick={() =>
             setCurrentMonth(
-              new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
+              new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1),
             )
           }
           className='rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
@@ -224,11 +222,7 @@ function CalendarPicker({
                 className={`flex h-full w-full items-center justify-center rounded-lg text-sm font-medium transition-all ${
                   isSelected(date)
                     ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
-                    : isToday(date)
-                    ? 'border-2 border-primary bg-primary/10 text-primary'
-                    : isPastDate(date) || !isDateAvailable(date)
-                    ? 'cursor-not-allowed text-muted-foreground/50'
-                    : 'text-foreground hover:bg-accent'
+                    : isToday(date) ? 'border-2 border-primary bg-primary/10 text-primary' : isPastDate(date) || !isDateAvailable(date) ? 'cursor-not-allowed text-muted-foreground/50' : 'text-foreground hover:bg-accent'
                 }`}
               >
                 {date.getDate()}
@@ -288,7 +282,7 @@ export default function BookingForm({ services, professionalName }: Props) {
     return [
       ...new Set(
         slots.map(
-          (slot) => new Date(slot.startTimeUtc).toISOString().split('T')[0]
+          (slot) => new Date(slot.startTimeUtc).toISOString().split('T')[0],
         ),
       ),
     ];
@@ -299,7 +293,7 @@ export default function BookingForm({ services, professionalName }: Props) {
     if (!selectedDate) return [];
     const dateStr = selectedDate.toISOString().split('T')[0];
     return slots.filter(
-      (slot) => new Date(slot.startTimeUtc).toISOString().split('T')[0] === dateStr
+      (slot) => new Date(slot.startTimeUtc).toISOString().split('T')[0] === dateStr,
     );
   }, [slots, selectedDate]);
 
@@ -794,14 +788,14 @@ export default function BookingForm({ services, professionalName }: Props) {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
-                          }
+                          },
                         )}
                     </p>
                     <p className='text-sm text-muted-foreground'>
                       {selectedSlot &&
                         new Date(selectedSlot.startTimeUtc).toLocaleTimeString(
                           [],
-                          { hour: '2-digit', minute: '2-digit' }
+                          { hour: '2-digit', minute: '2-digit' },
                         )}
                       {' - '}
                       {selectedService?.durationMinutes} {t('minutes')}

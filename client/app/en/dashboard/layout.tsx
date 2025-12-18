@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/lib/i18n/navigation';
+import { LocaleLink as Link } from '@/components/ui/locale-link';
 import { usePathname } from 'next/navigation';
 import { authService, signalRService, type BookingNotification } from '@/lib/services';
 import { NotificationToast } from '@/components/ui/notification-toast';

@@ -1,7 +1,5 @@
 import { ApiError } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5000';
-
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 interface RequestOptions {
@@ -52,8 +50,8 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     requestHeaders['Authorization'] = `Bearer ${token}`;
   }
 
-  const fullUrl = `${API_URL}${endpoint}`;
-  
+  const fullUrl = `${endpoint}`;
+
   // Debug logging
   console.log('=== API REQUEST ===');
   console.log('URL:', fullUrl);

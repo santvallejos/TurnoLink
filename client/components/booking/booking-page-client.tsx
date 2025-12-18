@@ -25,8 +25,7 @@ export default function BookingPageClient({ slug, locale }: Props) {
 
   useEffect(() => {
     async function fetchServices() {
-      const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5000';
-      const fetchUrl = `${API_URL}/api/Public/${slug}`;
+      const fetchUrl = `/api/Public/${slug}`;
 
       try {
         const response = await fetch(fetchUrl);

@@ -135,7 +135,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // URL del frontend
+        policy.WithOrigins(
+            "http://localhost:3000",
+            "http://turnolink.sandbox.devlights.com")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();

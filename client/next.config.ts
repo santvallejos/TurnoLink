@@ -4,6 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./lib/i18n/request.ts');
 
 const nextConfig: NextConfig = {
+  output: 'export',
   // Configuración de imágenes para `next/image`.
   // Ajusta `domains` o `remotePatterns` según los orígenes reales que uses.
   images: {

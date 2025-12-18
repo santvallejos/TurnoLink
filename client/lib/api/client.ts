@@ -1,6 +1,6 @@
 import { ApiError } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5009';
+const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5000';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 

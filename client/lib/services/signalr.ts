@@ -41,7 +41,7 @@ class SignalRService {
         return;
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5009';
+      const apiUrl = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5000';
 
       this.connection = new signalR.HubConnectionBuilder()
         .withUrl(`${apiUrl}/hubs/notifications`, {

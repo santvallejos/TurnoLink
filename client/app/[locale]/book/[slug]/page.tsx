@@ -17,7 +17,7 @@ export default async function PublicBookingPage({ params }: Props) {
   let professionalName = slug; // Por defecto usa el slug
 
   // URL de la API para Server Components
-  const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5009';
+  const API_URL = process.env.NEXT_PUBLIC_TURNOLINK_API_URL || 'http://localhost:5000';
   const fetchUrl = `${API_URL}/api/Public/${slug}`;
 
   console.log('=== DEBUG BOOKING PAGE ===');

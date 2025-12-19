@@ -17,7 +17,6 @@ import {
   Menu,
   X,
   ChevronRight,
-  Bell,
   Loader2,
 } from 'lucide-react';
 
@@ -219,10 +218,6 @@ export default function DashboardLayout({
 
           {/* Right actions */}
           <div className='flex items-center gap-3'>
-            <button className='relative p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-accent transition-colors'>
-              <Bell className='h-5 w-5' />
-              <span className='absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary' />
-            </button>
             <div className='hidden sm:flex items-center gap-2 pl-3 border-l border-border'>
               <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold'>
                 {user?.name?.charAt(0) || 'U'}

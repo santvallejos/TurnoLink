@@ -454,6 +454,8 @@
       },
       "selected": "Selected",
       "today": "Today",
+      "booked": "Booked",
+      "slotBooked": "This time slot is already booked",
       "unavailable": "Unavailable",
       "availableSlots": "Available time slots",
       "selectDateFirst": "Select a date on the calendar",

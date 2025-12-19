@@ -454,6 +454,8 @@
       },
       "selected": "Seleccionado",
       "today": "Hoy",
+      "booked": "Reservado",
+      "slotBooked": "Este horario ya está reservado",
       "unavailable": "No disponible",
       "availableSlots": "Horarios disponibles",
       "selectDateFirst": "Selecciona una fecha en el calendario",

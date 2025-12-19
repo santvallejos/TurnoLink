@@ -243,6 +243,10 @@ function CalendarPicker({
           <span className='text-muted-foreground'>{t('today')}</span>
         </div>
         <div className='flex items-center gap-1.5'>
+          <div className='h-3 w-3 rounded-full bg-orange-500' />
+          <span className='text-muted-foreground'>{t('booked')}</span>
+        </div>
+        <div className='flex items-center gap-1.5'>
           <div className='h-3 w-3 rounded-full bg-muted' />
           <span className='text-muted-foreground'>{t('unavailable')}</span>
         </div>
@@ -556,21 +560,31 @@ export default function BookingForm({ services, professionalName }: Props) {
                     <div className='grid grid-cols-2 gap-2 sm:grid-cols-3'>
                       {slotsForSelectedDate.map((slot) => {
                         const time = new Date(slot.startTimeUtc);
+                        const isBooked = slot.isBooked;
                         return (
                           <button
                             key={slot.id}
                             type='button'
-                            onClick={() => setSelectedSlot(slot)}
-                            className={`rounded-xl px-3 py-3 text-sm font-medium transition-all ${
-                              selectedSlot?.id === slot.id
-                                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
-                                : 'border border-border bg-accent/50 text-foreground hover:border-primary hover:bg-primary/10'
+                            disabled={isBooked}
+                            onClick={() => !isBooked && setSelectedSlot(slot)}
+                            className={`relative rounded-xl px-3 py-3 text-sm font-medium transition-all ${
+                              isBooked
+                                ? 'cursor-not-allowed border border-orange-200 bg-orange-50 text-orange-400 dark:border-orange-800 dark:bg-orange-900/20 dark:text-orange-500'
+                                : selectedSlot?.id === slot.id
+                                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
+                                  : 'border border-border bg-accent/50 text-foreground hover:border-primary hover:bg-primary/10'
                             }`}
+                            title={isBooked ? t('slotBooked') : undefined}
                           >
                             {time.toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit',
                             })}
+                            {isBooked && (
+                              <span className='absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[10px] text-white'>
+                                ✓
+                              </span>
+                            )}
                           </button>
                         );
                       })}
